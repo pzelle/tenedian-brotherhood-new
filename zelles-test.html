@@ -1,0 +1,378 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Zelles Family Tree — Test</title>
+<style>
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body { font-family: sans-serif; background: #f8f5f0; padding: 2rem; }
+h1 { font-size: 1.4rem; margin-bottom: 0.75rem; }
+h2 { font-size: 1.1rem; margin: 2.5rem 0 1rem; color: #333;
+     border-bottom: 2px solid #c9a227; padding-bottom: 0.4rem; }
+
+.note { background: #fffbea; border-left: 4px solid #c9a227;
+        padding: 0.6rem 0.9rem; margin-bottom: 1.5rem;
+        font-size: 0.85rem; max-width: 600px; }
+
+.legend { display: flex; gap: 1.2rem; flex-wrap: wrap;
+          margin-bottom: 2rem; font-size: 0.78rem; color: #555;
+          align-items: center; }
+.ls { width: 20px; height: 13px; border-radius: 3px;
+      border: 2px solid #c9a227; display: inline-block;
+      vertical-align: middle; margin-right: 4px; }
+.ls.navy { background: #0a1628; }
+.ls.white { background: #fff; }
+.ls.blue  { background: #dce8ff; border-color: #6888cc; }
+.ls.gray  { background: #eee; border-color: #bbb; }
+
+/* ── Tree sections ───────────────────────────────── */
+.tree-section { overflow-x: auto; padding-bottom: 1.5rem; }
+
+/* Root of each tree: just a centered flex column */
+.tree-root { display: inline-flex; flex-direction: column; align-items: center; padding: 0.5rem 1rem; }
+
+/* Every node is a vertical flex column: node-body → tree-children */
+.tree-node {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  position: relative;
+}
+
+/* node-body holds the card(s) and needs position:relative for the downward line */
+.node-body {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 3px;
+  position: relative;
+}
+
+/* Couple row: person card + × + spouse card */
+.couple-row { display: flex; align-items: center; gap: 5px; }
+.cx { color: #c9a227; font-weight: bold; font-size: 1rem; padding: 0 2px; flex-shrink: 0; }
+.remarriage-lbl { font-size: 0.65rem; color: #999; font-style: italic;
+                  text-align: center; margin-top: 5px; }
+
+/* ── Cards ───────────────────────────────────────── */
+.card {
+  background: #fff;
+  border: 2px solid #c9a227;
+  border-radius: 6px;
+  padding: 7px 10px;
+  width: 148px;
+  text-align: center;
+  font-size: 0.74rem;
+  line-height: 1.35;
+  position: relative;
+}
+.card .n { font-weight: 700; color: #0a1628; display: block; }
+.card .d { color: #888; font-size: 0.67rem; display: block; margin-top: 2px; }
+
+.card.root   { background: #0a1628; }
+.card.root .n { color: #c9a227; }
+.card.root .d { color: #99aabb; }
+
+.card.spouse { background: #dce8ff; border-color: #6888cc; }
+.card.spouse .n { color: #1a3a80; }
+
+.card.priv  { background: #eee; border-color: #bbb; }
+.card.priv .n { color: #666; }
+.card.priv .d { color: #aaa; }
+
+/* Collapse indicator on cards that have children */
+.card.collapsible { cursor: pointer; }
+.card.collapsible::after {
+  content: '\25BE';
+  position: absolute; bottom: 3px; right: 5px;
+  font-size: 0.6rem; color: #c9a227;
+}
+.tree-node.closed > .node-body .card.collapsible::after { content: '\25B8'; }
+
+/* ─────────────────────────────────────────────────
+   CONNECTOR LINES  (pure CSS, no SVG)
+
+   Gap between parent node-body and children:
+   achieved with margin-top on .tree-children.
+
+   Line segments drawn with ::before / ::after
+   on .tree-children > .tree-node (the child nodes).
+   They use negative top to reach UP into the gap.
+───────────────────────────────────────────────── */
+
+/* How tall is the gap between parent card and child cards */
+:root { --gap: 44px; }
+
+/* ① PARENT DOWNWARD LINE
+   Drawn from the bottom of .node-body, going down --gap px */
+.tree-node.has-ch > .node-body::after {
+  content: '';
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
+  top: 100%;          /* starts at the bottom edge of node-body */
+  width: 2px;
+  height: var(--gap);
+  background: #c9a227;
+}
+
+/* ② CHILDREN ROW
+   margin-top creates the --gap space the parent line fills */
+.tree-children {
+  display: flex;
+  flex-direction: row;
+  gap: 14px;
+  align-items: flex-start;
+  justify-content: center;
+  margin-top: var(--gap);
+}
+
+/* ③ HIDE parent line + children when collapsed */
+.tree-node.closed > .node-body::after  { display: none !important; }
+.tree-node.closed > .tree-children     { display: none !important; }
+
+/* ④ VERTICAL DROP + HORIZONTAL BAR for each child
+   The child .tree-node has no padding, but its ::before
+   and ::after draw upward using negative top values. */
+.tree-children > .tree-node {
+  position: relative;
+}
+
+/* Vertical drop: from the bar (at top: -gap) down to top of card (top: 0) */
+.tree-children > .tree-node::before {
+  content: '';
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
+  top: calc(-1 * var(--gap));
+  width: 2px;
+  height: var(--gap);
+  background: #c9a227;
+}
+
+/* Horizontal bar: each sibling draws its own segment
+   (full, left-half, or right-half depending on position) */
+.tree-children > .tree-node::after {
+  content: '';
+  position: absolute;
+  top: calc(-1 * var(--gap));
+  left: 0;
+  right: 0;
+  height: 2px;
+  background: #c9a227;
+}
+/* First child: only right half of bar (from center → right) */
+.tree-children > .tree-node:first-child::after  { left: 50%; }
+/* Last child: only left half of bar (from left → center) */
+.tree-children > .tree-node:last-child::after   { right: 50%; }
+/* Only child: no horizontal bar needed */
+.tree-children > .tree-node:first-child:last-child::after { display: none; }
+</style>
+  <script defer src="/_vercel/insights/script.js"></script>
+</head>
+<body>
+
+<h1>Zelles / Zelelis Family Tree</h1>
+
+<p class="note">
+  <strong>Note:</strong> Two separate family trees are shown. They <em>are</em> related — in the 1920 census
+  Gust and Spiros (Tree 2) lived with Dimitri 'Jim' Zelles (Tree 1) as brothers, but their death certificates
+  show different parents.
+</p>
+
+<div class="legend">
+  <span><span class="ls navy"></span> Ancestor</span>
+  <span><span class="ls white"></span> Descendant</span>
+  <span><span class="ls blue"></span> Spouse (married-in)</span>
+  <span><span class="ls gray"></span> Living (private)</span>
+  <span style="color:#c9a227;font-weight:700;font-size:1rem">&times;</span>&thinsp; Married &nbsp;
+  <span style="font-size:0.75rem;color:#999">Click a descendant card to collapse/expand</span>
+</div>
+
+<div id="forest"></div>
+
+<script>
+/* ── DATA ────────────────────────────────────────────────────────
+   Person:   { id, name, birth?, death?, priv?, m[] }
+   Marriage: { label?, sp?, kids[] }
+   Spouse:   { id, name, birth?, death?, priv? }
+──────────────────────────────────────────────────────────────── */
+
+const T1 = {
+  id:'d1', name:'Dionyssios Zelelis', birth:'Unknown',
+  m:[{ sp:{id:'d1s',name:'Zmaragda',birth:'Unknown'}, kids:[
+    { id:'d2', name:"Dimitri 'James' Zelles", birth:'June 15, 1876', death:'Dec. 16, 1939',
+      m:[{ sp:{id:'d2s',name:"Akaterini 'Katherine' Kalage",birth:'Feb. 5, 1887',death:'May 3, 1943'}, kids:[
+        { id:'d3a', name:'George Zelles', birth:'1908', death:'Unknown',
+          m:[{ sp:{id:'d3as',name:'Antonia',birth:'Sep. 5, 1917'}, kids:[] }] },
+        { id:'d3b', name:'Manuel Zelles', birth:'Jan. 17, 1917', death:'Mar. 10, 1944 (WWII)', m:[] },
+        { id:'d3c', name:'Dionyssios Zelles', birth:'Apr. 15, 1918', m:[] },
+        { id:'d3d', name:"Harikleia 'Harriet' Zelles", birth:'Aug. 31, 1920', death:'Jun. 19, 2011',
+          m:[{ sp:{id:'d3ds',name:'Peter A. (Kostopoulos) Kosty',birth:'Oct. 5, 1916',death:'Aug. 16, 1995'}, kids:[
+            { id:'d4a', name:'Renee Kosty', priv:true,
+              m:[{ sp:{id:'d4as',name:'Kostantinos J. Bastas',priv:true}, kids:[
+                { id:'d5a', name:'Demetra Bastas', priv:true, m:[] }
+              ]}] },
+            { id:'d4b', name:'Kathy P. Kosty', priv:true,
+              m:[{ sp:{id:'d4bs',name:'Nikolas J. Bastas',priv:true}, kids:[] }] }
+          ]}] }
+      ]}] }
+  ]}]
+};
+
+const T2 = {
+  id:'m1', name:'Manolis Zelelis', birth:'Unknown',
+  m:[{ sp:{id:'m1s',name:'Mary',birth:'Unknown'}, kids:[
+    { id:'m2a', name:"Costandinos 'Gust' Zelles", birth:'May 22, 1886', death:'Nov. 29, 1953', m:[] },
+    { id:'m2b', name:"Spiros 'Sam' Zelles", birth:'Sep. 16, 1891', death:'Jan. 12, 1974',
+      m:[
+        { sp:{id:'m2b1',name:"Stergiana 'Anna' Psathas",birth:'Nov. 10, 1901',death:'Dec. 3, 1977'}, kids:[
+          { id:'m3a', name:'Leonidas S. Zelles', birth:'Before 1922', death:'Unknown', m:[] },
+          { id:'m3b', name:'Peter S. Zelles', birth:'Sep. 21, 1922', death:'Nov. 20, 1994',
+            m:[
+              { sp:{id:'m3b1',name:'Barbara Ann Reusch',birth:'Oct. 20, 1925',death:'Sep. 12, 2006'}, kids:[
+                { id:'m4a', name:'Fredrick M. (Zelles) Beltz', priv:true,
+                  m:[{ sp:{id:'m4as',name:'Leslie A. Lundin',priv:true}, kids:[
+                    { id:'m5a', name:'Allison A. Beltz', priv:true, m:[] },
+                    { id:'m5b', name:'Brian Beltz', priv:true, m:[] },
+                    { id:'m5c', name:'Justin Beltz', priv:true, m:[] },
+                    { id:'m5d', name:'Meghann Beltz', priv:true, m:[] }
+                  ]}] }
+              ]},
+              { label:'2nd marriage', sp:{id:'m3b2',name:'Jeanne Elizabeth Fredericks',birth:'Apr. 5, 1921',death:'Feb. 17, 2002'}, kids:[
+                { id:'m4b', name:'Elizabeth Ann Zelles', priv:true,
+                  m:[
+                    { sp:{id:'m4b1',name:'Larry Dean Dakins',priv:true}, kids:[
+                      { id:'m5e', name:'Joshua D. Dakins', priv:true,
+                        m:[{ sp:{id:'m5es',name:'Heather',priv:true}, kids:[] }] },
+                      { id:'m5f', name:'Jesse Andrew Dakins', priv:true,
+                        m:[{ sp:{id:'m5fs',name:'Christine Lynn Bergmann',priv:true}, kids:[
+                          { id:'m6a', name:'Jacob Dakins', priv:true, m:[] }
+                        ]}] }
+                    ]},
+                    { label:'2nd marriage', sp:{id:'m4b2',name:'Henry Hans Gutwein',priv:true}, kids:[] }
+                  ]},
+                { id:'m4c', name:'Dr. Peter Andrew Zelles', priv:true,
+                  m:[{ sp:{id:'m4cs',name:'Linda Kaye Snouffer',priv:true}, kids:[
+                    { id:'m5g', name:'Peter James Zelles', priv:true, m:[] },
+                    { id:'m5h', name:'Elizabeth Zelles', priv:true, m:[] },
+                    { id:'m5i', name:'Emma Zelles', priv:true, m:[] }
+                  ]}] }
+              ]}
+            ]},
+          { id:'m3c', name:"Marika 'Mary' Zelles", birth:'Nov. 23, 1924', death:'Apr. 20, 2008',
+            m:[{ sp:{id:'m3cs',name:'Steve A. Brass',birth:'Apr. 25, 1925',death:'Nov. 27, 2000'}, kids:[
+              { id:'m4d', name:'Anita Brass', priv:true,
+                m:[{ sp:{id:'m4ds',name:'Stamatios V. Kartalopoulos, Dr.',priv:true}, kids:[
+                  { id:'m5j', name:'William Kartalopoulos', priv:true, m:[] },
+                  { id:'m5k', name:'Stephanie Kartalopoulos', priv:true, m:[] }
+                ]}] }
+            ]}] }
+        ]}
+      ]}
+  ]}]
+};
+
+/* ── RENDER ──────────────────────────────────────────────────── */
+
+function makeCard(p, cls) {
+  const div = document.createElement('div');
+  div.className = 'card ' + (cls || '');
+  const n = document.createElement('span'); n.className = 'n'; n.textContent = p.name;
+  div.appendChild(n);
+  const parts = [];
+  if (p.birth) parts.push('b. ' + p.birth);
+  if (p.death) parts.push('d. ' + p.death);
+  if (p.priv && !p.birth && !p.death) parts.push('Living');
+  if (parts.length) {
+    const d = document.createElement('span'); d.className = 'd';
+    d.textContent = parts.join('  \u00B7  ');
+    div.appendChild(d);
+  }
+  return div;
+}
+
+function renderNode(p, gen) {
+  const wrapper = document.createElement('div');
+  wrapper.className = 'tree-node';
+
+  const body = document.createElement('div');
+  body.className = 'node-body';
+
+  const marriages = p.m || [];
+  const allKids = marriages.flatMap(m => m.kids || []);
+
+  // Main card
+  let cls = '';
+  if (gen === 0)   cls = 'root';
+  else if (p.priv) cls = 'priv';
+  if (allKids.length) cls += ' collapsible';
+  const mc = makeCard(p, cls.trim());
+
+  // First couple row
+  if (marriages.length > 0) {
+    const row = document.createElement('div'); row.className = 'couple-row';
+    row.appendChild(mc);
+    if (marriages[0].sp) {
+      const dot = document.createElement('span'); dot.className = 'cx'; dot.textContent = '\u00D7';
+      row.appendChild(dot);
+      row.appendChild(makeCard(marriages[0].sp, marriages[0].sp.priv ? 'spouse priv' : 'spouse'));
+    }
+    body.appendChild(row);
+
+    // Extra marriages
+    for (let i = 1; i < marriages.length; i++) {
+      const mg = marriages[i];
+      if (mg.label) {
+        const lbl = document.createElement('div'); lbl.className = 'remarriage-lbl';
+        lbl.textContent = mg.label + ':'; body.appendChild(lbl);
+      }
+      if (mg.sp) {
+        const r2 = document.createElement('div'); r2.className = 'couple-row';
+        // invisible placeholder aligned to main card width
+        const ph = document.createElement('div'); ph.style.cssText = 'width:148px;flex-shrink:0;';
+        r2.appendChild(ph);
+        const d2 = document.createElement('span'); d2.className = 'cx'; d2.textContent = '\u00D7';
+        r2.appendChild(d2);
+        r2.appendChild(makeCard(mg.sp, mg.sp.priv ? 'spouse priv' : 'spouse'));
+        body.appendChild(r2);
+      }
+    }
+  } else {
+    const row = document.createElement('div'); row.className = 'couple-row';
+    row.appendChild(mc); body.appendChild(row);
+  }
+
+  wrapper.appendChild(body);
+
+  // Children
+  if (allKids.length) {
+    wrapper.classList.add('has-ch');
+    const cr = document.createElement('div'); cr.className = 'tree-children';
+    allKids.forEach(child => cr.appendChild(renderNode(child, gen + 1)));
+    wrapper.appendChild(cr);
+
+    mc.addEventListener('click', e => {
+      e.stopPropagation();
+      wrapper.classList.toggle('closed');
+    });
+  }
+
+  return wrapper;
+}
+
+function buildSection(title, data) {
+  const sec = document.createElement('div'); sec.className = 'tree-section';
+  const h = document.createElement('h2'); h.textContent = title; sec.appendChild(h);
+  const root = document.createElement('div'); root.className = 'tree-root';
+  root.appendChild(renderNode(data, 0));
+  sec.appendChild(root);
+  return sec;
+}
+
+const forest = document.getElementById('forest');
+forest.appendChild(buildSection('Tree 1 \u2014 Descendants of Dionyssios Zelelis', T1));
+forest.appendChild(buildSection('Tree 2 \u2014 Descendants of Manolis Zelelis', T2));
+</script>
+</body>
+</html>
