@@ -5,6 +5,86 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Kalfamitros Family — Tenedian Brotherhood</title>
   <link rel="stylesheet" href="css/style.css">
+  <style>
+    .tree-page { padding: 0; }
+    .tree-outer { overflow-x: auto; padding: 2.5rem 1.5rem 3rem;
+                  background: var(--color-off-white, #f8f5f0); }
+    .tree-forest { display: flex; flex-direction: column; gap: 3.5rem; }
+    .tree-section-heading {
+      font-family: var(--font-heading, 'Playfair Display', serif);
+      color: var(--color-navy, #0a1628); font-size: 1.2rem;
+      margin: 0 0 1.25rem; padding-bottom: 0.4rem;
+      border-bottom: 2px solid var(--color-gold, #c9a227); }
+    .tree-legend { display: flex; gap: 1.2rem; flex-wrap: wrap;
+                   margin-bottom: 2rem; font-size: 0.8rem; color: #555;
+                   align-items: center; }
+    .legend-item { display: flex; align-items: center; gap: 5px; }
+    .ls { width: 20px; height: 13px; border-radius: 3px;
+          border: 2px solid var(--color-gold, #c9a227);
+          display: inline-block; flex-shrink: 0; }
+    .ls.navy  { background: var(--color-navy, #0a1628); }
+    .ls.white { background: #fff; }
+    .ls.blue  { background: #dce8ff; border-color: #6888cc; }
+    .ls.gray  { background: #eee; border-color: #bbb; }
+    /* Tree layout */
+    .tree-section { overflow-x: auto; padding-bottom: 0.5rem; }
+    .tree-root { display: inline-flex; flex-direction: column;
+                 align-items: center; padding: 0.5rem 1rem; }
+    .tree-node { display: flex; flex-direction: column; align-items: center;
+                 position: relative; }
+    .node-body { display: flex; flex-direction: column; align-items: center;
+                 gap: 3px; position: relative; }
+    .couple-row { display: flex; align-items: center; gap: 5px; }
+    .cx { color: var(--color-gold, #c9a227); font-weight: 700; font-size: 1rem;
+          padding: 0 2px; flex-shrink: 0; }
+    .remarriage-lbl { font-size: 0.65rem; color: #999; font-style: italic;
+                      text-align: center; margin-top: 5px; }
+    /* Cards */
+    .card { background: #fff; border: 2px solid var(--color-gold, #c9a227);
+            border-radius: 6px; padding: 7px 10px; width: 148px;
+            text-align: center; font-size: 0.74rem; line-height: 1.35;
+            position: relative; }
+    .card .n { font-weight: 700; color: var(--color-navy, #0a1628);
+               display: block; font-size: 0.78rem; }
+    .card .d { color: #888; font-size: 0.67rem; display: block; margin-top: 2px; }
+    .card.root { background: var(--color-navy, #0a1628);
+                 border-color: var(--color-gold, #c9a227); }
+    .card.root .n { color: var(--color-gold, #c9a227); }
+    .card.root .d { color: #99aabb; }
+    .card.spouse { background: #dce8ff; border-color: #6888cc; }
+    .card.spouse .n { color: #1a3a80; }
+    .card.priv  { background: #eee; border-color: #bbb; }
+    .card.priv .n { color: #666; }
+    .card.priv .d { color: #aaa; }
+    .card.collapsible { cursor: pointer; }
+    .card.collapsible::after { content: '\25BE'; position: absolute;
+      bottom: 3px; right: 5px; font-size: 0.6rem;
+      color: var(--color-gold, #c9a227); }
+    .tree-node.closed > .node-body .card.collapsible::after { content: '\25B8'; }
+    /* Connector lines (CSS pseudo-elements) */
+    :root { --gap: 44px; }
+    .tree-node.has-ch > .node-body::after {
+      content: ''; position: absolute; left: 50%; transform: translateX(-50%);
+      top: 100%; width: 2px; height: var(--gap);
+      background: var(--color-gold, #c9a227); }
+    .tree-children { display: flex; flex-direction: row; gap: 14px;
+                     align-items: flex-start; justify-content: center;
+                     margin-top: var(--gap); }
+    .tree-node.closed > .node-body::after  { display: none !important; }
+    .tree-node.closed > .tree-children     { display: none !important; }
+    .tree-children > .tree-node { position: relative; }
+    .tree-children > .tree-node::before {
+      content: ''; position: absolute; left: 50%; transform: translateX(-50%);
+      top: calc(-1 * var(--gap)); width: 2px; height: var(--gap);
+      background: var(--color-gold, #c9a227); }
+    .tree-children > .tree-node::after {
+      content: ''; position: absolute; top: calc(-1 * var(--gap));
+      left: 0; right: 0; height: 2px;
+      background: var(--color-gold, #c9a227); }
+    .tree-children > .tree-node:first-child::after  { left: 50%; }
+    .tree-children > .tree-node:last-child::after   { right: 50%; }
+    .tree-children > .tree-node:first-child:last-child::after { display: none; }
+  </style>
 </head>
 <body>
 
@@ -30,343 +110,21 @@
   <header class="page-header">
     <div class="page-header-inner">
       <h1 class="page-title">Kalfamitros Family</h1>
-      <p class="page-subtitle"><a href="family-trees.html" style="color:rgba(255,255,255,.6); font-size:.85rem;">&larr; Back to Family Trees</a></p>
+      <p class="page-subtitle"><a href="family-trees.html" style="color:rgba(255,255,255,.65);font-size:.85rem;">&larr; Back to Family Trees</a></p>
     </div>
   </header>
 
-  <div class="page-content">
-    <div class="privacy-notice">
-      <strong>Privacy notice:</strong> Per the original website policy, birth dates are not
-      disclosed for individuals born after 1920 unless they are deceased.
-    </div>
-
-    <div class="family-tree-content">
-<div class="tree-entry gen-0 note">Kalfamitrios / Makras Family</div>
-<div class="tree-entry gen-0 note">**Note there are 2 families listed on 
-this page. I do not know if they are related)</div>
-<div class="tree-entry gen-0 note">1 Ilias 'Louis' Kalfamitrios b: Abt. 1845 in 
-Tenedos, Greece d: in Tenedos, Greece</div>
-<div class="tree-entry gen-0 note">+Marigo b: Abt. 1850 in Tenedos, Greece d: 
-in Tenedos, Greece</div>
-<div class="tree-entry gen-0 note">2 Dimitrios L. Kalfamitrios b: Abt. 1875 in 
-Tenedos, Greece</div>
-<div class="tree-entry gen-0 spouse">+ Sophia Zambokou b: Unknown</div>
-<div class="tree-entry gen-0 note">3 Ioulia 'Julia' Kalfamitrios b: 1914 
-in Tenedos, Greece  d: Unknown</div>
-<div class="tree-entry gen-0 note">+George Fokianou b: Unknown d: 
-Unknown</div>
-<div class="tree-entry gen-0 note">4 Andonios Fokianou b: Unknown 
-d: Unknown</div>
-<div class="tree-entry gen-0 note">3 Fotini Kalfamitrios b: Private in 
-Greece, d: Unknown</div>
-<div class="tree-entry gen-0 spouse">+ Fotios Lagos b: Private in Greece</div>
-<div class="tree-entry gen-3">Helen Lagos b: Private</div>
-<div class="tree-entry gen-3">George F. Lagos b: Private</div>
-<div class="tree-entry gen-3">Sophia Lagos b: Private</div>
-<div class="tree-entry gen-3 note">+Apostolos E. Penessis b: 
-Private</div>
-<div class="tree-entry gen-3 note">5 Efthemios A. Penessis 
-b: Private</div>
-<div class="tree-entry gen-3 note">5 Fotini Penessis b: 
-Private</div>
-<div class="tree-entry gen-3">Daphne Lagos b: Private</div>
-<div class="tree-entry gen-3 note">4 Penelope 'Pizza' Lagos b: 
-Private</div>
-<div class="tree-entry gen-3 note">+Ignatios T. Klironomos b: 
-Private</div>
-<div class="tree-entry gen-3 note">5 Themistclos I. 
-Klironomos b: Private</div>
-<div class="tree-entry gen-3 note">5 Fotios I. Klironomos 
-b: Private</div>
-<div class="tree-entry gen-3 note">2 Helen Kalfamitrios b: Abt. 1877 in Tenedos, 
-Greece d: Unknown</div>
-<div class="tree-entry gen-3 spouse">+ Unknown Husband b: Unknown d: Unknown</div>
-<div class="tree-entry gen-2">Constantine b: Unknown</div>
-<div class="tree-entry gen-2">Nicholas b: Unknown</div>
-<div class="tree-entry gen-2">Athanas b: Unknown</div>
-<div class="tree-entry gen-2">Maria b: Unknown</div>
-<div class="tree-entry gen-2 note">** note: George (below) changed his last name to &quot;Makras&quot;</div>
-<div class="tree-entry gen-2 note">2 George Ilias Kalfamitrios / Makras b: 
-February 1879 in Tenedos, Greece d: May 06, 1947</div>
-<div class="tree-entry gen-2 note">+Kalliope Sarris b: June 24, 1883 in 
-Tenedos, Greece d: February 19, 1943</div>
-<div class="tree-entry gen-2 note">3 Panagiotas 'Peter' G. Makras b: 
-Sept. 28, 1903 in Tenedos, Greece d: June 19, 1983</div>
-<div class="tree-entry gen-2 note">+Despina Sfakianos b: July 02, 1908 
-in Tenedos, Greece d: May 05, 1981</div>
-<div class="tree-entry gen-2 note">4 Kalliope 'Clara' Peter Makras 
-b: Private</div>
-<div class="tree-entry gen-2 note">+Constantine 'Gus' (Hatziconstantinou) 
-Denos b: March 06, 1927 d: June 28, 1992</div>
-<div class="tree-entry gen-2 note">5 Demetrios 'James' 
-Denos b: Private</div>
-<div class="tree-entry gen-2 note">5 Argero 'Gloria' Denos 
-b: Private</div>
-<div class="tree-entry gen-2 note">5 Panagiotis 'Peter' 
-Denos b: Private</div>
-<div class="tree-entry gen-2 note">*2nd Husband of Kalliope 
-'Clara' Peter Makras:</div>
-<div class="tree-entry gen-2 note">+Troy Upton b: December 20, 
-1919 d: June 06, 1991</div>
-<div class="tree-entry gen-2 note">4 George Peter Makras b: 
-Private</div>
-<div class="tree-entry gen-2 spouse">+ Nancy Cook b: Private</div>
-<div class="tree-entry gen-2 note">5 Joseph Makras b: 
-Private</div>
-<div class="tree-entry gen-2 note">*2nd Wife of George Peter 
-Makras:</div>
-<div class="tree-entry gen-2 note">+Constance Louise 'Connie' 
-b: Private</div>
-<div class="tree-entry gen-2 note">5 George A. Makras b: 
-Private</div>
-<div class="tree-entry gen-2 note">5 Michael J. Makras b: 
-Private</div>
-<div class="tree-entry gen-2 note">5 Melissa M. Makras b: 
-Private</div>
-<div class="tree-entry gen-2 note">4 Achilles 'Ike' Peter Makras 
-b: Private</div>
-<div class="tree-entry gen-2 note">+Fotini 'Tulla' Kantaras b: 
-Private in Nea Tenedos, Greece</div>
-<div class="tree-entry gen-2 note">5 Peter Makras b: 
-Private</div>
-<div class="tree-entry gen-2 note">5 Maria Despina Makras 
-b: Private</div>
-<div class="tree-entry gen-2 note">3 Aspasia 'Anna' Makras b: February 
-02, 1902 in Tenedos, Greece d: Nov. 09, 1943</div>
-<div class="tree-entry gen-2 note">+Anthony George 'Tony' Fotos b: 
-Aug. 17, 1892 in Tenedos, Greece d: Oct. 03, 1970</div>
-<div class="tree-entry gen-3">Louis Fotos b: Private</div>
-<div class="tree-entry gen-3">Mary Fotos b: Private</div>
-<div class="tree-entry gen-3 note">4 George Anthony Fotos b: May 
-13, 1923 d: June 28, 2003</div>
-<div class="tree-entry gen-3">Helen Fotos b: Private</div>
-<div class="tree-entry gen-3 note">4 Kalliope 'Cleo' Fotos b: 
-Private</div>
-<div class="tree-entry gen-3">Anthony Fotos b: Private</div>
-<div class="tree-entry gen-3 note">4 Vasiliki 'Bessie' Fotos b: 
-Private</div>
-<div class="tree-entry gen-3">Angelia Fotos b: Private</div>
-<div class="tree-entry gen-3 note">4 Baby Boy Fotos b: November 
-09, 1943 d: November 09, 1943</div>
-<div class="tree-entry gen-3 note">3 Virginia Makras b: September 15, 
-1905 in Tenedos, Greece d: November 18, 1979</div>
-<div class="tree-entry gen-3 note">+Panagiotas 'Pete' Nicholas Demakes 
-b: Feb. 13, 1891 in Greece d: March 06, 1971</div>
-<div class="tree-entry gen-3 note">4 Theodora 'Dorothy' Demakes b: 
-Private</div>
-<div class="tree-entry gen-3 note">+Paul Adam Kessis b: 
-Private</div>
-<div class="tree-entry gen-3 note">5 David Kessis b: 
-Private</div>
-<div class="tree-entry gen-3 note">5 Nicholas Kessis b: 
-Private</div>
-<div class="tree-entry gen-3 note">5 Virginia Kessis b: 
-Private</div>
-<div class="tree-entry gen-3 note">+ Mark Emroll b: 
-Private</div>
-<div class="tree-entry gen-3 note">6 Maria Emroll b: 
-Private</div>
-<div class="tree-entry gen-3 note">6 Thea Emroll b: 
-Private</div>
-<div class="tree-entry gen-3 note">4 Kalliope 'Cleo' Demakes b: 
-Private</div>
-<div class="tree-entry gen-3 note">+Clayton 'Jack' Miller b: 
-Private</div>
-<div class="tree-entry gen-3 note">5 Hillary Miller b: 
-Private</div>
-<div class="tree-entry gen-3 note">+ Daniel Stevenson b: 
-Private</div>
-<div class="tree-entry gen-3 note">5 Peter Miller b: 
-Private</div>
-<div class="tree-entry gen-3 note">4 Christos P. Demakes b: 
-November 19, 1940 d: March 19, 2008</div>
-<div class="tree-entry gen-3 note">+Asimina 'Mina' Karlos b: 
-Private</div>
-<div class="tree-entry gen-3 note">3 Efstratios 'Steve' George Makras b: 
-July 02, 1909 in Tenedos, Greece d: Mar 31, 1971</div>
-<div class="tree-entry gen-3 spouse">+ Maurine b: Unknown</div>
-<div class="tree-entry gen-3 note">*2nd Wife of Efstratios 'Steve' George 
-Makras:</div>
-<div class="tree-entry gen-3 spouse">+ Lucille b: Unknown</div>
-<div class="tree-entry gen-3">Stephanie Makras b: Private</div>
-<div class="tree-entry gen-3 note">*3rd Wife of Efstratios 'Steve' George 
-Makras:</div>
-<div class="tree-entry gen-3 spouse">+ Grace Eileen Roberts b: Private</div>
-<div class="tree-entry gen-3">Georgette Makras b: Private</div>
-<div class="tree-entry gen-3 note">+Virgil 'Ray' Howser b: 
-Private</div>
-<div class="tree-entry gen-3 note">5 Matthew Ray Howser b: 
-Private</div>
-<div class="tree-entry gen-3 note">5 Frankie Howard Howser 
-b: Private</div>
-<div class="tree-entry gen-3">Melody Ruth Makras b: Private</div>
-<div class="tree-entry gen-3 spouse">+ Walter Gray b: Private</div>
-<div class="tree-entry gen-3 note">5 Rebecca Grace Gray b: 
-Private</div>
-<div class="tree-entry gen-3 note">5 Christopher Walter 
-Gray b: Private</div>
-<div class="tree-entry gen-3 note">4 Clarissa Janice Makras b: 
-Private</div>
-<div class="tree-entry gen-3 note">+Donnie Lawrence Arthur b: 
-Private</div>
-<div class="tree-entry gen-3 note">5 Krissa Dawn Arthur b: 
-Private</div>
-<div class="tree-entry gen-3 note">5 Shannon Sharee Arthur 
-b: Private</div>
-<div class="tree-entry gen-3 note">5 Nicholas Donnie 
-Arthur b: Private</div>
-<div class="tree-entry gen-3 note">3 James 'Jim' George Makras b: March 
-06, 1917  d: April 05, 1983</div>
-<div class="tree-entry gen-3 note">+Marjorie Woolery b: June 07, 1920  
-d: Unknown</div>
-<div class="tree-entry gen-3 note">4 Nicholas James Makras b: 
-Private</div>
-<div class="tree-entry gen-3 note">+Ellen Irene 'Rene' Coyle 
-b: Private</div>
-<div class="tree-entry gen-3 note">5 Lisa Rene Makras b: 
-Private</div>
-<div class="tree-entry gen-3 note">+James Edward Warren 
-b: Private</div>
-<div class="tree-entry gen-3 note">6 Robin Lynn 
-Warren b: Private</div>
-<div class="tree-entry gen-3 note">5 Nicole Jacinda Makras 
-b: Private</div>
-<div class="tree-entry gen-3 note">4 Michael Paul Makras b: 
-Private</div>
-<div class="tree-entry gen-3 note">+Joan Marie Smith b: 
-Private</div>
-<div class="tree-entry gen-3 note">5 Marcus Sian 'Mark' 
-Makras b: Private</div>
-<div class="tree-entry gen-3 note">*2nd Wife of James 'Jim' George Makras:</div>
-<div class="tree-entry gen-3 note">+Laura Jewell Bedford b: July 19, 
-1923 d: July 07, 1997</div>
-<div class="tree-entry gen-3">Paxton Dean Makras b: Private</div>
-<div class="tree-entry gen-3 note">+Tracy Lynne Kunkel b: 
-Private</div>
-<div class="tree-entry gen-3">Jamie Makras b: Private</div>
-<div class="tree-entry gen-3 note">3 Louis George Makras b: May 01, 1918  
-d: January 24, 1970</div>
-<div class="tree-entry gen-3 spouse">+ Helen b: Private</div>
-<div class="tree-entry gen-3 note">4 Patricia 'Pat' Makras b: 
-Private</div>
-<div class="tree-entry gen-3 note">*2nd Wife of Louis George Makras:</div>
-<div class="tree-entry gen-3 spouse">+ Jeanne b: Private</div>
-<div class="tree-entry gen-3">Mary Helen Makras b: Private</div>
-<div class="tree-entry gen-3 spouse">+ Gary Duncan b: Private</div>
-<div class="tree-entry gen-3">Stephen Makras b: Private</div>
-<div class="tree-entry gen-3 note">*3rd Wife of Louis George Makras:</div>
-<div class="tree-entry gen-3 spouse">+ Marlee b: Private</div>
-<div class="tree-entry gen-3 note">3 Marinos 'Mike' George Makras b: 
-November 05, 1919  d: March 06, 1977</div>
-<div class="tree-entry gen-3 note">+Katherine L. 'Kate' Herron b: 
-December 30, 1916  d: August 24, 2001</div>
-<div class="tree-entry gen-3 note">4 George S. Makras b: January 
-08, 1949  d: January 28, 1971</div>
-<div class="tree-entry gen-3">Bill Makras b: Private</div>
-<div class="tree-entry gen-3">Anita Makras b: Private</div>
-<div class="tree-entry gen-3">Paula Makras b: Private</div>
-<div class="tree-entry gen-3 note">3 Nicholas 'Nicky' George Makras b: 
-August 10, 1921  d: May 18, 1933</div>
-<div class="tree-entry gen-2">Helen George Makras b: Private</div>
-<div class="tree-entry gen-2 note">+Vasilios 'Bill' Antonios Nyktas b: 
-January 01, 1896  Greece d: April 21, 1951</div>
-<div class="tree-entry gen-2 note">4 Anthony William Nyktas b: 
-Private</div>
-<div class="tree-entry gen-2 spouse">+ Ann C. Beck b: Private</div>
-<div class="tree-entry gen-2 note">4 Kyriaki 'Kay' Nyktas b: 
-Private</div>
-<div class="tree-entry gen-2 note">+James Joseph Marcarello b: 
-Private</div>
-<div class="tree-entry gen-2 note">5 Alexis Marcarello b: 
-Private</div>
-<div class="tree-entry gen-2 note">5 Michael Vincent 
-Marcarello b: Private</div>
-<div class="tree-entry gen-2 note">5 William James 
-Marcarello b: Private</div>
-<div class="tree-entry gen-2 note">4 George William Nyktas b: 
-Private</div>
-<div class="tree-entry gen-2 spouse">+ Lynn Mae Jansen b: Private</div>
-<div class="tree-entry gen-2 note">5 Louis George Nyktas 
-b: Private</div>
-<div class="tree-entry gen-2 note">5 Stephen George Nyktas 
-b: Private</div>
-<div class="tree-entry gen-2 note">5 Timothy George Nyktas 
-b: Private</div>
-<div class="tree-entry gen-2 note">*2nd Husband of Helen George Makras:</div>
-<div class="tree-entry gen-2 spouse">+ Peter Wellman b: Private</div>
-<div class="tree-entry gen-2 note">3 Zoe George Makras b: November 03, 
-1924  d: November 09, 1992</div>
-<div class="tree-entry gen-2 note">+Panagiotis 'Peter' Nicholas 
-Gonatas b: Aug. 15, 1909 Greece  d: Nov. 26, 1977</div>
-<div class="tree-entry gen-2 note">4 Nicholas Panagiotis Gonatas 
-b: Private</div>
-<div class="tree-entry gen-2 note">+Patricia Askwright b: 
-Private</div>
-<div class="tree-entry gen-2 note">5 Nicholas N. Gonatas 
-b: Private</div>
-<div class="tree-entry gen-2 note">+Rachel A. b: 
-Private</div>
-<div class="tree-entry gen-2 note">4 Dionsion 'Dennis' Panagiotis 
-Gonatas b: December 28, 1948  d: April 06, 2004</div>
-<div class="tree-entry gen-2 spouse">+ Linda b: Private</div>
-<div class="tree-entry gen-2 note">5 Panagiotis 'Peter' D. 
-Gonatas b: Private</div>
-<div class="tree-entry gen-2 note">5 Dionsion 'Little 
-Dennis' Gonatas b: Private</div>
-<div class="tree-entry gen-2 spouse">+ Shari J. b: Private</div>
-<div class="tree-entry gen-2 note">*2nd Wife of Dionsion 'Dennis' 
-Panagiotis Gonatas:</div>
-<div class="tree-entry gen-2 spouse">+ Gaye M. b: Private</div>
-<div class="tree-entry gen-2 note">___________________________________________________________________________________</div>
-<div class="tree-entry gen-2 note">-----------------------------------------------------------------------------------------------------------------------------</div>
-<div class="tree-entry gen-2 note">1 Christo Kalfametrios b: Unknown in Tenedos, Greece 
-d: Unknown</div>
-<div class="tree-entry gen-2 spouse">+ Despina b: Unknown d: Unknown</div>
-<div class="tree-entry gen-2 note">2 Hareklia Kalfametrios b: 1896 in Tenedos, 
-Greece d: February 1967</div>
-<div class="tree-entry gen-2 note">+John C. Cherpas b: August 10, 1889 in 
-Tenedos, Greece d: July 05, 1965</div>
-<div class="tree-entry gen-2">Christina J. Cherpas b: Private</div>
-<div class="tree-entry gen-2 note">+Michael Anthony Skulas b: April 
-18, 1923  d: April 20, 2007</div>
-<div class="tree-entry gen-2 note">4 Dr. Irene Michelle Skulas,  
-b: Private</div>
-<div class="tree-entry gen-2 note">4 Martin Christopher Skulas b: 
-Private</div>
-<div class="tree-entry gen-2 note">+Diane Susan Beach b: 
-Private</div>
-<div class="tree-entry gen-2 note">5 Matthew Karl Skulas 
-b: Private</div>
-<div class="tree-entry gen-2 note">+Debra J. Pesetski 
-b: 1978</div>
-<div class="tree-entry gen-2 note">6 Mitchel 
-Anthony Skulas b: Private</div>
-<div class="tree-entry gen-4">Ann Skulas b: Private</div>
-<div class="tree-entry gen-4 note">4 Myron Andrew Skulas, Dr. b: 
-Private</div>
-<div class="tree-entry gen-4 note">+Diane Marie Thornton b: 
-October 20, 1950  d: October 12, 2005</div>
-<div class="tree-entry gen-4 note">5 Mark A. Skulas b: 
-Private</div>
-<div class="tree-entry gen-4 note">5 Paul Andrew Skulas b: 
-Private</div>
-<div class="tree-entry gen-4 note">3 Anthony J. 'Tony' Cherpas b: January 
-20, 1923  d: January 16, 2001</div>
-<div class="tree-entry gen-4 spouse">+ Athena Sideris b: Private</div>
-<div class="tree-entry gen-3">Patti Ann Cherpas b: Private</div>
-<div class="tree-entry gen-3 note">+Paul E. Mendenhall b: 
-Private</div>
-<div class="tree-entry gen-3 note">5 Nicholas Mendenhall  
-b: Private</div>
-<div class="tree-entry gen-3 note">5 Hali Mendenhall  
-b: Private</div>
-<div class="tree-entry gen-3">Janice Cherpas b: Private</div>
-<div class="tree-entry gen-3 spouse">+ Robert Gigli b: Private</div>
-<div class="tree-entry gen-1">Katerina Kalfametrios b: Private</div>
-<div class="tree-entry gen-1 spouse">+ Unknown Husband b: Private</div>
-<div class="tree-entry gen-2">Anesti b: Private</div>
-<div class="tree-entry gen-2">Athanasi b: Private</div>
-
+  <div class="page-content tree-page">
+    <div class="tree-outer">
+      <div class="tree-legend">
+        <div class="legend-item"><div class="ls navy"></div> Ancestor</div>
+        <div class="legend-item"><div class="ls white"></div> Descendant</div>
+        <div class="legend-item"><div class="ls blue"></div> Spouse (married-in)</div>
+        <div class="legend-item"><div class="ls gray"></div> Living (private)</div>
+        <div class="legend-item" style="color:var(--color-gold,#c9a227);font-weight:700;font-size:1rem">&times;</div>&thinsp;Married
+        <div class="legend-item" style="font-size:.75rem;color:#999">Click a descendant card to collapse/expand</div>
+      </div>
+      <div class="tree-forest" id="forest"></div>
     </div>
   </div>
 </main>
@@ -382,11 +140,101 @@ b: Private</div>
       <a href="contact.html">Contact</a>
       <a href="not-recovered.html">Not Archived</a>
     </nav>
-    <p class="footer-copy">
-      Original content &copy; Tenedian Brotherhood. Website restored and modernized from archived materials.
-    </p>
+    <p class="footer-copy">Original content &copy; Tenedian Brotherhood.
+      Website restored and modernized from archived materials.</p>
   </div>
 </footer>
 
+<script>
+var TREES = [{"id":"p1","name":"Ilias 'Louis' Kalfamitrios","m":[{"sp":{"id":"p2","name":"Marigo","birth":"Abt. 1850","death":"in Tenedos, Greece"},"kids":[{"id":"p3","name":"Dimitrios L. Kalfamitrios","m":[{"sp":{"id":"p4","name":"Sophia Zambokou","birth":"Unknown"},"kids":[{"id":"p5","name":"Ioulia 'Julia' Kalfamitrios","m":[{"sp":{"id":"p6","name":"George Fokianou","birth":"Unknown","death":"Unknown"},"kids":[{"id":"p7","name":"Andonios Fokianou","m":[],"birth":"Unknown","death":"Unknown"}]}],"birth":"1914","death":"Unknown"},{"id":"p8","name":"Fotini Kalfamitrios","m":[{"sp":{"id":"p9","name":"Fotios Lagos","priv":true},"kids":[{"id":"p10","name":"Helen Lagos","m":[],"priv":true},{"id":"p11","name":"George F. Lagos","m":[],"priv":true},{"id":"p12","name":"Sophia Lagos","m":[{"sp":{"id":"p13","name":"Apostolos E. Penessis","priv":true},"kids":[{"id":"p14","name":"Efthemios A. Penessis","m":[],"priv":true},{"id":"p15","name":"Fotini Penessis","m":[],"priv":true}]}],"priv":true},{"id":"p16","name":"Daphne Lagos","m":[],"priv":true},{"id":"p17","name":"Penelope 'Pizza' Lagos","m":[{"sp":{"id":"p18","name":"Ignatios T. Klironomos","priv":true},"kids":[{"id":"p19","name":"Themistclos I. Klironomos","m":[],"priv":true},{"id":"p20","name":"Fotios I. Klironomos","m":[],"priv":true}]}],"priv":true}]}],"death":"Unknown","priv":true}]}],"birth":"Abt. 1875"},{"id":"p21","name":"Helen Kalfamitrios","m":[{"sp":{"id":"p22","name":"Unknown Husband","birth":"Unknown","death":"Unknown"},"kids":[{"id":"p23","name":"Constantine","m":[],"birth":"Unknown"},{"id":"p24","name":"Nicholas","m":[],"birth":"Unknown"},{"id":"p25","name":"Athanas","m":[],"birth":"Unknown"},{"id":"p26","name":"Maria","m":[],"birth":"Unknown"}]}],"birth":"Abt. 1877","death":"Unknown"},{"id":"p27","name":"George Ilias Kalfamitrios / Makras","m":[{"sp":{"id":"p28","name":"Kalliope Sarris","birth":"June 24, 1883","death":"February 19, 1943"},"kids":[{"id":"p29","name":"Panagiotas 'Peter' G. Makras","m":[{"sp":{"id":"p30","name":"Despina Sfakianos","birth":"July 02, 1908","death":"May 05, 1981"},"kids":[{"id":"p31","name":"Kalliope 'Clara' Peter Makras","m":[{"sp":{"id":"p32","name":"Constantine 'Gus' (Hatziconstantinou) Denos","birth":"March 06, 1927","death":"June 28, 1992"},"kids":[{"id":"p33","name":"Demetrios 'James' Denos","m":[],"priv":true},{"id":"p34","name":"Argero 'Gloria' Denos","m":[],"priv":true},{"id":"p35","name":"Panagiotis 'Peter' Denos","m":[],"priv":true}]},{"sp":{"id":"p36","name":"Troy Upton","birth":"December 20, 1919","death":"June 06, 1991"},"kids":[],"label":"2nd marriage"}],"priv":true},{"id":"p37","name":"George Peter Makras","m":[{"sp":{"id":"p38","name":"Nancy Cook","priv":true},"kids":[{"id":"p39","name":"Joseph Makras","m":[],"priv":true}]},{"sp":{"id":"p40","name":"Constance Louise 'Connie'","priv":true},"kids":[{"id":"p41","name":"George A. Makras","m":[],"priv":true},{"id":"p42","name":"Michael J. Makras","m":[],"priv":true},{"id":"p43","name":"Melissa M. Makras","m":[],"priv":true}],"label":"2nd marriage"}],"priv":true},{"id":"p44","name":"Achilles 'Ike' Peter Makras","m":[{"sp":{"id":"p45","name":"Fotini 'Tulla' Kantaras","priv":true},"kids":[{"id":"p46","name":"Peter Makras","m":[],"priv":true},{"id":"p47","name":"Maria Despina Makras","m":[],"priv":true}]}],"priv":true}]}],"birth":"Sept. 28, 1903","death":"June 19, 1983"},{"id":"p48","name":"Aspasia 'Anna' Makras","m":[{"sp":{"id":"p49","name":"Anthony George 'Tony' Fotos","birth":"Aug. 17, 1892","death":"Oct. 03, 1970"},"kids":[{"id":"p50","name":"Louis Fotos","m":[],"priv":true},{"id":"p51","name":"Mary Fotos","m":[],"priv":true},{"id":"p52","name":"George Anthony Fotos","m":[],"birth":"May 13, 1923","death":"June 28, 2003"},{"id":"p53","name":"Helen Fotos","m":[],"priv":true},{"id":"p54","name":"Kalliope 'Cleo' Fotos","m":[],"priv":true},{"id":"p55","name":"Anthony Fotos","m":[],"priv":true},{"id":"p56","name":"Vasiliki 'Bessie' Fotos","m":[],"priv":true},{"id":"p57","name":"Angelia Fotos","m":[],"priv":true},{"id":"p58","name":"Baby Boy Fotos","m":[],"birth":"November 09, 1943","death":"November 09, 1943"}]}],"birth":"February 02, 1902","death":"Nov. 09, 1943"},{"id":"p59","name":"Virginia Makras","m":[{"sp":{"id":"p60","name":"Panagiotas 'Pete' Nicholas Demakes","birth":"Feb. 13, 1891","death":"March 06, 1971"},"kids":[{"id":"p61","name":"Theodora 'Dorothy' Demakes","m":[{"sp":{"id":"p62","name":"Paul Adam Kessis","priv":true},"kids":[{"id":"p63","name":"David Kessis","m":[],"priv":true},{"id":"p64","name":"Nicholas Kessis","m":[],"priv":true},{"id":"p65","name":"Virginia Kessis","m":[{"sp":{"id":"p66","name":"Mark Emroll","priv":true},"kids":[{"id":"p67","name":"Maria Emroll","m":[],"priv":true},{"id":"p68","name":"Thea Emroll","m":[],"priv":true}]}],"priv":true}]}],"priv":true},{"id":"p69","name":"Kalliope 'Cleo' Demakes","m":[{"sp":{"id":"p70","name":"Clayton 'Jack' Miller","priv":true},"kids":[{"id":"p71","name":"Hillary Miller","m":[{"sp":{"id":"p72","name":"Daniel Stevenson","priv":true},"kids":[]}],"priv":true},{"id":"p73","name":"Peter Miller","m":[],"priv":true}]}],"priv":true},{"id":"p74","name":"Christos P. Demakes","m":[{"sp":{"id":"p75","name":"Asimina 'Mina' Karlos","priv":true},"kids":[]}],"birth":"November 19, 1940","death":"March 19, 2008"}]}],"birth":"September 15, 1905","death":"November 18, 1979"},{"id":"p76","name":"Efstratios 'Steve' George Makras","m":[{"sp":{"id":"p77","name":"Maurine","birth":"Unknown"},"kids":[]},{"sp":{"id":"p78","name":"Lucille","birth":"Unknown"},"kids":[{"id":"p79","name":"Stephanie Makras","m":[],"priv":true}],"label":"2nd marriage"},{"sp":{"id":"p80","name":"Grace Eileen Roberts","priv":true},"kids":[{"id":"p81","name":"Georgette Makras","m":[{"sp":{"id":"p82","name":"Virgil 'Ray' Howser","priv":true},"kids":[{"id":"p83","name":"Matthew Ray Howser","m":[],"priv":true},{"id":"p84","name":"Frankie Howard Howser","m":[],"priv":true}]}],"priv":true},{"id":"p85","name":"Melody Ruth Makras","m":[{"sp":{"id":"p86","name":"Walter Gray","priv":true},"kids":[{"id":"p87","name":"Rebecca Grace Gray","m":[],"priv":true},{"id":"p88","name":"Christopher Walter Gray","m":[],"priv":true}]}],"priv":true},{"id":"p89","name":"Clarissa Janice Makras","m":[{"sp":{"id":"p90","name":"Donnie Lawrence Arthur","priv":true},"kids":[{"id":"p91","name":"Krissa Dawn Arthur","m":[],"priv":true},{"id":"p92","name":"Shannon Sharee Arthur","m":[],"priv":true},{"id":"p93","name":"Nicholas Donnie Arthur","m":[],"priv":true}]}],"priv":true}],"label":"3rd marriage"}],"birth":"July 02, 1909","death":"Mar 31, 1971"},{"id":"p94","name":"James 'Jim' George Makras","m":[{"sp":{"id":"p95","name":"Marjorie Woolery","birth":"June 07, 1920","death":"Unknown"},"kids":[{"id":"p96","name":"Nicholas James Makras","m":[{"sp":{"id":"p97","name":"Ellen Irene 'Rene' Coyle","priv":true},"kids":[{"id":"p98","name":"Lisa Rene Makras","m":[{"sp":{"id":"p99","name":"James Edward Warren","priv":true},"kids":[{"id":"p100","name":"Robin Lynn Warren","m":[],"priv":true}]}],"priv":true},{"id":"p101","name":"Nicole Jacinda Makras","m":[],"priv":true}]}],"priv":true},{"id":"p102","name":"Michael Paul Makras","m":[{"sp":{"id":"p103","name":"Joan Marie Smith","priv":true},"kids":[{"id":"p104","name":"Marcus Sian 'Mark' Makras","m":[],"priv":true}]}],"priv":true}]},{"sp":{"id":"p105","name":"Laura Jewell Bedford","birth":"July 19, 1923","death":"July 07, 1997"},"kids":[{"id":"p106","name":"Paxton Dean Makras","m":[{"sp":{"id":"p107","name":"Tracy Lynne Kunkel","priv":true},"kids":[]}],"priv":true},{"id":"p108","name":"Jamie Makras","m":[],"priv":true}],"label":"2nd marriage"}],"birth":"March 06, 1917","death":"April 05, 1983"},{"id":"p109","name":"Louis George Makras","m":[{"sp":{"id":"p110","name":"Helen","priv":true},"kids":[{"id":"p111","name":"Patricia 'Pat' Makras","m":[],"priv":true}]},{"sp":{"id":"p112","name":"Jeanne","priv":true},"kids":[{"id":"p113","name":"Mary Helen Makras","m":[{"sp":{"id":"p114","name":"Gary Duncan","priv":true},"kids":[]}],"priv":true},{"id":"p115","name":"Stephen Makras","m":[],"priv":true}],"label":"2nd marriage"},{"sp":{"id":"p116","name":"Marlee","priv":true},"kids":[],"label":"3rd marriage"}],"birth":"May 01, 1918","death":"January 24, 1970"},{"id":"p117","name":"Marinos 'Mike' George Makras","m":[{"sp":{"id":"p118","name":"Katherine L. 'Kate' Herron","birth":"December 30, 1916","death":"August 24, 2001"},"kids":[{"id":"p119","name":"George S. Makras","m":[],"birth":"January 08, 1949","death":"January 28, 1971"},{"id":"p120","name":"Bill Makras","m":[],"priv":true},{"id":"p121","name":"Anita Makras","m":[],"priv":true},{"id":"p122","name":"Paula Makras","m":[],"priv":true}]}],"birth":"November 05, 1919","death":"March 06, 1977"},{"id":"p123","name":"Nicholas 'Nicky' George Makras","m":[],"birth":"August 10, 1921","death":"May 18, 1933"},{"id":"p124","name":"Helen George Makras","m":[{"sp":{"id":"p125","name":"Vasilios 'Bill' Antonios Nyktas","birth":"January 01, 1896 Greece","death":"April 21, 1951"},"kids":[{"id":"p126","name":"Anthony William Nyktas","m":[{"sp":{"id":"p127","name":"Ann C. Beck","priv":true},"kids":[]}],"priv":true},{"id":"p128","name":"Kyriaki 'Kay' Nyktas","m":[{"sp":{"id":"p129","name":"James Joseph Marcarello","priv":true},"kids":[{"id":"p130","name":"Alexis Marcarello","m":[],"priv":true},{"id":"p131","name":"Michael Vincent Marcarello","m":[],"priv":true},{"id":"p132","name":"William James Marcarello","m":[],"priv":true}]}],"priv":true},{"id":"p133","name":"George William Nyktas","m":[{"sp":{"id":"p134","name":"Lynn Mae Jansen","priv":true},"kids":[{"id":"p135","name":"Louis George Nyktas","m":[],"priv":true},{"id":"p136","name":"Stephen George Nyktas","m":[],"priv":true},{"id":"p137","name":"Timothy George Nyktas","m":[],"priv":true}]}],"priv":true}]},{"sp":{"id":"p138","name":"Peter Wellman","priv":true},"kids":[],"label":"2nd marriage"}],"priv":true},{"id":"p139","name":"Zoe George Makras","m":[{"sp":{"id":"p140","name":"Panagiotis 'Peter' Nicholas Gonatas","birth":"Aug. 15, 1909 Greece","death":"Nov. 26, 1977"},"kids":[{"id":"p141","name":"Nicholas Panagiotis Gonatas","m":[{"sp":{"id":"p142","name":"Patricia Askwright","priv":true},"kids":[{"id":"p143","name":"Nicholas N. Gonatas","m":[{"sp":{"id":"p144","name":"Rachel A.","priv":true},"kids":[]}],"priv":true}]}],"priv":true},{"id":"p145","name":"Dionsion 'Dennis' Panagiotis Gonatas","m":[{"sp":{"id":"p146","name":"Linda","priv":true},"kids":[{"id":"p147","name":"Panagiotis 'Peter' D. Gonatas","m":[],"death":"Gonatas b: Private","priv":true},{"id":"p148","name":"Dionsion 'Little Dennis' Gonatas","m":[{"sp":{"id":"p149","name":"Shari J.","priv":true},"kids":[]}],"priv":true}]},{"sp":{"id":"p150","name":"Gaye M.","priv":true},"kids":[],"label":"2nd marriage"}],"birth":"December 28, 1948","death":"April 06, 2004"}]}],"birth":"November 03, 1924","death":"November 09, 1992"}]}],"birth":"February 1879","death":"May 06, 1947"}]}],"birth":"Abt. 1845","death":"in Tenedos, Greece"},{"id":"p151","name":"Christo Kalfametrios","m":[{"sp":{"id":"p152","name":"Despina","birth":"Unknown","death":"Unknown"},"kids":[{"id":"p153","name":"Hareklia Kalfametrios","m":[{"sp":{"id":"p154","name":"John C. Cherpas","birth":"August 10, 1889","death":"July 05, 1965"},"kids":[{"id":"p155","name":"Christina J. Cherpas","m":[{"sp":{"id":"p156","name":"Michael Anthony Skulas","birth":"April 18, 1923","death":"April 20, 2007"},"kids":[{"id":"p157","name":"Dr. Irene Michelle Skulas,","m":[],"priv":true},{"id":"p158","name":"Martin Christopher Skulas","m":[{"sp":{"id":"p159","name":"Diane Susan Beach","priv":true},"kids":[{"id":"p160","name":"Matthew Karl Skulas","m":[{"sp":{"id":"p161","name":"Debra J. Pesetski","birth":"1978","priv":true},"kids":[{"id":"p162","name":"Mitchel Anthony Skulas","m":[],"priv":true}]}],"priv":true},{"id":"p163","name":"Ann Skulas","m":[],"priv":true}]}],"priv":true},{"id":"p164","name":"Myron Andrew Skulas, Dr.","m":[{"sp":{"id":"p165","name":"Diane Marie Thornton","birth":"October 20, 1950","death":"October 12, 2005"},"kids":[{"id":"p166","name":"Mark A. Skulas","m":[],"priv":true},{"id":"p167","name":"Paul Andrew Skulas","m":[],"priv":true}]}],"priv":true}]}],"priv":true},{"id":"p168","name":"Anthony J. 'Tony' Cherpas","m":[{"sp":{"id":"p169","name":"Athena Sideris","priv":true},"kids":[{"id":"p170","name":"Patti Ann Cherpas","m":[{"sp":{"id":"p171","name":"Paul E. Mendenhall","priv":true},"kids":[{"id":"p172","name":"Nicholas Mendenhall","m":[],"priv":true},{"id":"p173","name":"Hali Mendenhall","m":[],"priv":true}]}],"priv":true},{"id":"p174","name":"Janice Cherpas","m":[{"sp":{"id":"p175","name":"Robert Gigli","priv":true},"kids":[]}],"priv":true}]}],"birth":"January 20, 1923","death":"January 16, 2001"}]}],"birth":"1896","death":"February 1967"},{"id":"p176","name":"Katerina Kalfametrios","m":[{"sp":{"id":"p177","name":"Unknown Husband","priv":true},"kids":[{"id":"p178","name":"Anesti","m":[],"priv":true},{"id":"p179","name":"Athanasi","m":[],"priv":true}]}],"priv":true}]}],"birth":"Unknown","death":"Unknown"}];
+var TREE_TITLES = ["Descendants of Ilias 'Louis' Kalfamitrios","Descendants of Christo Kalfametrios"];
+function makeCard(p, cls) {
+  var div = document.createElement('div');
+  div.className = 'card ' + (cls || '');
+  var n = document.createElement('span'); n.className = 'n';
+  n.textContent = p.name; div.appendChild(n);
+  var parts = [];
+  if (p.birth) parts.push('b. ' + p.birth);
+  if (p.death) parts.push('d. ' + p.death);
+  if (p.priv && !p.birth && !p.death) parts.push('Living');
+  if (parts.length) {
+    var d = document.createElement('span'); d.className = 'd';
+    d.textContent = parts.join('  ·  '); div.appendChild(d);
+  }
+  return div;
+}
+
+function renderNode(p, gen) {
+  var wrapper = document.createElement('div'); wrapper.className = 'tree-node';
+  var body = document.createElement('div'); body.className = 'node-body';
+  var marriages = p.m || [];
+  var allKids = [];
+  for (var i = 0; i < marriages.length; i++) {
+    var ks = marriages[i].kids || [];
+    for (var j = 0; j < ks.length; j++) allKids.push(ks[j]);
+  }
+  var cls = gen === 0 ? 'root' : (p.priv ? 'priv' : '');
+  if (allKids.length) cls += (cls ? ' ' : '') + 'collapsible';
+  var mc = makeCard(p, cls);
+  if (marriages.length > 0) {
+    var row = document.createElement('div'); row.className = 'couple-row';
+    row.appendChild(mc);
+    if (marriages[0].sp) {
+      var dot = document.createElement('span'); dot.className = 'cx';
+      dot.textContent = '×'; row.appendChild(dot);
+      var spCls = 'spouse' + (marriages[0].sp.priv ? ' priv' : '');
+      row.appendChild(makeCard(marriages[0].sp, spCls));
+    }
+    body.appendChild(row);
+    for (var mi = 1; mi < marriages.length; mi++) {
+      var mg = marriages[mi];
+      if (mg.label) {
+        var lbl = document.createElement('div'); lbl.className = 'remarriage-lbl';
+        lbl.textContent = mg.label + ':'; body.appendChild(lbl);
+      }
+      if (mg.sp) {
+        var r2 = document.createElement('div'); r2.className = 'couple-row';
+        var ph = document.createElement('div'); ph.style.cssText = 'width:148px;flex-shrink:0;';
+        r2.appendChild(ph);
+        var d2 = document.createElement('span'); d2.className = 'cx';
+        d2.textContent = '×'; r2.appendChild(d2);
+        var sp2Cls = 'spouse' + (mg.sp.priv ? ' priv' : '');
+        r2.appendChild(makeCard(mg.sp, sp2Cls)); body.appendChild(r2);
+      }
+    }
+  } else {
+    var soloRow = document.createElement('div'); soloRow.className = 'couple-row';
+    soloRow.appendChild(mc); body.appendChild(soloRow);
+  }
+  wrapper.appendChild(body);
+  if (allKids.length) {
+    wrapper.classList.add('has-ch');
+    var cr = document.createElement('div'); cr.className = 'tree-children';
+    for (var ki = 0; ki < allKids.length; ki++) cr.appendChild(renderNode(allKids[ki], gen + 1));
+    wrapper.appendChild(cr);
+    mc.addEventListener('click', (function(nd) {
+      return function(e) { e.stopPropagation(); nd.classList.toggle('closed'); };
+    }(wrapper)));
+  }
+  return wrapper;
+}
+
+function buildSection(title, data, showTitle) {
+  var sec = document.createElement('div'); sec.className = 'tree-section';
+  if (showTitle) {
+    var h = document.createElement('h2'); h.className = 'tree-section-heading';
+    h.textContent = title; sec.appendChild(h);
+  }
+  var root = document.createElement('div'); root.className = 'tree-root';
+  root.appendChild(renderNode(data, 0)); sec.appendChild(root);
+  return sec;
+}
+
+var forest = document.getElementById('forest');
+var multiTree = TREES.length > 1;
+for (var ti = 0; ti < TREES.length; ti++) {
+  forest.appendChild(buildSection(TREE_TITLES[ti], TREES[ti], multiTree));
+}
+</script>
 </body>
 </html>

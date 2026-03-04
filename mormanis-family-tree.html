@@ -3,8 +3,88 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Mormanis — Tenedian Brotherhood</title>
+  <title>Mormanis Family — Tenedian Brotherhood</title>
   <link rel="stylesheet" href="css/style.css">
+  <style>
+    .tree-page { padding: 0; }
+    .tree-outer { overflow-x: auto; padding: 2.5rem 1.5rem 3rem;
+                  background: var(--color-off-white, #f8f5f0); }
+    .tree-forest { display: flex; flex-direction: column; gap: 3.5rem; }
+    .tree-section-heading {
+      font-family: var(--font-heading, 'Playfair Display', serif);
+      color: var(--color-navy, #0a1628); font-size: 1.2rem;
+      margin: 0 0 1.25rem; padding-bottom: 0.4rem;
+      border-bottom: 2px solid var(--color-gold, #c9a227); }
+    .tree-legend { display: flex; gap: 1.2rem; flex-wrap: wrap;
+                   margin-bottom: 2rem; font-size: 0.8rem; color: #555;
+                   align-items: center; }
+    .legend-item { display: flex; align-items: center; gap: 5px; }
+    .ls { width: 20px; height: 13px; border-radius: 3px;
+          border: 2px solid var(--color-gold, #c9a227);
+          display: inline-block; flex-shrink: 0; }
+    .ls.navy  { background: var(--color-navy, #0a1628); }
+    .ls.white { background: #fff; }
+    .ls.blue  { background: #dce8ff; border-color: #6888cc; }
+    .ls.gray  { background: #eee; border-color: #bbb; }
+    /* Tree layout */
+    .tree-section { overflow-x: auto; padding-bottom: 0.5rem; }
+    .tree-root { display: inline-flex; flex-direction: column;
+                 align-items: center; padding: 0.5rem 1rem; }
+    .tree-node { display: flex; flex-direction: column; align-items: center;
+                 position: relative; }
+    .node-body { display: flex; flex-direction: column; align-items: center;
+                 gap: 3px; position: relative; }
+    .couple-row { display: flex; align-items: center; gap: 5px; }
+    .cx { color: var(--color-gold, #c9a227); font-weight: 700; font-size: 1rem;
+          padding: 0 2px; flex-shrink: 0; }
+    .remarriage-lbl { font-size: 0.65rem; color: #999; font-style: italic;
+                      text-align: center; margin-top: 5px; }
+    /* Cards */
+    .card { background: #fff; border: 2px solid var(--color-gold, #c9a227);
+            border-radius: 6px; padding: 7px 10px; width: 148px;
+            text-align: center; font-size: 0.74rem; line-height: 1.35;
+            position: relative; }
+    .card .n { font-weight: 700; color: var(--color-navy, #0a1628);
+               display: block; font-size: 0.78rem; }
+    .card .d { color: #888; font-size: 0.67rem; display: block; margin-top: 2px; }
+    .card.root { background: var(--color-navy, #0a1628);
+                 border-color: var(--color-gold, #c9a227); }
+    .card.root .n { color: var(--color-gold, #c9a227); }
+    .card.root .d { color: #99aabb; }
+    .card.spouse { background: #dce8ff; border-color: #6888cc; }
+    .card.spouse .n { color: #1a3a80; }
+    .card.priv  { background: #eee; border-color: #bbb; }
+    .card.priv .n { color: #666; }
+    .card.priv .d { color: #aaa; }
+    .card.collapsible { cursor: pointer; }
+    .card.collapsible::after { content: '\25BE'; position: absolute;
+      bottom: 3px; right: 5px; font-size: 0.6rem;
+      color: var(--color-gold, #c9a227); }
+    .tree-node.closed > .node-body .card.collapsible::after { content: '\25B8'; }
+    /* Connector lines (CSS pseudo-elements) */
+    :root { --gap: 44px; }
+    .tree-node.has-ch > .node-body::after {
+      content: ''; position: absolute; left: 50%; transform: translateX(-50%);
+      top: 100%; width: 2px; height: var(--gap);
+      background: var(--color-gold, #c9a227); }
+    .tree-children { display: flex; flex-direction: row; gap: 14px;
+                     align-items: flex-start; justify-content: center;
+                     margin-top: var(--gap); }
+    .tree-node.closed > .node-body::after  { display: none !important; }
+    .tree-node.closed > .tree-children     { display: none !important; }
+    .tree-children > .tree-node { position: relative; }
+    .tree-children > .tree-node::before {
+      content: ''; position: absolute; left: 50%; transform: translateX(-50%);
+      top: calc(-1 * var(--gap)); width: 2px; height: var(--gap);
+      background: var(--color-gold, #c9a227); }
+    .tree-children > .tree-node::after {
+      content: ''; position: absolute; top: calc(-1 * var(--gap));
+      left: 0; right: 0; height: 2px;
+      background: var(--color-gold, #c9a227); }
+    .tree-children > .tree-node:first-child::after  { left: 50%; }
+    .tree-children > .tree-node:last-child::after   { right: 50%; }
+    .tree-children > .tree-node:first-child:last-child::after { display: none; }
+  </style>
 </head>
 <body>
 
@@ -29,385 +109,22 @@
 <main>
   <header class="page-header">
     <div class="page-header-inner">
-      <h1 class="page-title">Mormanis</h1>
-      <p class="page-subtitle"><a href="family-trees.html" style="color:rgba(255,255,255,.6); font-size:.85rem;">&larr; Back to Family Trees</a></p>
+      <h1 class="page-title">Mormanis Family</h1>
+      <p class="page-subtitle"><a href="family-trees.html" style="color:rgba(255,255,255,.65);font-size:.85rem;">&larr; Back to Family Trees</a></p>
     </div>
   </header>
 
-  <div class="page-content">
-    <div class="privacy-notice">
-      <strong>Privacy notice:</strong> Per the original website policy, birth dates are not
-      disclosed for individuals born after 1920 unless they are deceased.
-    </div>
-
-    <div class="family-tree-content">
-<div class="tree-entry gen-0 note">Mormanis / Morris Family</div>
-<div class="tree-entry gen-0 note">NOTE: There are 4 different Mormanis / 
-Morris families listed here. I do not know if or how they are related.</div>
-<div class="tree-entry gen-0">Anastasios Mormanis b: Unknown</div>
-<div class="tree-entry gen-0 spouse">+ Susanna Mavrothetis  b: Unknown</div>
-<div class="tree-entry gen-0 note">2 Demetrios A. 'James' Mormanis b: August 09, 1888 in Tenedos d: Oct. 
-20, 1967</div>
-<div class="tree-entry gen-0 note">+Zaharo Gerinakis b: December 14, 1888 in Tenedos d: January 06, 
-1965</div>
-<div class="tree-entry gen-0 note">3 Anastasia 'Anna' Mormanis b: August 16, 1915  d: 
-January 11, 2009</div>
-<div class="tree-entry gen-0 spouse">+ George Jeffries b: August 14, 1914 d: February 29, 2004</div>
-<div class="tree-entry gen-3">Christopher George Jeffries b:  Private</div>
-<div class="tree-entry gen-3">Thomas George Jeffries b:  Private</div>
-<div class="tree-entry gen-2">Kris D. Mormanis b: Mar 24, 1917  d: May 26, 1944  (W.W. II)</div>
-<div class="tree-entry gen-2">Kaliope Mormanis b: December 31, 1918 d: June 20, 1919</div>
-<div class="tree-entry gen-2">Kaliope 'Kobe' Mormanis b: Private</div>
-<div class="tree-entry gen-2 spouse">+ Wendall Meadows b: Private</div>
-<div class="tree-entry gen-3">Katherine Elaine Meadows b: Private</div>
-<div class="tree-entry gen-3">Daniel James Meadows b: Private</div>
-<div class="tree-entry gen-3 note">3 Alexandria 'Alex' Mormanis b: August 15, 1923  d: May 
-23, 1996</div>
-<div class="tree-entry gen-3 note">3 Evangelos D. 'Angelo' Mormanis b: October 20, 1925  d: 
-July 29, 1936</div>
-<div class="tree-entry gen-1">Elaine A. Mormanis b: Unknown in Tenedos, Greece</div>
-<div class="tree-entry gen-1 spouse">+ Vasili Leondarides b: Unknown in Tenedos, Greece</div>
-<div class="tree-entry gen-2">Harriett Leondarides b: Abt. 1915</div>
-<div class="tree-entry gen-2 spouse">+ George Radoulouvich  b: Unknown</div>
-<div class="tree-entry gen-2">Anastacia Leondarides b: 1916 d: 2005</div>
-<div class="tree-entry gen-2 spouse">+ Costas Zissimopoulos  b: Unknown</div>
-<div class="tree-entry gen-2">Dimitri Leondarides b: April 26, 1920 in Limnos,Greece</div>
-<div class="tree-entry gen-2 spouse">+ Marcelle A.  b: Private</div>
-<div class="tree-entry gen-3">Alain Dimitri Leondarides b: Private</div>
-<div class="tree-entry gen-3 spouse">+ Lisa A. Krusina b: Private</div>
-<div class="tree-entry gen-4">Nick Leondarides  b: Private</div>
-<div class="tree-entry gen-4">Joey Leondarides  b: Private</div>
-<div class="tree-entry gen-2">Vasiliki Leondarides  b: Private</div>
-<div class="tree-entry gen-2 spouse">+ Anthony Mack b: Private</div>
-<div class="tree-entry gen-2">Sousianna Leondarides  b: Private</div>
-<div class="tree-entry gen-2 spouse">+ George Bonfor d: Abt. 2005</div>
-<div class="tree-entry gen-1">George A. Mormanis b: August 1892 in Tenedos, Greece</div>
-<div class="tree-entry gen-1 note">2 John A. Mormanis / Morris b: March 01, 1895 in Tenedos  d: 
-June 02, 1955</div>
-<div class="tree-entry gen-1 note">+Stylini 'Stella' Sfakianos b: April 02, 1904 in Tenedos  d: 
-June 26, 1973</div>
-<div class="tree-entry gen-2">Anesti J. 'Ernest' Morris  b: Private</div>
-<div class="tree-entry gen-2 spouse">+ Stella Nicholas b: Private</div>
-<div class="tree-entry gen-2 note">*2nd Wife of Anesti J. 'Ernest' Morris:</div>
-<div class="tree-entry gen-2 spouse">+ Doreen Smith  b: Private</div>
-<div class="tree-entry gen-2">Theodore J. Morris  b: Private</div>
-<div class="tree-entry gen-2 spouse">+ Charlotte F. Schnieder b: April 24, 1928 d: May 29, 1994</div>
-<div class="tree-entry gen-2 note">*2nd Wife of Theodore J. Morris:</div>
-<div class="tree-entry gen-2 spouse">+ Mandy C. Kersey b: Private</div>
-<div class="tree-entry gen-2 note">2 Zafera A. Mormanis b: January 10, 1898 in Tenedos d: March 
-30, 1989</div>
-<div class="tree-entry gen-2 note">+Alexandros 'Alex' N. Gangas b: April 14, 1887 in Tenedos 
-d: August 11, 1962</div>
-<div class="tree-entry gen-2">Katherine Gangas b: August 28, 1928  d: June 10, 1948</div>
-<div class="tree-entry gen-2">Nicholas Gangas  b: Private</div>
-<div class="tree-entry gen-2 spouse">+ Jeanne Allen  b: Private</div>
-<div class="tree-entry gen-3">Nicki Ekaterini Gangas  b: Private</div>
-<div class="tree-entry gen-3 spouse">+ Eugene J. Perry, Jr.  b: Private</div>
-<div class="tree-entry gen-3">Gregory Alexander Gangas  b: Private</div>
-<div class="tree-entry gen-3 spouse">+ Lana J. Duckett  b: Private</div>
-<div class="tree-entry gen-3 note">*2nd Wife of Gregory Alexander Gangas:</div>
-<div class="tree-entry gen-3 spouse">+ Jacklyn Lynn Ross  b: Private</div>
-<div class="tree-entry gen-4">Nickolas Ross Gangas  b: Private</div>
-<div class="tree-entry gen-2">Angelo Gangas  b: Private</div>
-<div class="tree-entry gen-1">Fotios 'Frank' A. Mormanis b: in Tenedos, Greece</div>
-<div class="tree-entry gen-0">Antonios Mormanis  b: Unknown</div>
-<div class="tree-entry gen-0 spouse">+ Eleni b: Unknown</div>
-<div class="tree-entry gen-1">Panagiotis 'Peter' Mormanis b: June 08, 1885 in Tenedos, Greece</div>
-<div class="tree-entry gen-1 spouse">+ Panagiota 'Pauline' Vasiliou b: 1896  d: May 18, 1971</div>
-<div class="tree-entry gen-1 note">3 Michael Angelo Mormanis b: November 28, 1921 d: June 23, 
-2003</div>
-<div class="tree-entry gen-1 spouse">+ Eileen Olszowy b: Unknown</div>
-<div class="tree-entry gen-2">Anthony Mormanis b: September 14, 1923 d: February 14, 2003</div>
-<div class="tree-entry gen-2 spouse">+ Athanasia Kokenes b: Private</div>
-<div class="tree-entry gen-2 note">3 Nicholas Mormanis b: December 11, 1925  d: April 22, 
-2008</div>
-<div class="tree-entry gen-2 spouse">+ Norma E. Danford  b: Private</div>
-<div class="tree-entry gen-3">Gregory N. Mormanis  b: Private</div>
-<div class="tree-entry gen-3 spouse">+ Sharon L.  b: Private</div>
-<div class="tree-entry gen-3">Brian Mormanis  b: Private</div>
-<div class="tree-entry gen-2">Katherine Mormanis  b: Private</div>
-<div class="tree-entry gen-2 spouse">+ Gus Gargalianos b: February 14, 1926 d: October 01, 1994</div>
-<div class="tree-entry gen-3">Angelo Lee Gargalianos  b: Private</div>
-<div class="tree-entry gen-2">George Mormanis b: March 30, 1930  d: November 06, 2008</div>
-<div class="tree-entry gen-2 spouse">+ Mary  b: Private</div>
-<div class="tree-entry gen-1">Despina Mormanis b: Unknown in Tenedos, Greece</div>
-<div class="tree-entry gen-1 spouse">+ Nicholas 'Nick' Mingos b: 1888 in Tenedos, Greece</div>
-<div class="tree-entry gen-2">Panayota Mingos b: Private in Tenedos, Greece</div>
-<div class="tree-entry gen-2 note">+Efstratios 'Steve' Marangos b: December 14, 1915 d: 
-February 27, 2000</div>
-<div class="tree-entry gen-3">Viryines 'Virginia' Marangos  b: Private</div>
-<div class="tree-entry gen-3 spouse">+ Dimitri Bubulya   b: Private in Tenedos</div>
-<div class="tree-entry gen-4">Athanasios 'Thomas' Bubulya  b: Private</div>
-<div class="tree-entry gen-4 spouse">+ Paula Sacco  b: Private</div>
-<div class="tree-entry gen-4">Anna Demetra Bubulya  b: Private</div>
-<div class="tree-entry gen-4">Efstratios 'Steve' Bubulya  b: Private</div>
-<div class="tree-entry gen-4 spouse">+ Dionysia Kalogeropoulos  b: Private</div>
-<div class="tree-entry gen-4">Dionysia Bubulya b: Private</div>
-<div class="tree-entry gen-3">Despina Marangos  b: Private in Tenedos</div>
-<div class="tree-entry gen-3 spouse">+ Basil 'Bill Apostolou  b: Private</div>
-<div class="tree-entry gen-4">Christopher Basil Apostolou  b: Private</div>
-<div class="tree-entry gen-4 note">+Juliana 'Julia' Louise Hanson  b: 
-Private</div>
-<div class="tree-entry gen-4 note">6 Evan Christopher Apostolou  b: 
-Private</div>
-<div class="tree-entry gen-4">Emily Rose Apostolou  b: Private</div>
-<div class="tree-entry gen-4 note">5 Panayota 'Paula' Marie Apostolou  b: 
-Private</div>
-<div class="tree-entry gen-4 spouse">+ Matthew Robert Yaniglos  b: Private</div>
-<div class="tree-entry gen-2">Eleni Mingos b: Private in Tenedos, Greece</div>
-<div class="tree-entry gen-2 spouse">+ Costa 'Con' Moukatas b: Private</div>
-<div class="tree-entry gen-1">George Mormanis b: 1894 d: January 02, 1929</div>
-<div class="tree-entry gen-1 note">+Komnini Triantafilos b: April 23, 1899 in Tenedos d: December 
-24, 1987</div>
-<div class="tree-entry gen-2">Gus County, Jr. b: September 12, 1924  d: October 01, 2007</div>
-<div class="tree-entry gen-2 spouse">+ Kalliope Elane Beskas b: Private</div>
-<div class="tree-entry gen-2 note">3 Katherine N. 'Kay' County b: August 25, 1926   d: 
-May 23, 2007</div>
-<div class="tree-entry gen-2 note">+Efstratios 'Steve' Michael Evdemon b: June 12, 1917  
-d: August 31, 1992</div>
-<div class="tree-entry gen-3">Komnini Lee 'Karen' Evdemon  b: Private</div>
-<div class="tree-entry gen-3 spouse">+ Stanley J. 'Stan' Bucholc  b: Private</div>
-<div class="tree-entry gen-4">Benjamin P. Bucholc  b: Private</div>
-<div class="tree-entry gen-4">Stephanie K. Bucholc  b: Private</div>
-<div class="tree-entry gen-3">Michael Steve Evdemon II  b: Private</div>
-<div class="tree-entry gen-3 spouse">+ Bonnie Sue Keeler  b: Private</div>
-<div class="tree-entry gen-3 note">*2nd Wife of Michael Steve Evdemon II:</div>
-<div class="tree-entry gen-3 spouse">+ Margaret Anne 'Peggy' Gause  b: Private</div>
-<div class="tree-entry gen-3 note">*3rd Wife of Michael Steve Evdemon II:</div>
-<div class="tree-entry gen-3 spouse">+ Laura Ann Rogers  b: Private</div>
-<div class="tree-entry gen-3">George S. Evdemon  b: Private</div>
-<div class="tree-entry gen-3 spouse">+ Diana Ruth Martinez  b: Private</div>
-<div class="tree-entry gen-0">Costantinos 'Gus' Mormanis b: Unknown in Tenedos, Greece</div>
-<div class="tree-entry gen-0 spouse">+ Despina 'Bessie' Xiriches b: 1872 in Tenedos, Greece d: August 09, 1941</div>
-<div class="tree-entry gen-0 note">2 Stavros C. 'Steve' Mormanis / Morris b: Sept 14, 1892 in 
-Tenedos d: July 28, 1941</div>
-<div class="tree-entry gen-0 note">+Akaterini A. Sfakianos b: April 08, 1901 in Tenedos d: 
-March 17, 1990</div>
-<div class="tree-entry gen-2">Achilles S. 'Johnny' Morris b: May 21, 1923 in Tenedos d: April 19, 1991</div>
-<div class="tree-entry gen-2 spouse">+ Fatima Mohamed   b: Private</div>
-<div class="tree-entry gen-3">Julia Ann Morris  b: Private</div>
-<div class="tree-entry gen-3">Stavros Achilles Morris  b: Private</div>
-<div class="tree-entry gen-2">Konstantinos S. 'Gus' Morris b: August 10, 1925 d: June 24, 1987</div>
-<div class="tree-entry gen-2 spouse">+ Gloria Fiocco b: March 11, 1928 d: September 12, 2005</div>
-<div class="tree-entry gen-3">Stevan Morris  b: Private</div>
-<div class="tree-entry gen-3 spouse">+ Charlotte Kucharski  b: Private</div>
-<div class="tree-entry gen-3">Katherine Morris  b: Private</div>
-<div class="tree-entry gen-3 spouse">+ Richard S. Smiouskas b: Private</div>
-<div class="tree-entry gen-4">Christine Patricia Smiouskas b: Private</div>
-<div class="tree-entry gen-4 spouse">+ Dean R. Herfindahl, III b: Private</div>
-<div class="tree-entry gen-4">Gregory James Herfindahl b: Private</div>
-<div class="tree-entry gen-4 note">6 Alanna Gloriann Herfindahl b: 
-Private</div>
-<div class="tree-entry gen-4">Richard Smiouskas b: Private</div>
-<div class="tree-entry gen-4 spouse">+ Hellin VaaSehlen b: Private</div>
-<div class="tree-entry gen-4 note">*2nd Husband of Katherine Morris:</div>
-<div class="tree-entry gen-4 spouse">+ Steve Levine b: Private</div>
-<div class="tree-entry gen-3">Ricardo Morris  b: Private</div>
-<div class="tree-entry gen-3 note">3 Despina S. 'Virginia' Morris b: November 25, 1926  d: 
-October 01, 2010</div>
-<div class="tree-entry gen-3 note">+Emanuel E. Kountouris b: May 20, 1900 in Greece d: 
-January 1968</div>
-<div class="tree-entry gen-3 note">*2nd Husband of Despina S. 'Virginia' Morris:</div>
-<div class="tree-entry gen-3 note">+Michael A. Barlos b: November 05, 1922   d: 
-March 10, 2001</div>
-<div class="tree-entry gen-3">Margo Catherine Barlos  b: Private</div>
-<div class="tree-entry gen-3 spouse">+ Michael Robert Foldes  b: Private</div>
-<div class="tree-entry gen-4">Maya Alexandra Foldes  b: Private</div>
-<div class="tree-entry gen-4">Adam Jory Stephen Foldes  b: Private</div>
-<div class="tree-entry gen-4">Peter Miles Foldes  b: Private</div>
-<div class="tree-entry gen-3">Haralambos 'Harry' Stavros Barlos  b: Private</div>
-<div class="tree-entry gen-3 spouse">+ Jenny Lynn Fisher  b: Private</div>
-<div class="tree-entry gen-4">Michael Barlos  b: Private</div>
-<div class="tree-entry gen-4">Graham Barlos  b: Private</div>
-<div class="tree-entry gen-2">Peter S. Morris  b: Private</div>
-<div class="tree-entry gen-2 spouse">+ Alfreda 'Fritzi' Kaloger  b: Private</div>
-<div class="tree-entry gen-3">Catherine A. 'Cathy' Morris  b: Private</div>
-<div class="tree-entry gen-3 spouse">+ Samuel Nicholas 'Sam' Manol  b: Private</div>
-<div class="tree-entry gen-4">Nicholas Paul Manol  b: Private</div>
-<div class="tree-entry gen-4">Zachary Manol  b: Private</div>
-<div class="tree-entry gen-4 note">2nd Husband of Catherine Morris:</div>
-<div class="tree-entry gen-4 spouse">+ Bruce Sorg b: Private</div>
-<div class="tree-entry gen-3">Panagiota 'Pamela' Sue Morris  b: Private</div>
-<div class="tree-entry gen-3 spouse">+ James William Martin  b: Private</div>
-<div class="tree-entry gen-4">Natalie Jo Martin  b: Private</div>
-<div class="tree-entry gen-4 spouse">+ Michael J. Jackson  b: Private</div>
-<div class="tree-entry gen-4">Evelyn Reese Jackson  b: Private</div>
-<div class="tree-entry gen-4">August Jackson  b: Private</div>
-<div class="tree-entry gen-4">Jamie Lynn Martin  b: Private</div>
-<div class="tree-entry gen-4 spouse">+ Jeremy John Marinis  b: Private</div>
-<div class="tree-entry gen-4">Karris Marinis  b: Private</div>
-<div class="tree-entry gen-4">Neco Marinis  b: Private</div>
-<div class="tree-entry gen-3">Sonia Marie 'Susan' Morris  b: Private</div>
-<div class="tree-entry gen-3 spouse">+ Randall Montrie  b: Private</div>
-<div class="tree-entry gen-3 note">*2nd Husband of Sonia Marie 'Susan' Morris:</div>
-<div class="tree-entry gen-3 spouse">+ Kenneth E. Anderson  b: Private</div>
-<div class="tree-entry gen-3">Cynthia Lynn 'Cindi' Morris  b: Private</div>
-<div class="tree-entry gen-3 spouse">+ Steve J. Balint  b: Private</div>
-<div class="tree-entry gen-4">Joseph James 'Joey' Balint  b: Private</div>
-<div class="tree-entry gen-2">George S. Morris b: August 02, 1931  d: March 29, 1996</div>
-<div class="tree-entry gen-2 note">+Athanasia 'Anne' S. Tsantles b: November 11, 1932  
-d: June 11, 2004</div>
-<div class="tree-entry gen-3">Gregory Andonios Morris  b: Private</div>
-<div class="tree-entry gen-3 spouse">+ Katherine b: Private</div>
-<div class="tree-entry gen-4">Stephanie Morris  b: Private</div>
-<div class="tree-entry gen-4 note">*2nd Wife of Gregory Andonios Morris:</div>
-<div class="tree-entry gen-4 spouse">+ Rosemarie  b: Private</div>
-<div class="tree-entry gen-3">Anthony P. Morris  b: Private</div>
-<div class="tree-entry gen-3 spouse">+ Debra Stacy  b: Private</div>
-<div class="tree-entry gen-4">Andrea Morris  b: Private</div>
-<div class="tree-entry gen-4">Stacy Morris  b: Private</div>
-<div class="tree-entry gen-3">James George Morris, Sr.  b: Private</div>
-<div class="tree-entry gen-3 spouse">+ Georgina 'Gina' Arvanitis  b: Private</div>
-<div class="tree-entry gen-4">James George Morris, Jr.  b: Private</div>
-<div class="tree-entry gen-4 spouse">+ Ashly Brooke Webb  b: Private</div>
-<div class="tree-entry gen-4">Jackson Webb Morris b: Private</div>
-<div class="tree-entry gen-4">Nicholas James Morris  b: Private</div>
-<div class="tree-entry gen-4 spouse">+ Kristin Ann Hansen  b: Private</div>
-<div class="tree-entry gen-4 note">*2nd Wife of James George Morris, Sr.:</div>
-<div class="tree-entry gen-4 spouse">+ Anastasia 'Anne' Choratis b: Private</div>
-<div class="tree-entry gen-4">Alex Morris b: Private</div>
-<div class="tree-entry gen-4">Anne Morris  b: Private</div>
-<div class="tree-entry gen-4 spouse">+ Unknown Husband b: Private</div>
-<div class="tree-entry gen-4">Madison b: Private</div>
-<div class="tree-entry gen-4">Ava b: Private</div>
-<div class="tree-entry gen-4 note">*2nd Wife of George S. Morris:</div>
-<div class="tree-entry gen-4 spouse">+ Brenda M. Nelson  b: Private</div>
-<div class="tree-entry gen-3">Virginia 'Ginny' Morris  b: Private</div>
-<div class="tree-entry gen-3 note">3 Gregoris S. 'Greg' Morris b: April 23, 1933  d: March 
-12, 2010</div>
-<div class="tree-entry gen-3 spouse">+ Barbara J. DeStella  b: Private</div>
-<div class="tree-entry gen-3">Christina A. 'Chrissy' Morris  b: Private</div>
-<div class="tree-entry gen-3 spouse">+ Richard P. Kilis  b: Private</div>
-<div class="tree-entry gen-4">Gregory Richard  Kilis  b: Private</div>
-<div class="tree-entry gen-3">Amy Jo Morris  b: Private</div>
-<div class="tree-entry gen-3 spouse">+ Robert Cosentino  b: Private</div>
-<div class="tree-entry gen-1">Dimitrios 'Mitchell' Mormanis / Morris b: Unknown in Tenedos</div>
-<div class="tree-entry gen-1">Eleni 'Lena' Mormanis / Morris b: Dec 15, 1895 in Tenedos d: June 02, 1973</div>
-<div class="tree-entry gen-1 note">+Konstantinos 'Gus' George Grevis b: July 22, 1886  d: April 
-27, 1967</div>
-<div class="tree-entry gen-2">George G. Grevis b: September 07, 1918 d: July 19, 2005</div>
-<div class="tree-entry gen-2 note">+Vasiliki 'Virginia' George Arvanitis b: January 01, 1920 
-in Tenedos</div>
-<div class="tree-entry gen-3">Dena Grevis  b: Private</div>
-<div class="tree-entry gen-3">Christine Elaine Grevis  b: Private</div>
-<div class="tree-entry gen-3 spouse">+ Thomas F. Korvas  b: Private</div>
-<div class="tree-entry gen-3 note">3 Zoe 'Jennie' Grevis b: November 04, 1922   d: 
-November 19, 1979</div>
-<div class="tree-entry gen-3 note">+Stavros 'Steve' (Karakostas) Caras b: June 12, 1914  
-d: Sept 29, 1956</div>
-<div class="tree-entry gen-3 note">4 Albert G. Caras b: December 07, 1942  d: June 
-10, 2005</div>
-<div class="tree-entry gen-3 spouse">+ Donna Hope ??  b: Private</div>
-<div class="tree-entry gen-3 note">4 John Leonidas Caras b: October 21, 1946  d: 
-April 19, 2004</div>
-<div class="tree-entry gen-3 note">3 Sultana 'Stella' Grevis b: November 04, 1922  d: March 
-13, 1993</div>
-<div class="tree-entry gen-3 spouse">+ Zachary Porentas b: 1917</div>
-<div class="tree-entry gen-3 note">*2nd Husband of Sultana 'Stella' Grevis:</div>
-<div class="tree-entry gen-3 spouse">+ Donald E. Weaver  b: Private</div>
-<div class="tree-entry gen-3">Douglas W. Weaver  b: Private</div>
-<div class="tree-entry gen-3 spouse">+ Beth A.  b: Private</div>
-<div class="tree-entry gen-4">Chris Weaver  b: Private</div>
-<div class="tree-entry gen-4">Justin Weaver  b: Private</div>
-<div class="tree-entry gen-4 note">3 Andrew G. Grevis b: September 09, 1924  d: October 15, 
-1998</div>
-<div class="tree-entry gen-4 spouse">+ Theophaneia 'Faye' Marinkas  b: Private</div>
-<div class="tree-entry gen-3">Elaine A. Grevis  b: Private</div>
-<div class="tree-entry gen-3 spouse">+ Robert M. Fotoples  b: Private</div>
-<div class="tree-entry gen-4">Nicholas R. Fotoples  b: Private</div>
-<div class="tree-entry gen-4">Andrea Fotoples  b: Private</div>
-<div class="tree-entry gen-4 spouse">+ Jeremy Jaquillard  b: Private</div>
-<div class="tree-entry gen-4 note">*2nd Husband of Elaine A. Grevis:</div>
-<div class="tree-entry gen-4 spouse">+ Roger C. Worley  b: Private</div>
-<div class="tree-entry gen-3">Constantina 'Dena' Grevis  b: Private</div>
-<div class="tree-entry gen-3 spouse">+ John C. Georgakopoulos  b: Private</div>
-<div class="tree-entry gen-3 note">5 Georgia Constantina Georgakopoulos  b: 
-Private</div>
-<div class="tree-entry gen-4">Christas Georgakopoulos  b: Private</div>
-<div class="tree-entry gen-4">Andrew John Georgakopoulos  b: Private</div>
-<div class="tree-entry gen-4 note">*2nd Husband of Constantina 'Dena' Grevis:</div>
-<div class="tree-entry gen-4 spouse">+ Stan Smith b: Private</div>
-<div class="tree-entry gen-2">Chris G. Grevis  b: Private</div>
-<div class="tree-entry gen-2 note">+Barbara A. Grayson b: May 14, 1929  d: September 10, 
-2004</div>
-<div class="tree-entry gen-3">Chris G. 'Steve' Grevis  b: Private</div>
-<div class="tree-entry gen-3 spouse">+ Sally  b: Private</div>
-<div class="tree-entry gen-4">Chris Calvin Grevis  b: Private</div>
-<div class="tree-entry gen-4 note">*2nd Wife of Chris G. 'Steve' Grevis:</div>
-<div class="tree-entry gen-4 spouse">+ Denise  b: Private</div>
-<div class="tree-entry gen-4">Barbara Kristen Grevis  b: Private</div>
-<div class="tree-entry gen-4">Rebecca Viola 'Beka' Grevis  b: Private</div>
-<div class="tree-entry gen-4 note">*3rd Wife of Chris G. 'Steve' Grevis:</div>
-<div class="tree-entry gen-4 spouse">+ Laura A. Davitt  b: Private</div>
-<div class="tree-entry gen-3">Paul M. Grevis  b: Private</div>
-<div class="tree-entry gen-3 spouse">+ Cheryl ??  b: Private</div>
-<div class="tree-entry gen-4">Miranda Grevis  b: Private</div>
-<div class="tree-entry gen-4 spouse">+ Darron Olin  b: Private</div>
-<div class="tree-entry gen-4">Jordan Grevis  b: Private</div>
-<div class="tree-entry gen-1">Marika 'Mary' Mormanis / Morris b: Jan. 06, 1899 in Tenedos d: Aug 22, 1989</div>
-<div class="tree-entry gen-1 note">+George Nicholas Alemenos b: March 17, 1889 in Tenedos d: 
-June 12, 1961</div>
-<div class="tree-entry gen-1 note">3 Nicholas George Allemenos b: December 23, 1921  d: 
-February 24, 1987</div>
-<div class="tree-entry gen-1 note">+Elizabeth Alexander  b: December 6, 1921  d: 
-July 15, 2011</div>
-<div class="tree-entry gen-3">Joan Marie 'Jody' Allemenos  b: Private</div>
-<div class="tree-entry gen-3 spouse">+ Charles Keeton  b: Private</div>
-<div class="tree-entry gen-3 note">*2nd Husband of Joan Marie 'Jody' Allemenos:</div>
-<div class="tree-entry gen-3 spouse">+ Harry Daniel McFarland  b: Private</div>
-<div class="tree-entry gen-4">Stephanie Elizabeth McFarland  b: Private</div>
-<div class="tree-entry gen-4 spouse">+ Aaron John Canty  b: Private</div>
-<div class="tree-entry gen-4">Liam Canty  b: Private</div>
-<div class="tree-entry gen-4">Alexander Daniel McFarland  b: Private</div>
-<div class="tree-entry gen-4 spouse">+ Katherine Rose Macklin  b: Private</div>
-<div class="tree-entry gen-3">George Nicholas Allemenos  b: Private</div>
-<div class="tree-entry gen-3 spouse">+ Debra Streets  b: Private</div>
-<div class="tree-entry gen-3 note">5 Nicholas George Allemenos b: Sept 23, 
-1976 d: March 17, 1994</div>
-<div class="tree-entry gen-3 note">5 Lisa Nicole Allemenos b: May 28, 1980 d: March 17, 
-1994</div>
-<div class="tree-entry gen-3 note">*2nd Wife of George Nicholas Allemenos:</div>
-<div class="tree-entry gen-3 spouse">+ Barbara Collins  b: Private</div>
-<div class="tree-entry gen-3 note">*3rd Wife of George Nicholas Allemenos:</div>
-<div class="tree-entry gen-3 spouse">+ Lorettta Le Beau  b: Private</div>
-<div class="tree-entry gen-3 note">3 Despina 'Virginia' G. Allemenos b: April 30, 1923  
-d: June 01, 2006</div>
-<div class="tree-entry gen-3 spouse">+ George (Sideridakis) Sideris  b: Private</div>
-<div class="tree-entry gen-3 note">4 Peter G. 'Takie' Sideris b: July 06, 1947  d: 
-April 05, 1989</div>
-<div class="tree-entry gen-3">Eugenia 'Jeannie' Sideris  b: Private</div>
-<div class="tree-entry gen-3 note">+Charles G. 'Chuck' Wiltse, Jr. b: 1954 d: February 
-14, 2006</div>
-<div class="tree-entry gen-4">Rachel Wiltse  b: Private</div>
-<div class="tree-entry gen-4">Jason Wiltse  b: Private</div>
-<div class="tree-entry gen-4 note">*2nd Husband of Despina 'Virginia' G. Allemenos:</div>
-<div class="tree-entry gen-4 note">+Leon C. DeGolier b: March 26, 1923  d: December 09, 
-2004</div>
-<div class="tree-entry gen-3">Athanasia 'Karen' DeGolier  b: Private</div>
-<div class="tree-entry gen-3 spouse">+ Unknown Gibbs  b: Private</div>
-<div class="tree-entry gen-4">Michelle Louraine Gibbs  b: Private</div>
-<div class="tree-entry gen-4">Nicole Lee Gibbs  b: Private</div>
-<div class="tree-entry gen-4">Rebecca Ann Gibbs  b: Private</div>
-<div class="tree-entry gen-3">Paraskevi 'Cheryl' DeGolier  b: Private</div>
-<div class="tree-entry gen-3 spouse">+ Unknown Breyer  b: Private</div>
-<div class="tree-entry gen-3">Frederick C. DeGolier b: 1957 d: October 03, 1977</div>
-<div class="tree-entry gen-3">Theodossia 'Michelle' DeGolier  b: Private</div>
-<div class="tree-entry gen-3 spouse">+ Unknown Zygela  b: Private</div>
-<div class="tree-entry gen-3 note">3 Gus George Allemenos b: March 21, 1924  d: March 01, 
-1991</div>
-<div class="tree-entry gen-3 spouse">+ Katherine Alexopoulos b: July 04, 1930 d: May 22, 2001</div>
-<div class="tree-entry gen-3">Antonia Allemenos  b: Private</div>
-<div class="tree-entry gen-3 note">2 Panagiota 'Pauline' Mormanis / Morris b: 1904  d: October 
-29, 1966</div>
-<div class="tree-entry gen-3 spouse">+ Steve (Exadactylos) Alpis b: August 29, 1896  d: November 1983</div>
-<div class="tree-entry gen-1">George Mormanis / Morris  b: Unknown in Tenedos</div>
-<div class="tree-entry gen-0">Panagiotis 'Peter' Mormanis b: Unknown</div>
-<div class="tree-entry gen-0 spouse">+ Rosa Peters b: Unknown</div>
-<div class="tree-entry gen-0 note">2 John P. (Mormanis) Morris b: July 13, 1884 in Tenedos d: August 12, 
-1960</div>
-<div class="tree-entry gen-0 note">+Stavroula 'Stella' Zagorios b: September 14, 1886 d: July 22, 
-1961</div>
-
+  <div class="page-content tree-page">
+    <div class="tree-outer">
+      <div class="tree-legend">
+        <div class="legend-item"><div class="ls navy"></div> Ancestor</div>
+        <div class="legend-item"><div class="ls white"></div> Descendant</div>
+        <div class="legend-item"><div class="ls blue"></div> Spouse (married-in)</div>
+        <div class="legend-item"><div class="ls gray"></div> Living (private)</div>
+        <div class="legend-item" style="color:var(--color-gold,#c9a227);font-weight:700;font-size:1rem">&times;</div>&thinsp;Married
+        <div class="legend-item" style="font-size:.75rem;color:#999">Click a descendant card to collapse/expand</div>
+      </div>
+      <div class="tree-forest" id="forest"></div>
     </div>
   </div>
 </main>
@@ -423,11 +140,101 @@ April 05, 1989</div>
       <a href="contact.html">Contact</a>
       <a href="not-recovered.html">Not Archived</a>
     </nav>
-    <p class="footer-copy">
-      Original content &copy; Tenedian Brotherhood. Website restored and modernized from archived materials.
-    </p>
+    <p class="footer-copy">Original content &copy; Tenedian Brotherhood.
+      Website restored and modernized from archived materials.</p>
   </div>
 </footer>
 
+<script>
+var TREES = [{"id":"p1","name":"Anastasios Mormanis","m":[{"sp":{"id":"p2","name":"Susanna Mavrothetis","birth":"Unknown"},"kids":[{"id":"p3","name":"Demetrios A. 'James' Mormanis","m":[{"sp":{"id":"p4","name":"Zaharo Gerinakis","birth":"December 14, 1888","death":"January 06, 1965"},"kids":[{"id":"p5","name":"Anastasia 'Anna' Mormanis","m":[{"sp":{"id":"p6","name":"George Jeffries","birth":"August 14, 1914","death":"February 29, 2004"},"kids":[{"id":"p7","name":"Christopher George Jeffries","m":[],"priv":true},{"id":"p8","name":"Thomas George Jeffries","m":[],"priv":true}]}],"birth":"August 16, 1915","death":"January 11, 2009"},{"id":"p9","name":"Kris D. Mormanis","m":[],"birth":"Mar 24, 1917","death":"Mormanis b: Mar 24, 1917 d: May 26, 1944 (W.W. II)"},{"id":"p10","name":"Kaliope Mormanis","m":[],"birth":"December 31, 1918","death":"June 20, 1919"},{"id":"p11","name":"Kaliope 'Kobe' Mormanis","m":[{"sp":{"id":"p12","name":"Wendall Meadows","priv":true},"kids":[{"id":"p13","name":"Katherine Elaine Meadows","m":[],"priv":true},{"id":"p14","name":"Daniel James Meadows","m":[],"priv":true}]}],"priv":true},{"id":"p15","name":"Alexandria 'Alex' Mormanis","m":[],"birth":"August 15, 1923","death":"May 23, 1996"},{"id":"p16","name":"Evangelos D. 'Angelo' Mormanis","m":[],"birth":"October 20, 1925","death":"'Angelo' Mormanis b: October 20, 1925 d: July 29, 1936"}]}],"birth":"August 09, 1888","death":"Oct. 20, 1967"},{"id":"p17","name":"Elaine A. Mormanis","m":[{"sp":{"id":"p18","name":"Vasili Leondarides","birth":"Unknown"},"kids":[{"id":"p19","name":"Harriett Leondarides","m":[{"sp":{"id":"p20","name":"George Radoulouvich","birth":"Unknown"},"kids":[]}],"birth":"Abt. 1915"},{"id":"p21","name":"Anastacia Leondarides","m":[{"sp":{"id":"p22","name":"Costas Zissimopoulos","birth":"Unknown"},"kids":[]}],"birth":"1916","death":"2005"},{"id":"p23","name":"Dimitri Leondarides","m":[{"sp":{"id":"p24","name":"Marcelle A.","priv":true},"kids":[{"id":"p25","name":"Alain Dimitri Leondarides","m":[{"sp":{"id":"p26","name":"Lisa A. Krusina","priv":true},"kids":[{"id":"p27","name":"Nick Leondarides","m":[],"priv":true},{"id":"p28","name":"Joey Leondarides","m":[],"priv":true}]}],"priv":true}]}],"birth":"April 26, 1920","priv":true},{"id":"p29","name":"Vasiliki Leondarides","m":[{"sp":{"id":"p30","name":"Anthony Mack","priv":true},"kids":[]}],"priv":true},{"id":"p31","name":"Sousianna Leondarides","m":[{"sp":{"id":"p32","name":"George Bonfor d: Abt. 2005","death":"Abt. 2005"},"kids":[]}],"priv":true}]}],"birth":"Unknown"},{"id":"p33","name":"George A. Mormanis","m":[],"birth":"August 1892"},{"id":"p34","name":"John A. Mormanis / Morris","m":[{"sp":{"id":"p35","name":"Stylini 'Stella' Sfakianos","birth":"April 02, 1904","death":"June 26, 1973"},"kids":[{"id":"p36","name":"Anesti J. 'Ernest' Morris","m":[{"sp":{"id":"p37","name":"Stella Nicholas","priv":true},"kids":[]},{"sp":{"id":"p38","name":"Doreen Smith","priv":true},"kids":[],"label":"2nd marriage"}],"priv":true},{"id":"p39","name":"Theodore J. Morris","m":[{"sp":{"id":"p40","name":"Charlotte F. Schnieder","birth":"April 24, 1928","death":"May 29, 1994"},"kids":[]},{"sp":{"id":"p41","name":"Mandy C. Kersey","priv":true},"kids":[],"label":"2nd marriage"}],"priv":true}]}],"birth":"March 01, 1895","death":"June 02, 1955"},{"id":"p42","name":"Zafera A. Mormanis","m":[{"sp":{"id":"p43","name":"Alexandros 'Alex' N. Gangas","birth":"April 14, 1887","death":"August 11, 1962"},"kids":[{"id":"p44","name":"Katherine Gangas","m":[],"birth":"August 28, 1928","death":"June 10, 1948"},{"id":"p45","name":"Nicholas Gangas","m":[{"sp":{"id":"p46","name":"Jeanne Allen","priv":true},"kids":[{"id":"p47","name":"Nicki Ekaterini Gangas","m":[{"sp":{"id":"p48","name":"Eugene J. Perry, Jr.","priv":true},"kids":[]}],"priv":true},{"id":"p49","name":"Gregory Alexander Gangas","m":[{"sp":{"id":"p50","name":"Lana J. Duckett","priv":true},"kids":[]},{"sp":{"id":"p51","name":"Jacklyn Lynn Ross","priv":true},"kids":[{"id":"p52","name":"Nickolas Ross Gangas","m":[],"priv":true}],"label":"2nd marriage"}],"priv":true}]}],"priv":true},{"id":"p53","name":"Angelo Gangas","m":[],"priv":true}]}],"birth":"January 10, 1898","death":"March 30, 1989"},{"id":"p54","name":"Fotios 'Frank' A. Mormanis","m":[],"birth":"in Tenedos, Greece"}]}],"birth":"Unknown"},{"id":"p55","name":"Antonios Mormanis","m":[{"sp":{"id":"p56","name":"Eleni","birth":"Unknown"},"kids":[{"id":"p57","name":"Panagiotis 'Peter' Mormanis","m":[{"sp":{"id":"p58","name":"Panagiota 'Pauline' Vasiliou","birth":"1896","death":"May 18, 1971"},"kids":[{"id":"p59","name":"Michael Angelo Mormanis","m":[{"sp":{"id":"p60","name":"Eileen Olszowy","birth":"Unknown"},"kids":[]}],"birth":"November 28, 1921","death":"June 23, 2003"},{"id":"p61","name":"Anthony Mormanis","m":[{"sp":{"id":"p62","name":"Athanasia Kokenes","priv":true},"kids":[]}],"birth":"September 14, 1923","death":"February 14, 2003"},{"id":"p63","name":"Nicholas Mormanis","m":[{"sp":{"id":"p64","name":"Norma E. Danford","priv":true},"kids":[{"id":"p65","name":"Gregory N. Mormanis","m":[{"sp":{"id":"p66","name":"Sharon L.","priv":true},"kids":[]}],"priv":true},{"id":"p67","name":"Brian Mormanis","m":[],"priv":true}]}],"birth":"December 11, 1925","death":"April 22, 2008"},{"id":"p68","name":"Katherine Mormanis","m":[{"sp":{"id":"p69","name":"Gus Gargalianos","birth":"February 14, 1926","death":"October 01, 1994"},"kids":[{"id":"p70","name":"Angelo Lee Gargalianos","m":[],"priv":true}]}],"priv":true},{"id":"p71","name":"George Mormanis","m":[{"sp":{"id":"p72","name":"Mary","priv":true},"kids":[]}],"birth":"March 30, 1930","death":"November 06, 2008"}]}],"birth":"June 08, 1885"},{"id":"p73","name":"Despina Mormanis","m":[{"sp":{"id":"p74","name":"Nicholas 'Nick' Mingos","birth":"1888"},"kids":[{"id":"p75","name":"Panayota Mingos","m":[{"sp":{"id":"p76","name":"Efstratios 'Steve' Marangos","birth":"December 14, 1915","death":"February 27, 2000"},"kids":[{"id":"p77","name":"Viryines 'Virginia' Marangos","m":[{"sp":{"id":"p78","name":"Dimitri Bubulya","priv":true},"kids":[{"id":"p79","name":"Athanasios 'Thomas' Bubulya","m":[{"sp":{"id":"p80","name":"Paula Sacco","priv":true},"kids":[{"id":"p81","name":"Anna Demetra Bubulya","m":[],"priv":true}]}],"priv":true},{"id":"p82","name":"Efstratios 'Steve' Bubulya","m":[{"sp":{"id":"p83","name":"Dionysia Kalogeropoulos","priv":true},"kids":[{"id":"p84","name":"Dionysia Bubulya","m":[],"priv":true}]}],"priv":true}]}],"priv":true},{"id":"p85","name":"Despina Marangos","m":[{"sp":{"id":"p86","name":"Basil 'Bill Apostolou","priv":true},"kids":[{"id":"p87","name":"Christopher Basil Apostolou","m":[{"sp":{"id":"p88","name":"Juliana 'Julia' Louise Hanson","priv":true},"kids":[{"id":"p89","name":"Evan Christopher Apostolou","m":[],"priv":true},{"id":"p90","name":"Emily Rose Apostolou","m":[],"priv":true}]}],"priv":true},{"id":"p91","name":"Panayota 'Paula' Marie Apostolou","m":[{"sp":{"id":"p92","name":"Matthew Robert Yaniglos","priv":true},"kids":[]}],"priv":true}]}],"priv":true}]}],"priv":true},{"id":"p93","name":"Eleni Mingos","m":[{"sp":{"id":"p94","name":"Costa 'Con' Moukatas","priv":true},"kids":[]}],"priv":true}]}],"birth":"Unknown"},{"id":"p95","name":"George Mormanis","m":[{"sp":{"id":"p96","name":"Komnini Triantafilos","birth":"April 23, 1899","death":"December 24, 1987"},"kids":[{"id":"p97","name":"Gus County, Jr.","m":[{"sp":{"id":"p98","name":"Kalliope Elane Beskas","priv":true},"kids":[]}],"birth":"September 12, 1924","death":"October 01, 2007"},{"id":"p99","name":"Katherine N. 'Kay' County","m":[{"sp":{"id":"p100","name":"Efstratios 'Steve' Michael Evdemon","birth":"June 12, 1917","death":"August 31, 1992"},"kids":[{"id":"p101","name":"Komnini Lee 'Karen' Evdemon","m":[{"sp":{"id":"p102","name":"Stanley J. 'Stan' Bucholc","priv":true},"kids":[{"id":"p103","name":"Benjamin P. Bucholc","m":[],"priv":true},{"id":"p104","name":"Stephanie K. Bucholc","m":[],"priv":true}]}],"priv":true},{"id":"p105","name":"Michael Steve Evdemon II","m":[{"sp":{"id":"p106","name":"Bonnie Sue Keeler","priv":true},"kids":[]},{"sp":{"id":"p107","name":"Margaret Anne 'Peggy' Gause","priv":true},"kids":[],"label":"2nd marriage"},{"sp":{"id":"p108","name":"Laura Ann Rogers","priv":true},"kids":[],"label":"3rd marriage"}],"priv":true},{"id":"p109","name":"George S. Evdemon","m":[{"sp":{"id":"p110","name":"Diana Ruth Martinez","priv":true},"kids":[]}],"priv":true}]}],"birth":"August 25, 1926","death":"May 23, 2007"}]}],"birth":"1894","death":"January 02, 1929"}]}],"birth":"Unknown"},{"id":"p111","name":"Costantinos 'Gus' Mormanis","m":[{"sp":{"id":"p112","name":"Despina 'Bessie' Xiriches","birth":"1872","death":"August 09, 1941"},"kids":[{"id":"p113","name":"Stavros C. 'Steve' Mormanis / Morris","m":[{"sp":{"id":"p114","name":"Akaterini A. Sfakianos","birth":"April 08, 1901","death":"March 17, 1990"},"kids":[{"id":"p115","name":"Achilles S. 'Johnny' Morris","m":[{"sp":{"id":"p116","name":"Fatima Mohamed","priv":true},"kids":[{"id":"p117","name":"Julia Ann Morris","m":[],"priv":true},{"id":"p118","name":"Stavros Achilles Morris","m":[],"priv":true}]}],"birth":"May 21, 1923","death":"April 19, 1991"},{"id":"p119","name":"Konstantinos S. 'Gus' Morris","m":[{"sp":{"id":"p120","name":"Gloria Fiocco","birth":"March 11, 1928","death":"September 12, 2005"},"kids":[{"id":"p121","name":"Stevan Morris","m":[{"sp":{"id":"p122","name":"Charlotte Kucharski","priv":true},"kids":[]}],"priv":true},{"id":"p123","name":"Katherine Morris","m":[{"sp":{"id":"p124","name":"Richard S. Smiouskas","priv":true},"kids":[{"id":"p125","name":"Christine Patricia Smiouskas","m":[{"sp":{"id":"p126","name":"Dean R. Herfindahl, III","priv":true},"kids":[{"id":"p127","name":"Gregory James Herfindahl","m":[],"priv":true},{"id":"p128","name":"Alanna Gloriann Herfindahl","m":[],"priv":true}]}],"priv":true},{"id":"p129","name":"Richard Smiouskas","m":[{"sp":{"id":"p130","name":"Hellin VaaSehlen","priv":true},"kids":[]},{"sp":{"id":"p131","name":"Steve Levine","priv":true},"kids":[],"label":"2nd marriage"}],"priv":true}]}],"priv":true},{"id":"p132","name":"Ricardo Morris","m":[],"priv":true}]}],"birth":"August 10, 1925","death":"June 24, 1987"},{"id":"p133","name":"Despina S. 'Virginia' Morris","m":[{"sp":{"id":"p134","name":"Emanuel E. Kountouris","birth":"May 20, 1900","death":"January 1968"},"kids":[]},{"sp":{"id":"p135","name":"Michael A. Barlos","birth":"November 05, 1922","death":"March 10, 2001"},"kids":[{"id":"p136","name":"Margo Catherine Barlos","m":[{"sp":{"id":"p137","name":"Michael Robert Foldes","priv":true},"kids":[{"id":"p138","name":"Maya Alexandra Foldes","m":[],"priv":true},{"id":"p139","name":"Adam Jory Stephen Foldes","m":[],"priv":true},{"id":"p140","name":"Peter Miles Foldes","m":[],"priv":true}]}],"priv":true},{"id":"p141","name":"Haralambos 'Harry' Stavros Barlos","m":[{"sp":{"id":"p142","name":"Jenny Lynn Fisher","priv":true},"kids":[{"id":"p143","name":"Michael Barlos","m":[],"priv":true},{"id":"p144","name":"Graham Barlos","m":[],"priv":true}]}],"priv":true}],"label":"2nd marriage"}],"birth":"November 25, 1926","death":"October 01, 2010"},{"id":"p145","name":"Peter S. Morris","m":[{"sp":{"id":"p146","name":"Alfreda 'Fritzi' Kaloger","priv":true},"kids":[{"id":"p147","name":"Catherine A. 'Cathy' Morris","m":[{"sp":{"id":"p148","name":"Samuel Nicholas 'Sam' Manol","priv":true},"kids":[{"id":"p149","name":"Nicholas Paul Manol","m":[],"priv":true},{"id":"p150","name":"Zachary Manol","m":[{"sp":{"id":"p151","name":"Bruce Sorg","priv":true},"kids":[]}],"priv":true}]}],"priv":true},{"id":"p152","name":"Panagiota 'Pamela' Sue Morris","m":[{"sp":{"id":"p153","name":"James William Martin","priv":true},"kids":[{"id":"p154","name":"Natalie Jo Martin","m":[{"sp":{"id":"p155","name":"Michael J. Jackson","priv":true},"kids":[{"id":"p156","name":"Evelyn Reese Jackson","m":[],"priv":true},{"id":"p157","name":"August Jackson","m":[],"priv":true}]}],"priv":true},{"id":"p158","name":"Jamie Lynn Martin","m":[{"sp":{"id":"p159","name":"Jeremy John Marinis","priv":true},"kids":[{"id":"p160","name":"Karris Marinis","m":[],"priv":true},{"id":"p161","name":"Neco Marinis","m":[],"priv":true}]}],"priv":true}]}],"priv":true},{"id":"p162","name":"Sonia Marie 'Susan' Morris","m":[{"sp":{"id":"p163","name":"Randall Montrie","priv":true},"kids":[]},{"sp":{"id":"p164","name":"Kenneth E. Anderson","priv":true},"kids":[],"label":"2nd marriage"}],"priv":true},{"id":"p165","name":"Cynthia Lynn 'Cindi' Morris","m":[{"sp":{"id":"p166","name":"Steve J. Balint","priv":true},"kids":[{"id":"p167","name":"Joseph James 'Joey' Balint","m":[],"priv":true}]}],"priv":true}]}],"priv":true},{"id":"p168","name":"George S. Morris","m":[{"sp":{"id":"p169","name":"Athanasia 'Anne' S. Tsantles","birth":"November 11, 1932","death":"June 11, 2004"},"kids":[{"id":"p170","name":"Gregory Andonios Morris","m":[{"sp":{"id":"p171","name":"Katherine","priv":true},"kids":[{"id":"p172","name":"Stephanie Morris","m":[],"priv":true}]},{"sp":{"id":"p173","name":"Rosemarie","priv":true},"kids":[],"label":"2nd marriage"}],"priv":true},{"id":"p174","name":"Anthony P. Morris","m":[{"sp":{"id":"p175","name":"Debra Stacy","priv":true},"kids":[{"id":"p176","name":"Andrea Morris","m":[],"priv":true},{"id":"p177","name":"Stacy Morris","m":[],"priv":true}]}],"priv":true},{"id":"p178","name":"James George Morris, Sr.","m":[{"sp":{"id":"p179","name":"Georgina 'Gina' Arvanitis","priv":true},"kids":[{"id":"p180","name":"James George Morris, Jr.","m":[{"sp":{"id":"p181","name":"Ashly Brooke Webb","priv":true},"kids":[{"id":"p182","name":"Jackson Webb Morris","m":[],"priv":true}]}],"priv":true},{"id":"p183","name":"Nicholas James Morris","m":[{"sp":{"id":"p184","name":"Kristin Ann Hansen","priv":true},"kids":[]}],"priv":true}]},{"sp":{"id":"p185","name":"Anastasia 'Anne' Choratis","priv":true},"kids":[{"id":"p186","name":"Alex Morris","m":[],"priv":true},{"id":"p187","name":"Anne Morris","m":[{"sp":{"id":"p188","name":"Unknown Husband","priv":true},"kids":[{"id":"p189","name":"Madison","m":[],"priv":true},{"id":"p190","name":"Ava","m":[],"priv":true}]}],"priv":true}],"label":"2nd marriage"}],"priv":true}]},{"sp":{"id":"p191","name":"Brenda M. Nelson","priv":true},"kids":[{"id":"p192","name":"Virginia 'Ginny' Morris","m":[],"priv":true}],"label":"2nd marriage"}],"birth":"August 02, 1931","death":"March 29, 1996"},{"id":"p193","name":"Gregoris S. 'Greg' Morris","m":[{"sp":{"id":"p194","name":"Barbara J. DeStella","priv":true},"kids":[{"id":"p195","name":"Christina A. 'Chrissy' Morris","m":[{"sp":{"id":"p196","name":"Richard P. Kilis","priv":true},"kids":[{"id":"p197","name":"Gregory Richard Kilis","m":[],"priv":true}]}],"priv":true},{"id":"p198","name":"Amy Jo Morris","m":[{"sp":{"id":"p199","name":"Robert Cosentino","priv":true},"kids":[]}],"priv":true}]}],"birth":"April 23, 1933","death":"March 12, 2010"}]}],"birth":"Sept 14, 1892","death":"July 28, 1941"},{"id":"p200","name":"Dimitrios 'Mitchell' Mormanis / Morris","m":[],"birth":"Unknown"},{"id":"p201","name":"Eleni 'Lena' Mormanis / Morris","m":[{"sp":{"id":"p202","name":"Konstantinos 'Gus' George Grevis","birth":"July 22, 1886","death":"April 27, 1967"},"kids":[{"id":"p203","name":"George G. Grevis","m":[{"sp":{"id":"p204","name":"Vasiliki 'Virginia' George Arvanitis","birth":"January 01, 1920","priv":true},"kids":[{"id":"p205","name":"Dena Grevis","m":[],"priv":true},{"id":"p206","name":"Christine Elaine Grevis","m":[{"sp":{"id":"p207","name":"Thomas F. Korvas","priv":true},"kids":[]}],"priv":true}]}],"birth":"September 07, 1918","death":"July 19, 2005"},{"id":"p208","name":"Zoe 'Jennie' Grevis","m":[{"sp":{"id":"p209","name":"Stavros 'Steve' (Karakostas) Caras","birth":"June 12, 1914","death":"Sept 29, 1956"},"kids":[{"id":"p210","name":"Albert G. Caras","m":[{"sp":{"id":"p211","name":"Donna Hope ??","priv":true},"kids":[]}],"birth":"December 07, 1942","death":"June 10, 2005"},{"id":"p212","name":"John Leonidas Caras","m":[],"birth":"October 21, 1946","death":"April 19, 2004"}]}],"birth":"November 04, 1922","death":"November 19, 1979"},{"id":"p213","name":"Sultana 'Stella' Grevis","m":[{"sp":{"id":"p214","name":"Zachary Porentas","birth":"1917"},"kids":[]},{"sp":{"id":"p215","name":"Donald E. Weaver","priv":true},"kids":[{"id":"p216","name":"Douglas W. Weaver","m":[{"sp":{"id":"p217","name":"Beth A.","priv":true},"kids":[{"id":"p218","name":"Chris Weaver","m":[],"priv":true},{"id":"p219","name":"Justin Weaver","m":[],"priv":true}]}],"priv":true}],"label":"2nd marriage"}],"birth":"November 04, 1922","death":"March 13, 1993"},{"id":"p220","name":"Andrew G. Grevis","m":[{"sp":{"id":"p221","name":"Theophaneia 'Faye' Marinkas","priv":true},"kids":[{"id":"p222","name":"Elaine A. Grevis","m":[{"sp":{"id":"p223","name":"Robert M. Fotoples","priv":true},"kids":[{"id":"p224","name":"Nicholas R. Fotoples","m":[],"priv":true},{"id":"p225","name":"Andrea Fotoples","m":[{"sp":{"id":"p226","name":"Jeremy Jaquillard","priv":true},"kids":[]}],"priv":true}]},{"sp":{"id":"p227","name":"Roger C. Worley","priv":true},"kids":[],"label":"2nd marriage"}],"priv":true},{"id":"p228","name":"Constantina 'Dena' Grevis","m":[{"sp":{"id":"p229","name":"John C. Georgakopoulos","priv":true},"kids":[{"id":"p230","name":"Georgia Constantina Georgakopoulos","m":[],"priv":true},{"id":"p231","name":"Christas Georgakopoulos","m":[],"priv":true},{"id":"p232","name":"Andrew John Georgakopoulos","m":[],"priv":true}]},{"sp":{"id":"p233","name":"Stan Smith","priv":true},"kids":[],"label":"2nd marriage"}],"priv":true}]}],"birth":"September 09, 1924","death":"October 15, 1998"},{"id":"p234","name":"Chris G. Grevis","m":[{"sp":{"id":"p235","name":"Barbara A. Grayson","birth":"May 14, 1929","death":"September 10, 2004"},"kids":[{"id":"p236","name":"Chris G. 'Steve' Grevis","m":[{"sp":{"id":"p237","name":"Sally","priv":true},"kids":[{"id":"p238","name":"Chris Calvin Grevis","m":[],"priv":true}]},{"sp":{"id":"p239","name":"Denise","priv":true},"kids":[{"id":"p240","name":"Barbara Kristen Grevis","m":[],"priv":true},{"id":"p241","name":"Rebecca Viola 'Beka' Grevis","m":[],"priv":true}],"label":"2nd marriage"},{"sp":{"id":"p242","name":"Laura A. Davitt","priv":true},"kids":[],"label":"3rd marriage"}],"priv":true},{"id":"p243","name":"Paul M. Grevis","m":[{"sp":{"id":"p244","name":"Cheryl ??","priv":true},"kids":[{"id":"p245","name":"Miranda Grevis","m":[{"sp":{"id":"p246","name":"Darron Olin","priv":true},"kids":[]}],"priv":true},{"id":"p247","name":"Jordan Grevis","m":[],"priv":true}]}],"priv":true}]}],"priv":true}]}],"birth":"Dec 15, 1895","death":"June 02, 1973"},{"id":"p248","name":"Marika 'Mary' Mormanis / Morris","m":[{"sp":{"id":"p249","name":"George Nicholas Alemenos","birth":"March 17, 1889","death":"June 12, 1961"},"kids":[{"id":"p250","name":"Nicholas George Allemenos","m":[{"sp":{"id":"p251","name":"Elizabeth Alexander","birth":"December 6, 1921","death":"July 15, 2011"},"kids":[{"id":"p252","name":"Joan Marie 'Jody' Allemenos","m":[{"sp":{"id":"p253","name":"Charles Keeton","priv":true},"kids":[]},{"sp":{"id":"p254","name":"Harry Daniel McFarland","priv":true},"kids":[{"id":"p255","name":"Stephanie Elizabeth McFarland","m":[{"sp":{"id":"p256","name":"Aaron John Canty","priv":true},"kids":[{"id":"p257","name":"Liam Canty","m":[],"priv":true}]}],"priv":true},{"id":"p258","name":"Alexander Daniel McFarland","m":[{"sp":{"id":"p259","name":"Katherine Rose Macklin","priv":true},"kids":[]}],"priv":true}],"label":"2nd marriage"}],"priv":true},{"id":"p260","name":"George Nicholas Allemenos","m":[{"sp":{"id":"p261","name":"Debra Streets","priv":true},"kids":[{"id":"p262","name":"Nicholas George Allemenos","m":[],"birth":"Sept 23, 1976","death":"March 17, 1994"},{"id":"p263","name":"Lisa Nicole Allemenos","m":[],"birth":"May 28, 1980","death":"March 17, 1994"}]},{"sp":{"id":"p264","name":"Barbara Collins","priv":true},"kids":[],"label":"2nd marriage"},{"sp":{"id":"p265","name":"Lorettta Le Beau","priv":true},"kids":[],"label":"3rd marriage"}],"priv":true}]}],"birth":"December 23, 1921","death":"February 24, 1987"},{"id":"p266","name":"Despina 'Virginia' G. Allemenos","m":[{"sp":{"id":"p267","name":"George (Sideridakis) Sideris","priv":true},"kids":[{"id":"p268","name":"Peter G. 'Takie' Sideris","m":[],"birth":"July 06, 1947","death":"April 05, 1989"},{"id":"p269","name":"Eugenia 'Jeannie' Sideris","m":[{"sp":{"id":"p270","name":"Charles G. 'Chuck' Wiltse, Jr.","birth":"1954","death":"February 14, 2006"},"kids":[{"id":"p271","name":"Rachel Wiltse","m":[],"priv":true},{"id":"p272","name":"Jason Wiltse","m":[],"priv":true}]}],"priv":true}]},{"sp":{"id":"p273","name":"Leon C. DeGolier","birth":"March 26, 1923","death":"December 09, 2004"},"kids":[{"id":"p274","name":"Athanasia 'Karen' DeGolier","m":[{"sp":{"id":"p275","name":"Unknown Gibbs","priv":true},"kids":[{"id":"p276","name":"Michelle Louraine Gibbs","m":[],"priv":true},{"id":"p277","name":"Nicole Lee Gibbs","m":[],"priv":true},{"id":"p278","name":"Rebecca Ann Gibbs","m":[],"priv":true}]}],"priv":true},{"id":"p279","name":"Paraskevi 'Cheryl' DeGolier","m":[{"sp":{"id":"p280","name":"Unknown Breyer","priv":true},"kids":[]}],"priv":true},{"id":"p281","name":"Frederick C. DeGolier","m":[],"birth":"1957","death":"October 03, 1977"},{"id":"p282","name":"Theodossia 'Michelle' DeGolier","m":[{"sp":{"id":"p283","name":"Unknown Zygela","priv":true},"kids":[]}],"priv":true}],"label":"2nd marriage"}],"birth":"April 30, 1923","death":"June 01, 2006"},{"id":"p284","name":"Gus George Allemenos","m":[{"sp":{"id":"p285","name":"Katherine Alexopoulos","birth":"July 04, 1930","death":"May 22, 2001"},"kids":[{"id":"p286","name":"Antonia Allemenos","m":[],"priv":true}]}],"birth":"March 21, 1924","death":"March 01, 1991"}]}],"birth":"Jan. 06, 1899","death":"Aug 22, 1989"},{"id":"p287","name":"Panagiota 'Pauline' Mormanis / Morris","m":[{"sp":{"id":"p288","name":"Steve (Exadactylos) Alpis","birth":"August 29, 1896","death":"November 1983"},"kids":[]}],"birth":"1904","death":"October 29, 1966"},{"id":"p289","name":"George Mormanis / Morris","m":[],"birth":"Unknown"}]}],"birth":"Unknown"},{"id":"p290","name":"Panagiotis 'Peter' Mormanis","m":[{"sp":{"id":"p291","name":"Rosa Peters","birth":"Unknown"},"kids":[{"id":"p292","name":"John P. (Mormanis) Morris","m":[{"sp":{"id":"p293","name":"Stavroula 'Stella' Zagorios","birth":"September 14, 1886","death":"July 22, 1961"},"kids":[]}],"birth":"July 13, 1884","death":"August 12, 1960"}]}],"birth":"Unknown"}];
+var TREE_TITLES = ["Descendants of Anastasios Mormanis","Descendants of Antonios Mormanis","Descendants of Costantinos 'Gus' Mormanis","Descendants of Panagiotis 'Peter' Mormanis"];
+function makeCard(p, cls) {
+  var div = document.createElement('div');
+  div.className = 'card ' + (cls || '');
+  var n = document.createElement('span'); n.className = 'n';
+  n.textContent = p.name; div.appendChild(n);
+  var parts = [];
+  if (p.birth) parts.push('b. ' + p.birth);
+  if (p.death) parts.push('d. ' + p.death);
+  if (p.priv && !p.birth && !p.death) parts.push('Living');
+  if (parts.length) {
+    var d = document.createElement('span'); d.className = 'd';
+    d.textContent = parts.join('  ·  '); div.appendChild(d);
+  }
+  return div;
+}
+
+function renderNode(p, gen) {
+  var wrapper = document.createElement('div'); wrapper.className = 'tree-node';
+  var body = document.createElement('div'); body.className = 'node-body';
+  var marriages = p.m || [];
+  var allKids = [];
+  for (var i = 0; i < marriages.length; i++) {
+    var ks = marriages[i].kids || [];
+    for (var j = 0; j < ks.length; j++) allKids.push(ks[j]);
+  }
+  var cls = gen === 0 ? 'root' : (p.priv ? 'priv' : '');
+  if (allKids.length) cls += (cls ? ' ' : '') + 'collapsible';
+  var mc = makeCard(p, cls);
+  if (marriages.length > 0) {
+    var row = document.createElement('div'); row.className = 'couple-row';
+    row.appendChild(mc);
+    if (marriages[0].sp) {
+      var dot = document.createElement('span'); dot.className = 'cx';
+      dot.textContent = '×'; row.appendChild(dot);
+      var spCls = 'spouse' + (marriages[0].sp.priv ? ' priv' : '');
+      row.appendChild(makeCard(marriages[0].sp, spCls));
+    }
+    body.appendChild(row);
+    for (var mi = 1; mi < marriages.length; mi++) {
+      var mg = marriages[mi];
+      if (mg.label) {
+        var lbl = document.createElement('div'); lbl.className = 'remarriage-lbl';
+        lbl.textContent = mg.label + ':'; body.appendChild(lbl);
+      }
+      if (mg.sp) {
+        var r2 = document.createElement('div'); r2.className = 'couple-row';
+        var ph = document.createElement('div'); ph.style.cssText = 'width:148px;flex-shrink:0;';
+        r2.appendChild(ph);
+        var d2 = document.createElement('span'); d2.className = 'cx';
+        d2.textContent = '×'; r2.appendChild(d2);
+        var sp2Cls = 'spouse' + (mg.sp.priv ? ' priv' : '');
+        r2.appendChild(makeCard(mg.sp, sp2Cls)); body.appendChild(r2);
+      }
+    }
+  } else {
+    var soloRow = document.createElement('div'); soloRow.className = 'couple-row';
+    soloRow.appendChild(mc); body.appendChild(soloRow);
+  }
+  wrapper.appendChild(body);
+  if (allKids.length) {
+    wrapper.classList.add('has-ch');
+    var cr = document.createElement('div'); cr.className = 'tree-children';
+    for (var ki = 0; ki < allKids.length; ki++) cr.appendChild(renderNode(allKids[ki], gen + 1));
+    wrapper.appendChild(cr);
+    mc.addEventListener('click', (function(nd) {
+      return function(e) { e.stopPropagation(); nd.classList.toggle('closed'); };
+    }(wrapper)));
+  }
+  return wrapper;
+}
+
+function buildSection(title, data, showTitle) {
+  var sec = document.createElement('div'); sec.className = 'tree-section';
+  if (showTitle) {
+    var h = document.createElement('h2'); h.className = 'tree-section-heading';
+    h.textContent = title; sec.appendChild(h);
+  }
+  var root = document.createElement('div'); root.className = 'tree-root';
+  root.appendChild(renderNode(data, 0)); sec.appendChild(root);
+  return sec;
+}
+
+var forest = document.getElementById('forest');
+var multiTree = TREES.length > 1;
+for (var ti = 0; ti < TREES.length; ti++) {
+  forest.appendChild(buildSection(TREE_TITLES[ti], TREES[ti], multiTree));
+}
+</script>
 </body>
 </html>

@@ -5,6 +5,86 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Kazakos Family — Tenedian Brotherhood</title>
   <link rel="stylesheet" href="css/style.css">
+  <style>
+    .tree-page { padding: 0; }
+    .tree-outer { overflow-x: auto; padding: 2.5rem 1.5rem 3rem;
+                  background: var(--color-off-white, #f8f5f0); }
+    .tree-forest { display: flex; flex-direction: column; gap: 3.5rem; }
+    .tree-section-heading {
+      font-family: var(--font-heading, 'Playfair Display', serif);
+      color: var(--color-navy, #0a1628); font-size: 1.2rem;
+      margin: 0 0 1.25rem; padding-bottom: 0.4rem;
+      border-bottom: 2px solid var(--color-gold, #c9a227); }
+    .tree-legend { display: flex; gap: 1.2rem; flex-wrap: wrap;
+                   margin-bottom: 2rem; font-size: 0.8rem; color: #555;
+                   align-items: center; }
+    .legend-item { display: flex; align-items: center; gap: 5px; }
+    .ls { width: 20px; height: 13px; border-radius: 3px;
+          border: 2px solid var(--color-gold, #c9a227);
+          display: inline-block; flex-shrink: 0; }
+    .ls.navy  { background: var(--color-navy, #0a1628); }
+    .ls.white { background: #fff; }
+    .ls.blue  { background: #dce8ff; border-color: #6888cc; }
+    .ls.gray  { background: #eee; border-color: #bbb; }
+    /* Tree layout */
+    .tree-section { overflow-x: auto; padding-bottom: 0.5rem; }
+    .tree-root { display: inline-flex; flex-direction: column;
+                 align-items: center; padding: 0.5rem 1rem; }
+    .tree-node { display: flex; flex-direction: column; align-items: center;
+                 position: relative; }
+    .node-body { display: flex; flex-direction: column; align-items: center;
+                 gap: 3px; position: relative; }
+    .couple-row { display: flex; align-items: center; gap: 5px; }
+    .cx { color: var(--color-gold, #c9a227); font-weight: 700; font-size: 1rem;
+          padding: 0 2px; flex-shrink: 0; }
+    .remarriage-lbl { font-size: 0.65rem; color: #999; font-style: italic;
+                      text-align: center; margin-top: 5px; }
+    /* Cards */
+    .card { background: #fff; border: 2px solid var(--color-gold, #c9a227);
+            border-radius: 6px; padding: 7px 10px; width: 148px;
+            text-align: center; font-size: 0.74rem; line-height: 1.35;
+            position: relative; }
+    .card .n { font-weight: 700; color: var(--color-navy, #0a1628);
+               display: block; font-size: 0.78rem; }
+    .card .d { color: #888; font-size: 0.67rem; display: block; margin-top: 2px; }
+    .card.root { background: var(--color-navy, #0a1628);
+                 border-color: var(--color-gold, #c9a227); }
+    .card.root .n { color: var(--color-gold, #c9a227); }
+    .card.root .d { color: #99aabb; }
+    .card.spouse { background: #dce8ff; border-color: #6888cc; }
+    .card.spouse .n { color: #1a3a80; }
+    .card.priv  { background: #eee; border-color: #bbb; }
+    .card.priv .n { color: #666; }
+    .card.priv .d { color: #aaa; }
+    .card.collapsible { cursor: pointer; }
+    .card.collapsible::after { content: '\25BE'; position: absolute;
+      bottom: 3px; right: 5px; font-size: 0.6rem;
+      color: var(--color-gold, #c9a227); }
+    .tree-node.closed > .node-body .card.collapsible::after { content: '\25B8'; }
+    /* Connector lines (CSS pseudo-elements) */
+    :root { --gap: 44px; }
+    .tree-node.has-ch > .node-body::after {
+      content: ''; position: absolute; left: 50%; transform: translateX(-50%);
+      top: 100%; width: 2px; height: var(--gap);
+      background: var(--color-gold, #c9a227); }
+    .tree-children { display: flex; flex-direction: row; gap: 14px;
+                     align-items: flex-start; justify-content: center;
+                     margin-top: var(--gap); }
+    .tree-node.closed > .node-body::after  { display: none !important; }
+    .tree-node.closed > .tree-children     { display: none !important; }
+    .tree-children > .tree-node { position: relative; }
+    .tree-children > .tree-node::before {
+      content: ''; position: absolute; left: 50%; transform: translateX(-50%);
+      top: calc(-1 * var(--gap)); width: 2px; height: var(--gap);
+      background: var(--color-gold, #c9a227); }
+    .tree-children > .tree-node::after {
+      content: ''; position: absolute; top: calc(-1 * var(--gap));
+      left: 0; right: 0; height: 2px;
+      background: var(--color-gold, #c9a227); }
+    .tree-children > .tree-node:first-child::after  { left: 50%; }
+    .tree-children > .tree-node:last-child::after   { right: 50%; }
+    .tree-children > .tree-node:first-child:last-child::after { display: none; }
+  </style>
 </head>
 <body>
 
@@ -30,104 +110,21 @@
   <header class="page-header">
     <div class="page-header-inner">
       <h1 class="page-title">Kazakos Family</h1>
-      <p class="page-subtitle"><a href="family-trees.html" style="color:rgba(255,255,255,.6); font-size:.85rem;">&larr; Back to Family Trees</a></p>
+      <p class="page-subtitle"><a href="family-trees.html" style="color:rgba(255,255,255,.65);font-size:.85rem;">&larr; Back to Family Trees</a></p>
     </div>
   </header>
 
-  <div class="page-content">
-    <div class="privacy-notice">
-      <strong>Privacy notice:</strong> Per the original website policy, birth dates are not
-      disclosed for individuals born after 1920 unless they are deceased.
-    </div>
-
-    <div class="family-tree-content">
-<div class="tree-entry gen-0 note">Kazakos Family</div>
-<div class="tree-entry gen-0 note">Note: There are 2 different families listed. I do not know if or how they are 
-related.</div>
-<div class="tree-entry gen-0">Alexander Kazakos b: Unknown in Tenedos, Greece</div>
-<div class="tree-entry gen-0 spouse">+ Vasiliki Fotos b: Unknown in Tenedos, Greece</div>
-<div class="tree-entry gen-0 note">2 John Kazakos b: January 01, 1898 in Tenedos, Greece d: January 19, 
-1942</div>
-<div class="tree-entry gen-0 spouse">+ Garnet Laura Vickers b: December 02, 1902 d: June 20, 1931</div>
-<div class="tree-entry gen-2">Darlene Kazakos b: Private</div>
-<div class="tree-entry gen-0">Despina Kazakos b: in Tenedos, Greece d: March 10, 1977</div>
-<div class="tree-entry gen-0 note">+John Mingos b: 1880 in Tenedos, Greece d: November 11, 1940 in Tenedos, 
-Greece</div>
-<div class="tree-entry gen-1">Rahlia Mingos b: December 25, 1913 in Tenedos, Greece</div>
-<div class="tree-entry gen-1 spouse">+ Nicholas Patniyot b: Unknown</div>
-<div class="tree-entry gen-2">Omiros Patniyot b: Private</div>
-<div class="tree-entry gen-2 spouse">+ Rhonda  b: Private</div>
-<div class="tree-entry gen-3">Nicholas Patniyot  b: Private</div>
-<div class="tree-entry gen-3 spouse">+ Unknown Wife  b: Unknown</div>
-<div class="tree-entry gen-4">Yanni Patniyot   b: Private</div>
-<div class="tree-entry gen-4">(Daughter) Patniyot  b: Private</div>
-<div class="tree-entry gen-3">Anthony Patniyot  b: Private</div>
-<div class="tree-entry gen-3 spouse">+ Unknown Wife  b: Unknown</div>
-<div class="tree-entry gen-4">(Daughter) Patniyot b: Unknown</div>
-<div class="tree-entry gen-4">(Daughter) Patniyot  b: Unknown</div>
-<div class="tree-entry gen-2">Athanasios Patniyot  b: Private</div>
-<div class="tree-entry gen-2 spouse">+ Sue  b: Private</div>
-<div class="tree-entry gen-3">Steven Patniyot  b: Private</div>
-<div class="tree-entry gen-3">Christopher Patniyot   b: Private</div>
-<div class="tree-entry gen-2">Yannis Patniyot b: 1944 d: 1982</div>
-<div class="tree-entry gen-2">Stratos 'Steve' Patniyot  b: Private</div>
-<div class="tree-entry gen-2 spouse">+ Eleni  b: Private</div>
-<div class="tree-entry gen-3">Nicholas Patniyot  b: Private</div>
-<div class="tree-entry gen-3">Rahlia Patniyot   b: Private</div>
-<div class="tree-entry gen-1">Christalania Mingos b: 1914 in Tenedos, Greece d: June 14, 1986</div>
-<div class="tree-entry gen-1 spouse">+ Georgios Angolis  b: Private</div>
-<div class="tree-entry gen-2">Nicko Angolis  b: Private</div>
-<div class="tree-entry gen-2">Evdokia Angolis  b: Private</div>
-<div class="tree-entry gen-2">Despina Angolis  b: Private</div>
-<div class="tree-entry gen-2 spouse">+ Costa Sozou  b: Private</div>
-<div class="tree-entry gen-1">Mercina Mingos b: November 1917 in Tenedos, Greece</div>
-<div class="tree-entry gen-1 spouse">+ Kostandinos Kargos b: Unknown in Tenedos, Greece</div>
-<div class="tree-entry gen-2">Michali Kargos b: Private</div>
-<div class="tree-entry gen-2">Apostolos Kargos  b: Private</div>
-<div class="tree-entry gen-2 spouse">+ Katerina N. Saltos  b: Private</div>
-<div class="tree-entry gen-3">Maria A. Kargos  b: Private</div>
-<div class="tree-entry gen-3 spouse">+ Chris Pain  b: Private</div>
-<div class="tree-entry gen-4">Nicholas Pain  b: Private</div>
-<div class="tree-entry gen-4">Chloe Isabelle Pain  b: Private</div>
-<div class="tree-entry gen-3">Costandinos A. Kargos  b: Private</div>
-<div class="tree-entry gen-3">Mercina A. Kargos   b: Private</div>
-<div class="tree-entry gen-2">Georgios Kargos  b: Private</div>
-<div class="tree-entry gen-2">Nikos Kargos  b: Private</div>
-<div class="tree-entry gen-1">Andonia Mingos b: July 25, 1920 in Tenedos, Greece</div>
-<div class="tree-entry gen-1 note">+John Pavlis b: January 10, 1915 in Tenedos, Greece d: January 
-10, 1985</div>
-<div class="tree-entry gen-2">Areti 'Rita' Pavlis b: Private</div>
-<div class="tree-entry gen-2 spouse">+ Stelios Cominor  b: Private</div>
-<div class="tree-entry gen-3">Demetri Cominor  b: Private</div>
-<div class="tree-entry gen-3">Andonia Cominor   b: Private</div>
-<div class="tree-entry gen-2">Elia 'Leo' Pavlis b:  b: Private</div>
-<div class="tree-entry gen-2 spouse">+ Evelyn Hodgson  b: Private</div>
-<div class="tree-entry gen-3">Alexia Pavlis   b: Private</div>
-<div class="tree-entry gen-3 spouse">+ Stephen Huth  b: Private</div>
-<div class="tree-entry gen-3 note">4 Yianni 'John' Pavlis b: May 07, 1977 d: February 09, 
-2001</div>
-<div class="tree-entry gen-3">Erle Pavlis  b: Private</div>
-<div class="tree-entry gen-1">Niki Mingos  b: Private in Tenedos, Greece</div>
-<div class="tree-entry gen-1 note">+Manolis Vasiloudi b: March 24, 1920 in Tenedos, Greece d: 
-January 20, 1983</div>
-<div class="tree-entry gen-2">Ekaterina Vasiloudi   b: Private</div>
-<div class="tree-entry gen-2 spouse">+ Luca Sarandi  b: Private</div>
-<div class="tree-entry gen-3">Pelayias 'Pamela' Sarandi  b: Private</div>
-<div class="tree-entry gen-3 spouse">+ Yanni Aliss  b: Private</div>
-<div class="tree-entry gen-4">Georgios Aliss   b: Private</div>
-<div class="tree-entry gen-4">Ekaterina Aliss   b: Private</div>
-<div class="tree-entry gen-3">Maria Sarandi  b: Private</div>
-<div class="tree-entry gen-2">Mercina Vasiloudi  b: Private</div>
-<div class="tree-entry gen-2 spouse">+ Dimitrios Ziagas   b: Private</div>
-<div class="tree-entry gen-3">Angelikis 'Angela' Ziagas  b: Private</div>
-<div class="tree-entry gen-3 spouse">+ Warren Vella b: Private</div>
-<div class="tree-entry gen-4">Stephanie Mercina Vella  b: Private</div>
-<div class="tree-entry gen-3">Manolis 'Matthew' Ziagas  b: Private</div>
-<div class="tree-entry gen-3 spouse">+ Michelle Lack  b: Private</div>
-<div class="tree-entry gen-4">Dimitri Ziagas  b: Private</div>
-<div class="tree-entry gen-3">Nikki Ziagas   b: Private</div>
-<div class="tree-entry gen-3 spouse">+ Unknown Hamburger  b: Private</div>
-
+  <div class="page-content tree-page">
+    <div class="tree-outer">
+      <div class="tree-legend">
+        <div class="legend-item"><div class="ls navy"></div> Ancestor</div>
+        <div class="legend-item"><div class="ls white"></div> Descendant</div>
+        <div class="legend-item"><div class="ls blue"></div> Spouse (married-in)</div>
+        <div class="legend-item"><div class="ls gray"></div> Living (private)</div>
+        <div class="legend-item" style="color:var(--color-gold,#c9a227);font-weight:700;font-size:1rem">&times;</div>&thinsp;Married
+        <div class="legend-item" style="font-size:.75rem;color:#999">Click a descendant card to collapse/expand</div>
+      </div>
+      <div class="tree-forest" id="forest"></div>
     </div>
   </div>
 </main>
@@ -143,11 +140,101 @@ January 20, 1983</div>
       <a href="contact.html">Contact</a>
       <a href="not-recovered.html">Not Archived</a>
     </nav>
-    <p class="footer-copy">
-      Original content &copy; Tenedian Brotherhood. Website restored and modernized from archived materials.
-    </p>
+    <p class="footer-copy">Original content &copy; Tenedian Brotherhood.
+      Website restored and modernized from archived materials.</p>
   </div>
 </footer>
 
+<script>
+var TREES = [{"id":"p1","name":"Alexander Kazakos","m":[{"sp":{"id":"p2","name":"Vasiliki Fotos","birth":"Unknown"},"kids":[{"id":"p3","name":"John Kazakos","m":[{"sp":{"id":"p4","name":"Garnet Laura Vickers","birth":"December 02, 1902","death":"June 20, 1931"},"kids":[{"id":"p5","name":"Darlene Kazakos","m":[],"priv":true}]}],"birth":"January 01, 1898","death":"January 19, 1942"}]}],"birth":"Unknown"},{"id":"p6","name":"Despina Kazakos","m":[{"sp":{"id":"p7","name":"John Mingos","birth":"1880","death":"November 11, 1940 in Tenedos, Greece"},"kids":[{"id":"p8","name":"Rahlia Mingos","m":[{"sp":{"id":"p9","name":"Nicholas Patniyot","birth":"Unknown"},"kids":[{"id":"p10","name":"Omiros Patniyot","m":[{"sp":{"id":"p11","name":"Rhonda","priv":true},"kids":[{"id":"p12","name":"Nicholas Patniyot","m":[{"sp":{"id":"p13","name":"Unknown Wife","birth":"Unknown"},"kids":[{"id":"p14","name":"Yanni Patniyot","m":[],"priv":true},{"id":"p15","name":"(Daughter) Patniyot","m":[],"priv":true}]}],"priv":true},{"id":"p16","name":"Anthony Patniyot","m":[{"sp":{"id":"p17","name":"Unknown Wife","birth":"Unknown"},"kids":[{"id":"p18","name":"(Daughter) Patniyot","m":[],"birth":"Unknown"},{"id":"p19","name":"(Daughter) Patniyot","m":[],"birth":"Unknown"}]}],"priv":true}]}],"priv":true},{"id":"p20","name":"Athanasios Patniyot","m":[{"sp":{"id":"p21","name":"Sue","priv":true},"kids":[{"id":"p22","name":"Steven Patniyot","m":[],"priv":true},{"id":"p23","name":"Christopher Patniyot","m":[],"priv":true}]}],"priv":true},{"id":"p24","name":"Yannis Patniyot","m":[],"birth":"1944","death":"1982"},{"id":"p25","name":"Stratos 'Steve' Patniyot","m":[{"sp":{"id":"p26","name":"Eleni","priv":true},"kids":[{"id":"p27","name":"Nicholas Patniyot","m":[],"priv":true},{"id":"p28","name":"Rahlia Patniyot","m":[],"priv":true}]}],"priv":true}]}],"birth":"December 25, 1913"},{"id":"p29","name":"Christalania Mingos","m":[{"sp":{"id":"p30","name":"Georgios Angolis","priv":true},"kids":[{"id":"p31","name":"Nicko Angolis","m":[],"priv":true},{"id":"p32","name":"Evdokia Angolis","m":[],"priv":true},{"id":"p33","name":"Despina Angolis","m":[{"sp":{"id":"p34","name":"Costa Sozou","priv":true},"kids":[]}],"priv":true}]}],"birth":"1914","death":"June 14, 1986"},{"id":"p35","name":"Mercina Mingos","m":[{"sp":{"id":"p36","name":"Kostandinos Kargos","birth":"Unknown"},"kids":[{"id":"p37","name":"Michali Kargos","m":[],"priv":true},{"id":"p38","name":"Apostolos Kargos","m":[{"sp":{"id":"p39","name":"Katerina N. Saltos","priv":true},"kids":[{"id":"p40","name":"Maria A. Kargos","m":[{"sp":{"id":"p41","name":"Chris Pain","priv":true},"kids":[{"id":"p42","name":"Nicholas Pain","m":[],"priv":true},{"id":"p43","name":"Chloe Isabelle Pain","m":[],"priv":true}]}],"priv":true},{"id":"p44","name":"Costandinos A. Kargos","m":[],"priv":true},{"id":"p45","name":"Mercina A. Kargos","m":[],"priv":true}]}],"priv":true},{"id":"p46","name":"Georgios Kargos","m":[],"priv":true},{"id":"p47","name":"Nikos Kargos","m":[],"priv":true}]}],"birth":"November 1917"},{"id":"p48","name":"Andonia Mingos","m":[{"sp":{"id":"p49","name":"John Pavlis","birth":"January 10, 1915","death":"January 10, 1985"},"kids":[{"id":"p50","name":"Areti 'Rita' Pavlis","m":[{"sp":{"id":"p51","name":"Stelios Cominor","priv":true},"kids":[{"id":"p52","name":"Demetri Cominor","m":[],"priv":true},{"id":"p53","name":"Andonia Cominor","m":[],"priv":true}]}],"priv":true},{"id":"p54","name":"Elia 'Leo' Pavlis","m":[{"sp":{"id":"p55","name":"Evelyn Hodgson","priv":true},"kids":[{"id":"p56","name":"Alexia Pavlis","m":[{"sp":{"id":"p57","name":"Stephen Huth","priv":true},"kids":[]}],"priv":true},{"id":"p58","name":"Yianni 'John' Pavlis","m":[],"birth":"May 07, 1977","death":"February 09, 2001"},{"id":"p59","name":"Erle Pavlis","m":[],"priv":true}]}],"birth":"b: Private"}]}],"birth":"July 25, 1920","priv":true},{"id":"p60","name":"Niki Mingos","m":[{"sp":{"id":"p61","name":"Manolis Vasiloudi","birth":"March 24, 1920","death":"January 20, 1983"},"kids":[{"id":"p62","name":"Ekaterina Vasiloudi","m":[{"sp":{"id":"p63","name":"Luca Sarandi","priv":true},"kids":[{"id":"p64","name":"Pelayias 'Pamela' Sarandi","m":[{"sp":{"id":"p65","name":"Yanni Aliss","priv":true},"kids":[{"id":"p66","name":"Georgios Aliss","m":[],"priv":true},{"id":"p67","name":"Ekaterina Aliss","m":[],"priv":true}]}],"priv":true},{"id":"p68","name":"Maria Sarandi","m":[],"priv":true}]}],"priv":true},{"id":"p69","name":"Mercina Vasiloudi","m":[{"sp":{"id":"p70","name":"Dimitrios Ziagas","priv":true},"kids":[{"id":"p71","name":"Angelikis 'Angela' Ziagas","m":[{"sp":{"id":"p72","name":"Warren Vella","priv":true},"kids":[{"id":"p73","name":"Stephanie Mercina Vella","m":[],"priv":true}]}],"priv":true},{"id":"p74","name":"Manolis 'Matthew' Ziagas","m":[{"sp":{"id":"p75","name":"Michelle Lack","priv":true},"kids":[{"id":"p76","name":"Dimitri Ziagas","m":[],"priv":true}]}],"priv":true},{"id":"p77","name":"Nikki Ziagas","m":[{"sp":{"id":"p78","name":"Unknown Hamburger","priv":true},"kids":[]}],"priv":true}]}],"priv":true}]}],"priv":true}]}],"birth":"in Tenedos, Greece","death":"March 10, 1977"}];
+var TREE_TITLES = ["Descendants of Alexander Kazakos","Descendants of Despina Kazakos"];
+function makeCard(p, cls) {
+  var div = document.createElement('div');
+  div.className = 'card ' + (cls || '');
+  var n = document.createElement('span'); n.className = 'n';
+  n.textContent = p.name; div.appendChild(n);
+  var parts = [];
+  if (p.birth) parts.push('b. ' + p.birth);
+  if (p.death) parts.push('d. ' + p.death);
+  if (p.priv && !p.birth && !p.death) parts.push('Living');
+  if (parts.length) {
+    var d = document.createElement('span'); d.className = 'd';
+    d.textContent = parts.join('  ·  '); div.appendChild(d);
+  }
+  return div;
+}
+
+function renderNode(p, gen) {
+  var wrapper = document.createElement('div'); wrapper.className = 'tree-node';
+  var body = document.createElement('div'); body.className = 'node-body';
+  var marriages = p.m || [];
+  var allKids = [];
+  for (var i = 0; i < marriages.length; i++) {
+    var ks = marriages[i].kids || [];
+    for (var j = 0; j < ks.length; j++) allKids.push(ks[j]);
+  }
+  var cls = gen === 0 ? 'root' : (p.priv ? 'priv' : '');
+  if (allKids.length) cls += (cls ? ' ' : '') + 'collapsible';
+  var mc = makeCard(p, cls);
+  if (marriages.length > 0) {
+    var row = document.createElement('div'); row.className = 'couple-row';
+    row.appendChild(mc);
+    if (marriages[0].sp) {
+      var dot = document.createElement('span'); dot.className = 'cx';
+      dot.textContent = '×'; row.appendChild(dot);
+      var spCls = 'spouse' + (marriages[0].sp.priv ? ' priv' : '');
+      row.appendChild(makeCard(marriages[0].sp, spCls));
+    }
+    body.appendChild(row);
+    for (var mi = 1; mi < marriages.length; mi++) {
+      var mg = marriages[mi];
+      if (mg.label) {
+        var lbl = document.createElement('div'); lbl.className = 'remarriage-lbl';
+        lbl.textContent = mg.label + ':'; body.appendChild(lbl);
+      }
+      if (mg.sp) {
+        var r2 = document.createElement('div'); r2.className = 'couple-row';
+        var ph = document.createElement('div'); ph.style.cssText = 'width:148px;flex-shrink:0;';
+        r2.appendChild(ph);
+        var d2 = document.createElement('span'); d2.className = 'cx';
+        d2.textContent = '×'; r2.appendChild(d2);
+        var sp2Cls = 'spouse' + (mg.sp.priv ? ' priv' : '');
+        r2.appendChild(makeCard(mg.sp, sp2Cls)); body.appendChild(r2);
+      }
+    }
+  } else {
+    var soloRow = document.createElement('div'); soloRow.className = 'couple-row';
+    soloRow.appendChild(mc); body.appendChild(soloRow);
+  }
+  wrapper.appendChild(body);
+  if (allKids.length) {
+    wrapper.classList.add('has-ch');
+    var cr = document.createElement('div'); cr.className = 'tree-children';
+    for (var ki = 0; ki < allKids.length; ki++) cr.appendChild(renderNode(allKids[ki], gen + 1));
+    wrapper.appendChild(cr);
+    mc.addEventListener('click', (function(nd) {
+      return function(e) { e.stopPropagation(); nd.classList.toggle('closed'); };
+    }(wrapper)));
+  }
+  return wrapper;
+}
+
+function buildSection(title, data, showTitle) {
+  var sec = document.createElement('div'); sec.className = 'tree-section';
+  if (showTitle) {
+    var h = document.createElement('h2'); h.className = 'tree-section-heading';
+    h.textContent = title; sec.appendChild(h);
+  }
+  var root = document.createElement('div'); root.className = 'tree-root';
+  root.appendChild(renderNode(data, 0)); sec.appendChild(root);
+  return sec;
+}
+
+var forest = document.getElementById('forest');
+var multiTree = TREES.length > 1;
+for (var ti = 0; ti < TREES.length; ti++) {
+  forest.appendChild(buildSection(TREE_TITLES[ti], TREES[ti], multiTree));
+}
+</script>
 </body>
 </html>

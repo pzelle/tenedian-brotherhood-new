@@ -3,8 +3,88 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Genelos — Tenedian Brotherhood</title>
+  <title>Genelos Family — Tenedian Brotherhood</title>
   <link rel="stylesheet" href="css/style.css">
+  <style>
+    .tree-page { padding: 0; }
+    .tree-outer { overflow-x: auto; padding: 2.5rem 1.5rem 3rem;
+                  background: var(--color-off-white, #f8f5f0); }
+    .tree-forest { display: flex; flex-direction: column; gap: 3.5rem; }
+    .tree-section-heading {
+      font-family: var(--font-heading, 'Playfair Display', serif);
+      color: var(--color-navy, #0a1628); font-size: 1.2rem;
+      margin: 0 0 1.25rem; padding-bottom: 0.4rem;
+      border-bottom: 2px solid var(--color-gold, #c9a227); }
+    .tree-legend { display: flex; gap: 1.2rem; flex-wrap: wrap;
+                   margin-bottom: 2rem; font-size: 0.8rem; color: #555;
+                   align-items: center; }
+    .legend-item { display: flex; align-items: center; gap: 5px; }
+    .ls { width: 20px; height: 13px; border-radius: 3px;
+          border: 2px solid var(--color-gold, #c9a227);
+          display: inline-block; flex-shrink: 0; }
+    .ls.navy  { background: var(--color-navy, #0a1628); }
+    .ls.white { background: #fff; }
+    .ls.blue  { background: #dce8ff; border-color: #6888cc; }
+    .ls.gray  { background: #eee; border-color: #bbb; }
+    /* Tree layout */
+    .tree-section { overflow-x: auto; padding-bottom: 0.5rem; }
+    .tree-root { display: inline-flex; flex-direction: column;
+                 align-items: center; padding: 0.5rem 1rem; }
+    .tree-node { display: flex; flex-direction: column; align-items: center;
+                 position: relative; }
+    .node-body { display: flex; flex-direction: column; align-items: center;
+                 gap: 3px; position: relative; }
+    .couple-row { display: flex; align-items: center; gap: 5px; }
+    .cx { color: var(--color-gold, #c9a227); font-weight: 700; font-size: 1rem;
+          padding: 0 2px; flex-shrink: 0; }
+    .remarriage-lbl { font-size: 0.65rem; color: #999; font-style: italic;
+                      text-align: center; margin-top: 5px; }
+    /* Cards */
+    .card { background: #fff; border: 2px solid var(--color-gold, #c9a227);
+            border-radius: 6px; padding: 7px 10px; width: 148px;
+            text-align: center; font-size: 0.74rem; line-height: 1.35;
+            position: relative; }
+    .card .n { font-weight: 700; color: var(--color-navy, #0a1628);
+               display: block; font-size: 0.78rem; }
+    .card .d { color: #888; font-size: 0.67rem; display: block; margin-top: 2px; }
+    .card.root { background: var(--color-navy, #0a1628);
+                 border-color: var(--color-gold, #c9a227); }
+    .card.root .n { color: var(--color-gold, #c9a227); }
+    .card.root .d { color: #99aabb; }
+    .card.spouse { background: #dce8ff; border-color: #6888cc; }
+    .card.spouse .n { color: #1a3a80; }
+    .card.priv  { background: #eee; border-color: #bbb; }
+    .card.priv .n { color: #666; }
+    .card.priv .d { color: #aaa; }
+    .card.collapsible { cursor: pointer; }
+    .card.collapsible::after { content: '\25BE'; position: absolute;
+      bottom: 3px; right: 5px; font-size: 0.6rem;
+      color: var(--color-gold, #c9a227); }
+    .tree-node.closed > .node-body .card.collapsible::after { content: '\25B8'; }
+    /* Connector lines (CSS pseudo-elements) */
+    :root { --gap: 44px; }
+    .tree-node.has-ch > .node-body::after {
+      content: ''; position: absolute; left: 50%; transform: translateX(-50%);
+      top: 100%; width: 2px; height: var(--gap);
+      background: var(--color-gold, #c9a227); }
+    .tree-children { display: flex; flex-direction: row; gap: 14px;
+                     align-items: flex-start; justify-content: center;
+                     margin-top: var(--gap); }
+    .tree-node.closed > .node-body::after  { display: none !important; }
+    .tree-node.closed > .tree-children     { display: none !important; }
+    .tree-children > .tree-node { position: relative; }
+    .tree-children > .tree-node::before {
+      content: ''; position: absolute; left: 50%; transform: translateX(-50%);
+      top: calc(-1 * var(--gap)); width: 2px; height: var(--gap);
+      background: var(--color-gold, #c9a227); }
+    .tree-children > .tree-node::after {
+      content: ''; position: absolute; top: calc(-1 * var(--gap));
+      left: 0; right: 0; height: 2px;
+      background: var(--color-gold, #c9a227); }
+    .tree-children > .tree-node:first-child::after  { left: 50%; }
+    .tree-children > .tree-node:last-child::after   { right: 50%; }
+    .tree-children > .tree-node:first-child:last-child::after { display: none; }
+  </style>
 </head>
 <body>
 
@@ -29,209 +109,22 @@
 <main>
   <header class="page-header">
     <div class="page-header-inner">
-      <h1 class="page-title">Genelos</h1>
-      <p class="page-subtitle"><a href="family-trees.html" style="color:rgba(255,255,255,.6); font-size:.85rem;">&larr; Back to Family Trees</a></p>
+      <h1 class="page-title">Genelos Family</h1>
+      <p class="page-subtitle"><a href="family-trees.html" style="color:rgba(255,255,255,.65);font-size:.85rem;">&larr; Back to Family Trees</a></p>
     </div>
   </header>
 
-  <div class="page-content">
-    <div class="privacy-notice">
-      <strong>Privacy notice:</strong> Per the original website policy, birth dates are not
-      disclosed for individuals born after 1920 unless they are deceased.
-    </div>
-
-    <div class="family-tree-content">
-<div class="tree-entry gen-0 note">Janelis / Genelos Family</div>
-<div class="tree-entry gen-0">Ioannis 'John' Janelis b: Unknown</div>
-<div class="tree-entry gen-0 spouse">+ Theodora Vardianos b: Abt. 1860</div>
-<div class="tree-entry gen-1">Vasiliki Janelis b: Abt. 1880 in Tenedos, Greece</div>
-<div class="tree-entry gen-1 spouse">+ Konstantinos Kyriakoudis b: Unknown in Tenedos, Greece</div>
-<div class="tree-entry gen-1 note">3 Despina Kyriakoudis b: August 02, 1901 in Tenedos, Greece 
-d: December 15, 1974</div>
-<div class="tree-entry gen-1 note">+Michael S. Kididis b: October 31, 1893 in Tenedos, 
-Greece d: Sept. 27, 1985</div>
-<div class="tree-entry gen-1 note">4 Evangeline Kididis b: December 05, 1922 d: August 
-01, 1995</div>
-<div class="tree-entry gen-1 note">+Angelo Konstantine Damalas b: May 06, 1922 d: 
-July 09, 1986</div>
-<div class="tree-entry gen-4">Mark Damalas b: Private</div>
-<div class="tree-entry gen-4">Lisa Damalas b: Private</div>
-<div class="tree-entry gen-3">Vasiliki 'Bessie' Kididis  b: Private</div>
-<div class="tree-entry gen-3 spouse">+ Demetrios A. 'James' Chongris  b: Private</div>
-<div class="tree-entry gen-4">Michael George Chongris  b: Private</div>
-<div class="tree-entry gen-4 spouse">+ Marlene Petrou b: Private</div>
-<div class="tree-entry gen-4 note">6 Christopher Michael Chongris b: 
-Private</div>
-<div class="tree-entry gen-4">Michael James Chongris b: Private</div>
-<div class="tree-entry gen-4">James Peter Chongris b: Private</div>
-<div class="tree-entry gen-4">Peter Chongris b: Private</div>
-<div class="tree-entry gen-4 note">*2nd Wife of Michael George Chongris:</div>
-<div class="tree-entry gen-4 spouse">+ Dawn Louise MacKenzie  b: Private</div>
-<div class="tree-entry gen-4">Adam James Chongris b: Private</div>
-<div class="tree-entry gen-4 spouse">+ Katherine Pavlantos b: Private</div>
-<div class="tree-entry gen-4">James Adam Chongris b: Private</div>
-<div class="tree-entry gen-4 note">6 Theodore James Chongris  b: 
-Private</div>
-<div class="tree-entry gen-4 note">5 Diane Chongris b: May 02, 1957  d: May 
-02, 1957</div>
-<div class="tree-entry gen-4">Ava Maria Chongris b: Private</div>
-<div class="tree-entry gen-4 spouse">+ Allen Cummings b: Private</div>
-<div class="tree-entry gen-4">Teresa Ann Cummings b: Private</div>
-<div class="tree-entry gen-4 note">+Thomas John Layton, Jr. b: 
-Private</div>
-<div class="tree-entry gen-4 note">7 Tristen John Layton b: 
-Private</div>
-<div class="tree-entry gen-4 note">7 Cheyanne Louise Layton  
-b: Private</div>
-<div class="tree-entry gen-4">David Allen Cummings b: Private</div>
-<div class="tree-entry gen-3">Sotire 'Sam' M. Kididis  b: Private</div>
-<div class="tree-entry gen-3 spouse">+ Maria Chouramanis b: Private</div>
-<div class="tree-entry gen-4">Michael Sotire Kididis b: Private</div>
-<div class="tree-entry gen-4 spouse">+ Mary Terese Orlaska  b: Private</div>
-<div class="tree-entry gen-4">Nicholas Michael Kididis b: Private</div>
-<div class="tree-entry gen-4 spouse">+ Megan Woight  b: Private</div>
-<div class="tree-entry gen-4 note">7 William Kididis  b: 
-Private</div>
-<div class="tree-entry gen-4 note">7 Brandon Kididis  b: 
-Private</div>
-<div class="tree-entry gen-4 note">6 Stephen Michael Kididis  b: 
-Private</div>
-<div class="tree-entry gen-4">Stephanie Kididis  b: Private</div>
-<div class="tree-entry gen-4">Denise Kididis  b: Private</div>
-<div class="tree-entry gen-4 spouse">+ Grigorios Pete Ragias  b: Private</div>
-<div class="tree-entry gen-4 note">6 Peter Grigorios Ragias  b: 
-Private</div>
-<div class="tree-entry gen-4 note">6 Alexander Grigorios Ragias  b: 
-Private</div>
-<div class="tree-entry gen-4 note">6 Christina Maria Ragias  b: 
-Private</div>
-<div class="tree-entry gen-4">Andrew Sotire Kididis  b: Private</div>
-<div class="tree-entry gen-4 spouse">+ Linda Lee Calloway  b: Private</div>
-<div class="tree-entry gen-4 note">6 Phillip Andrew Kididis  b: 
-Private</div>
-<div class="tree-entry gen-4 note">6 Maria Katherine Kididis  b: 
-Private</div>
-<div class="tree-entry gen-4 note">3 Theodoros Kyriakoudis b: December 14, 1904 in Tenedos, 
-Greece d: Unknown</div>
-<div class="tree-entry gen-4 spouse">+ Unknown Wife b: Unknown</div>
-<div class="tree-entry gen-3">Katerini Kyriakoudis  b: Private</div>
-<div class="tree-entry gen-3">Vasiliki Kyriakoudis  b: Private</div>
-<div class="tree-entry gen-3">Athanasios T. Kyriakoudis  b: Private</div>
-<div class="tree-entry gen-3">Constantine T. Kyriakoudis  b: Private</div>
-<div class="tree-entry gen-2">Panagiota Kyriakoudis b: November 21, 1907 d: April 1974</div>
-<div class="tree-entry gen-2 spouse">+ Iordani Stefanou b: 1905 d: 1988</div>
-<div class="tree-entry gen-3">Ismini Stefanou  b: Private</div>
-<div class="tree-entry gen-3 spouse">+ Remis Hatzisavas  b: Private</div>
-<div class="tree-entry gen-4">Eftihia Hatzisavas  b: Private</div>
-<div class="tree-entry gen-3">Pavlos Stefanou  b: Private</div>
-<div class="tree-entry gen-3 note">3 Ekaterini Kyriakoudis b: Dec. 09, 1911 in Tenedos, Greece 
-d: January 04, 1986</div>
-<div class="tree-entry gen-3 spouse">+ Savas Grivanos b: 1904 in Tenedos, Greece d: 1945</div>
-<div class="tree-entry gen-3 note">4 Eleftheria 'Liberty' Grivanos   b: 
-Private  in Nea Tenedos, Greece</div>
-<div class="tree-entry gen-3 spouse">+ Constantine 'Gust' Elmer  b: Private</div>
-<div class="tree-entry gen-4">Athena 'Tina' Elmer   b: Private</div>
-<div class="tree-entry gen-4 note">+Kostantinos Konstandas b: Private  
-in Nea Tenedos, Chalkidiki, Greece</div>
-<div class="tree-entry gen-4 note">6 Constantine Konstandas  b: 
-Private</div>
-<div class="tree-entry gen-4">Chris Konstandas  b: Private</div>
-<div class="tree-entry gen-4">Savva 'Steve' Elmer  b: Private</div>
-<div class="tree-entry gen-4 spouse">+ Eleni  b: Private</div>
-<div class="tree-entry gen-4">Terri Elmer  b: Private</div>
-<div class="tree-entry gen-4">Jamie? Elmer  b: Private</div>
-<div class="tree-entry gen-4">Eleni Elmer  b: Private</div>
-<div class="tree-entry gen-4 note">4 Pericles S. 'Perry' Grivanos   b: Private  
-in Nea Tenedos, Greece</div>
-<div class="tree-entry gen-4 spouse">+ Rita Baker  b: Private</div>
-<div class="tree-entry gen-4">Katherine Grivanos  b: Private</div>
-<div class="tree-entry gen-4 spouse">+ Daniel L. Coutcher  b: Private</div>
-<div class="tree-entry gen-4">Jason Coutcher  b: Private</div>
-<div class="tree-entry gen-4">Kyle Coutcher  b: Private</div>
-<div class="tree-entry gen-4 note">5 Pericles 'Perry' S. Grivanos  b: 
-Private</div>
-<div class="tree-entry gen-4 spouse">+ Jackie  b: Private</div>
-<div class="tree-entry gen-4">Perry Grivanos  b: Private</div>
-<div class="tree-entry gen-4">Spencer Grivanos  b: Private</div>
-<div class="tree-entry gen-4">Alexis Grivanos  b: Private</div>
-<div class="tree-entry gen-4">Phillip Grivanos  b: Private</div>
-<div class="tree-entry gen-4">Tim Grivanos  b: Private</div>
-<div class="tree-entry gen-3">Athanasia 'Soula' Grivanos  b: Private</div>
-<div class="tree-entry gen-3 spouse">+ George Kantaras  b: Private</div>
-<div class="tree-entry gen-4">Victoria Kantaras  b: Private</div>
-<div class="tree-entry gen-4 spouse">+ Mike Tarantino  b: Private</div>
-<div class="tree-entry gen-4">George Tarantino  b: Private</div>
-<div class="tree-entry gen-4">Anthony Tarantino  b: Private</div>
-<div class="tree-entry gen-4">Dean Kantaras  b: Private</div>
-<div class="tree-entry gen-4">Katherine Kantaras  b: Private</div>
-<div class="tree-entry gen-4 note">3 Grigorios Kyriakoudis b: June 18, 1913 in Tenedos, Greece 
-d: Nov. 1986</div>
-<div class="tree-entry gen-4 spouse">+ Eleni Balasi  b: Private</div>
-<div class="tree-entry gen-3">Vasilissa Kyriakoudis  b: Private</div>
-<div class="tree-entry gen-3 spouse">+ Takis Tsonis  b: Private</div>
-<div class="tree-entry gen-4">Maria Tsonis  b: Private</div>
-<div class="tree-entry gen-4">Eleni Tsonis  b: Private</div>
-<div class="tree-entry gen-4">Diogenis Tsonis  b: Private</div>
-<div class="tree-entry gen-3">Athanasia Kyriakoudis  b: Private</div>
-<div class="tree-entry gen-3 spouse">+ Dimitrios Galanakis  b: Private</div>
-<div class="tree-entry gen-4">Kalliopi Galanakis  b: Private</div>
-<div class="tree-entry gen-4">Grigoris D. Galanakis  b: Private</div>
-<div class="tree-entry gen-3">Constantine G. Kyriakoudis  b: Private</div>
-<div class="tree-entry gen-3 spouse">+ Olympia  b: Private</div>
-<div class="tree-entry gen-4">Eleni Kyriakoudis  b: Private</div>
-<div class="tree-entry gen-4">Yianni Kyriakoudis  b: Private</div>
-<div class="tree-entry gen-4">Alexander Kyriakoudis  b: Private</div>
-<div class="tree-entry gen-3">Nikolaos G. Kyriakoudis  b: Private</div>
-<div class="tree-entry gen-3 spouse">+ Fani  b: Private</div>
-<div class="tree-entry gen-4">Eleni Kyriakoudis  b: Private</div>
-<div class="tree-entry gen-4">Grogoris N. Kyriakoudis  b: Private</div>
-<div class="tree-entry gen-4">Theodoros N. Kyriakoudis  b: Private</div>
-<div class="tree-entry gen-2">Yioryia Kyriakoudis b: February 22, 1915 d: 1984</div>
-<div class="tree-entry gen-2 spouse">+ Christos Tsakiliotis b: 1912 d: 1987</div>
-<div class="tree-entry gen-3">Leonora Tsakiliotis  b: Private</div>
-<div class="tree-entry gen-3 spouse">+ Panayiotis Demopoulos  b: Private</div>
-<div class="tree-entry gen-4">Sophia Demopoulos  b: Private</div>
-<div class="tree-entry gen-4 spouse">+ Unknown Husband  b: Private</div>
-<div class="tree-entry gen-4">Spiro  b: Private</div>
-<div class="tree-entry gen-4">Leonora  b: Private</div>
-<div class="tree-entry gen-3">Constantinos C. Tsakiliotis  b: Private</div>
-<div class="tree-entry gen-3 spouse">+ Constanina  b: Private</div>
-<div class="tree-entry gen-4">Yioryia Tsakiliotis  b: Private</div>
-<div class="tree-entry gen-3">Stelios Tsakiliotis  b: Private</div>
-<div class="tree-entry gen-3">Theodora Tsakiliotis  b: Private</div>
-<div class="tree-entry gen-3 spouse">+ Nikos Karayianni  b: Private</div>
-<div class="tree-entry gen-4">Maria Karayianni  b: Private</div>
-<div class="tree-entry gen-4 note">3 Athanasia Kyriakoudis b: Feb. 13, 1921 in Tenedos, Greece 
-d: Feb. 26, 2004</div>
-<div class="tree-entry gen-4 spouse">+ Stelios Tsalkigis b: 1919 d: 1985</div>
-<div class="tree-entry gen-3">Mariolis Tsalkigis  b: Private</div>
-<div class="tree-entry gen-3 spouse">+ Efstratia Karapavlia  b: Private</div>
-<div class="tree-entry gen-4">Athanasia Tsalkigis  b: Private</div>
-<div class="tree-entry gen-4">Stelios Tsalkigis  b: Private</div>
-<div class="tree-entry gen-4">Maria Tsalkigis  b: Private</div>
-<div class="tree-entry gen-3">Zaharo Tsalkigis  b: Private</div>
-<div class="tree-entry gen-3 spouse">+ Athanasis Katsaros  b: Private</div>
-<div class="tree-entry gen-4">Persifoni Katsaros  b: Private</div>
-<div class="tree-entry gen-4 spouse">+ Kyriakos Kayopalos  b: Private</div>
-<div class="tree-entry gen-4 note">6 Efstratios Kayopalos  b: 
-Private</div>
-<div class="tree-entry gen-4">Fotini Katsaros  b: Private</div>
-<div class="tree-entry gen-4 spouse">+ Fanis Kliafas  b: Private</div>
-<div class="tree-entry gen-4">Anna Kliafas  b: Private</div>
-<div class="tree-entry gen-4">Stella Kliafas  b: Private</div>
-<div class="tree-entry gen-3">Anna Tsalkigis  b: Private</div>
-<div class="tree-entry gen-3 spouse">+ Yianni Statheros  b: Private</div>
-<div class="tree-entry gen-4">Stergio Statheros  b: Private</div>
-<div class="tree-entry gen-3">Vasiliki Tsalkigis  b: Private</div>
-<div class="tree-entry gen-3">Pavlos Tsalkigis  b: Private</div>
-<div class="tree-entry gen-1">Ioannis 'John' Janelis b: March 12, 1884 in Tenedos, Greece</div>
-<div class="tree-entry gen-1 spouse">+ Eva Rush b: 1905</div>
-<div class="tree-entry gen-1 note">3 Robert Norbert Janelis b: November 11, 1920  d: 
-October 16, 1963</div>
-<div class="tree-entry gen-1 spouse">+ Unknown Thomas b: Unknown</div>
-<div class="tree-entry gen-1 note">4 Robert G. Janelis b: June 20, 1947  d: February 
-10, 2007</div>
-
+  <div class="page-content tree-page">
+    <div class="tree-outer">
+      <div class="tree-legend">
+        <div class="legend-item"><div class="ls navy"></div> Ancestor</div>
+        <div class="legend-item"><div class="ls white"></div> Descendant</div>
+        <div class="legend-item"><div class="ls blue"></div> Spouse (married-in)</div>
+        <div class="legend-item"><div class="ls gray"></div> Living (private)</div>
+        <div class="legend-item" style="color:var(--color-gold,#c9a227);font-weight:700;font-size:1rem">&times;</div>&thinsp;Married
+        <div class="legend-item" style="font-size:.75rem;color:#999">Click a descendant card to collapse/expand</div>
+      </div>
+      <div class="tree-forest" id="forest"></div>
     </div>
   </div>
 </main>
@@ -247,11 +140,101 @@ October 16, 1963</div>
       <a href="contact.html">Contact</a>
       <a href="not-recovered.html">Not Archived</a>
     </nav>
-    <p class="footer-copy">
-      Original content &copy; Tenedian Brotherhood. Website restored and modernized from archived materials.
-    </p>
+    <p class="footer-copy">Original content &copy; Tenedian Brotherhood.
+      Website restored and modernized from archived materials.</p>
   </div>
 </footer>
 
+<script>
+var TREES = [{"id":"p1","name":"Ioannis 'John' Janelis","m":[{"sp":{"id":"p2","name":"Theodora Vardianos","birth":"Abt. 1860"},"kids":[{"id":"p3","name":"Vasiliki Janelis","m":[{"sp":{"id":"p4","name":"Konstantinos Kyriakoudis","birth":"Unknown"},"kids":[{"id":"p5","name":"Despina Kyriakoudis","m":[{"sp":{"id":"p6","name":"Michael S. Kididis","birth":"October 31, 1893","death":"Sept. 27, 1985"},"kids":[{"id":"p7","name":"Evangeline Kididis","m":[{"sp":{"id":"p8","name":"Angelo Konstantine Damalas","birth":"May 06, 1922","death":"July 09, 1986"},"kids":[{"id":"p9","name":"Mark Damalas","m":[],"priv":true},{"id":"p10","name":"Lisa Damalas","m":[],"priv":true}]}],"birth":"December 05, 1922","death":"August 01, 1995"},{"id":"p11","name":"Vasiliki 'Bessie' Kididis","m":[{"sp":{"id":"p12","name":"Demetrios A. 'James' Chongris","priv":true},"kids":[{"id":"p13","name":"Michael George Chongris","m":[{"sp":{"id":"p14","name":"Marlene Petrou","priv":true},"kids":[{"id":"p15","name":"Christopher Michael Chongris","m":[],"priv":true},{"id":"p16","name":"Michael James Chongris","m":[],"priv":true},{"id":"p17","name":"James Peter Chongris","m":[],"priv":true},{"id":"p18","name":"Peter Chongris","m":[],"priv":true}]},{"sp":{"id":"p19","name":"Dawn Louise MacKenzie","priv":true},"kids":[],"label":"2nd marriage"}],"priv":true},{"id":"p20","name":"Adam James Chongris","m":[{"sp":{"id":"p21","name":"Katherine Pavlantos","priv":true},"kids":[{"id":"p22","name":"James Adam Chongris","m":[],"priv":true},{"id":"p23","name":"Theodore James Chongris","m":[],"priv":true}]}],"priv":true},{"id":"p24","name":"Diane Chongris","m":[],"birth":"May 02, 1957","death":"May 02, 1957"},{"id":"p25","name":"Ava Maria Chongris","m":[{"sp":{"id":"p26","name":"Allen Cummings","priv":true},"kids":[{"id":"p27","name":"Teresa Ann Cummings","m":[{"sp":{"id":"p28","name":"Thomas John Layton, Jr.","priv":true},"kids":[{"id":"p29","name":"Tristen John Layton","m":[],"priv":true},{"id":"p30","name":"Cheyanne Louise Layton","m":[],"priv":true}]}],"priv":true},{"id":"p31","name":"David Allen Cummings","m":[],"priv":true}]}],"priv":true}]}],"priv":true},{"id":"p32","name":"Sotire 'Sam' M. Kididis","m":[{"sp":{"id":"p33","name":"Maria Chouramanis","priv":true},"kids":[{"id":"p34","name":"Michael Sotire Kididis","m":[{"sp":{"id":"p35","name":"Mary Terese Orlaska","priv":true},"kids":[{"id":"p36","name":"Nicholas Michael Kididis","m":[{"sp":{"id":"p37","name":"Megan Woight","priv":true},"kids":[{"id":"p38","name":"William Kididis","m":[],"priv":true},{"id":"p39","name":"Brandon Kididis","m":[],"priv":true}]}],"priv":true},{"id":"p40","name":"Stephen Michael Kididis","m":[],"priv":true},{"id":"p41","name":"Stephanie Kididis","m":[],"priv":true}]}],"priv":true},{"id":"p42","name":"Denise Kididis","m":[{"sp":{"id":"p43","name":"Grigorios Pete Ragias","priv":true},"kids":[{"id":"p44","name":"Peter Grigorios Ragias","m":[],"priv":true},{"id":"p45","name":"Alexander Grigorios Ragias","m":[],"priv":true},{"id":"p46","name":"Christina Maria Ragias","m":[],"priv":true}]}],"priv":true},{"id":"p47","name":"Andrew Sotire Kididis","m":[{"sp":{"id":"p48","name":"Linda Lee Calloway","priv":true},"kids":[{"id":"p49","name":"Phillip Andrew Kididis","m":[],"priv":true},{"id":"p50","name":"Maria Katherine Kididis","m":[],"priv":true}]}],"priv":true}]}],"priv":true}]}],"birth":"August 02, 1901","death":"December 15, 1974"},{"id":"p51","name":"Theodoros Kyriakoudis","m":[{"sp":{"id":"p52","name":"Unknown Wife","birth":"Unknown"},"kids":[{"id":"p53","name":"Katerini Kyriakoudis","m":[],"priv":true},{"id":"p54","name":"Vasiliki Kyriakoudis","m":[],"priv":true},{"id":"p55","name":"Athanasios T. Kyriakoudis","m":[],"priv":true},{"id":"p56","name":"Constantine T. Kyriakoudis","m":[],"priv":true}]}],"birth":"December 14, 1904","death":"Unknown"},{"id":"p57","name":"Panagiota Kyriakoudis","m":[{"sp":{"id":"p58","name":"Iordani Stefanou","birth":"1905","death":"1988"},"kids":[{"id":"p59","name":"Ismini Stefanou","m":[{"sp":{"id":"p60","name":"Remis Hatzisavas","priv":true},"kids":[{"id":"p61","name":"Eftihia Hatzisavas","m":[],"priv":true}]}],"priv":true},{"id":"p62","name":"Pavlos Stefanou","m":[],"priv":true}]}],"birth":"November 21, 1907","death":"April 1974"},{"id":"p63","name":"Ekaterini Kyriakoudis","m":[{"sp":{"id":"p64","name":"Savas Grivanos","birth":"1904","death":"1945"},"kids":[{"id":"p65","name":"Eleftheria 'Liberty' Grivanos","m":[{"sp":{"id":"p66","name":"Constantine 'Gust' Elmer","priv":true},"kids":[{"id":"p67","name":"Athena 'Tina' Elmer","m":[{"sp":{"id":"p68","name":"Kostantinos Konstandas","priv":true},"kids":[{"id":"p69","name":"Constantine Konstandas","m":[],"priv":true},{"id":"p70","name":"Chris Konstandas","m":[],"priv":true}]}],"priv":true},{"id":"p71","name":"Savva 'Steve' Elmer","m":[{"sp":{"id":"p72","name":"Eleni","priv":true},"kids":[{"id":"p73","name":"Terri Elmer","m":[],"priv":true},{"id":"p74","name":"Jamie? Elmer","m":[],"priv":true}]}],"priv":true},{"id":"p75","name":"Eleni Elmer","m":[],"priv":true}]}],"priv":true},{"id":"p76","name":"Pericles S. 'Perry' Grivanos","m":[{"sp":{"id":"p77","name":"Rita Baker","priv":true},"kids":[{"id":"p78","name":"Katherine Grivanos","m":[{"sp":{"id":"p79","name":"Daniel L. Coutcher","priv":true},"kids":[{"id":"p80","name":"Jason Coutcher","m":[],"priv":true},{"id":"p81","name":"Kyle Coutcher","m":[],"priv":true}]}],"priv":true},{"id":"p82","name":"Pericles 'Perry' S. Grivanos","m":[{"sp":{"id":"p83","name":"Jackie","priv":true},"kids":[{"id":"p84","name":"Perry Grivanos","m":[],"priv":true},{"id":"p85","name":"Spencer Grivanos","m":[],"priv":true},{"id":"p86","name":"Alexis Grivanos","m":[],"priv":true}]}],"priv":true},{"id":"p87","name":"Phillip Grivanos","m":[],"priv":true},{"id":"p88","name":"Tim Grivanos","m":[],"priv":true}]}],"priv":true},{"id":"p89","name":"Athanasia 'Soula' Grivanos","m":[{"sp":{"id":"p90","name":"George Kantaras","priv":true},"kids":[{"id":"p91","name":"Victoria Kantaras","m":[{"sp":{"id":"p92","name":"Mike Tarantino","priv":true},"kids":[{"id":"p93","name":"George Tarantino","m":[],"priv":true},{"id":"p94","name":"Anthony Tarantino","m":[],"priv":true}]}],"priv":true},{"id":"p95","name":"Dean Kantaras","m":[],"priv":true},{"id":"p96","name":"Katherine Kantaras","m":[],"priv":true}]}],"priv":true}]}],"birth":"Dec. 09, 1911","death":"January 04, 1986"},{"id":"p97","name":"Grigorios Kyriakoudis","m":[{"sp":{"id":"p98","name":"Eleni Balasi","priv":true},"kids":[{"id":"p99","name":"Vasilissa Kyriakoudis","m":[{"sp":{"id":"p100","name":"Takis Tsonis","priv":true},"kids":[{"id":"p101","name":"Maria Tsonis","m":[],"priv":true},{"id":"p102","name":"Eleni Tsonis","m":[],"priv":true},{"id":"p103","name":"Diogenis Tsonis","m":[],"priv":true}]}],"priv":true},{"id":"p104","name":"Athanasia Kyriakoudis","m":[{"sp":{"id":"p105","name":"Dimitrios Galanakis","priv":true},"kids":[{"id":"p106","name":"Kalliopi Galanakis","m":[],"priv":true},{"id":"p107","name":"Grigoris D. Galanakis","m":[],"death":"Galanakis b: Private","priv":true}]}],"priv":true},{"id":"p108","name":"Constantine G. Kyriakoudis","m":[{"sp":{"id":"p109","name":"Olympia","priv":true},"kids":[{"id":"p110","name":"Eleni Kyriakoudis","m":[],"priv":true},{"id":"p111","name":"Yianni Kyriakoudis","m":[],"priv":true},{"id":"p112","name":"Alexander Kyriakoudis","m":[],"priv":true}]}],"priv":true},{"id":"p113","name":"Nikolaos G. Kyriakoudis","m":[{"sp":{"id":"p114","name":"Fani","priv":true},"kids":[{"id":"p115","name":"Eleni Kyriakoudis","m":[],"priv":true},{"id":"p116","name":"Grogoris N. Kyriakoudis","m":[],"priv":true},{"id":"p117","name":"Theodoros N. Kyriakoudis","m":[],"priv":true}]}],"priv":true}]}],"birth":"June 18, 1913","death":"Nov. 1986"},{"id":"p118","name":"Yioryia Kyriakoudis","m":[{"sp":{"id":"p119","name":"Christos Tsakiliotis","birth":"1912","death":"1987"},"kids":[{"id":"p120","name":"Leonora Tsakiliotis","m":[{"sp":{"id":"p121","name":"Panayiotis Demopoulos","priv":true},"kids":[{"id":"p122","name":"Sophia Demopoulos","m":[{"sp":{"id":"p123","name":"Unknown Husband","priv":true},"kids":[{"id":"p124","name":"Spiro","m":[],"priv":true},{"id":"p125","name":"Leonora","m":[],"priv":true}]}],"priv":true}]}],"priv":true},{"id":"p126","name":"Constantinos C. Tsakiliotis","m":[{"sp":{"id":"p127","name":"Constanina","priv":true},"kids":[{"id":"p128","name":"Yioryia Tsakiliotis","m":[],"priv":true}]}],"priv":true},{"id":"p129","name":"Stelios Tsakiliotis","m":[],"priv":true},{"id":"p130","name":"Theodora Tsakiliotis","m":[{"sp":{"id":"p131","name":"Nikos Karayianni","priv":true},"kids":[{"id":"p132","name":"Maria Karayianni","m":[],"priv":true}]}],"priv":true}]}],"birth":"February 22, 1915","death":"1984"},{"id":"p133","name":"Athanasia Kyriakoudis","m":[{"sp":{"id":"p134","name":"Stelios Tsalkigis","birth":"1919","death":"1985"},"kids":[{"id":"p135","name":"Mariolis Tsalkigis","m":[{"sp":{"id":"p136","name":"Efstratia Karapavlia","priv":true},"kids":[{"id":"p137","name":"Athanasia Tsalkigis","m":[],"priv":true},{"id":"p138","name":"Stelios Tsalkigis","m":[],"priv":true},{"id":"p139","name":"Maria Tsalkigis","m":[],"priv":true}]}],"priv":true},{"id":"p140","name":"Zaharo Tsalkigis","m":[{"sp":{"id":"p141","name":"Athanasis Katsaros","priv":true},"kids":[{"id":"p142","name":"Persifoni Katsaros","m":[{"sp":{"id":"p143","name":"Kyriakos Kayopalos","priv":true},"kids":[{"id":"p144","name":"Efstratios Kayopalos","m":[],"priv":true}]}],"priv":true},{"id":"p145","name":"Fotini Katsaros","m":[{"sp":{"id":"p146","name":"Fanis Kliafas","priv":true},"kids":[{"id":"p147","name":"Anna Kliafas","m":[],"priv":true},{"id":"p148","name":"Stella Kliafas","m":[],"priv":true}]}],"priv":true}]}],"priv":true},{"id":"p149","name":"Anna Tsalkigis","m":[{"sp":{"id":"p150","name":"Yianni Statheros","priv":true},"kids":[{"id":"p151","name":"Stergio Statheros","m":[],"priv":true}]}],"priv":true},{"id":"p152","name":"Vasiliki Tsalkigis","m":[],"priv":true},{"id":"p153","name":"Pavlos Tsalkigis","m":[],"priv":true}]}],"birth":"Feb. 13, 1921","death":"Feb. 26, 2004"}]}],"birth":"Abt. 1880"},{"id":"p154","name":"Ioannis 'John' Janelis","m":[{"sp":{"id":"p155","name":"Eva Rush","birth":"1905"},"kids":[{"id":"p156","name":"Robert Norbert Janelis","m":[{"sp":{"id":"p157","name":"Unknown Thomas","birth":"Unknown"},"kids":[{"id":"p158","name":"Robert G. Janelis","m":[],"birth":"June 20, 1947","death":"February 10, 2007"}]}],"birth":"November 11, 1920","death":"October 16, 1963"}]}],"birth":"March 12, 1884"}]}],"birth":"Unknown"}];
+var TREE_TITLES = ["Genelos Family"];
+function makeCard(p, cls) {
+  var div = document.createElement('div');
+  div.className = 'card ' + (cls || '');
+  var n = document.createElement('span'); n.className = 'n';
+  n.textContent = p.name; div.appendChild(n);
+  var parts = [];
+  if (p.birth) parts.push('b. ' + p.birth);
+  if (p.death) parts.push('d. ' + p.death);
+  if (p.priv && !p.birth && !p.death) parts.push('Living');
+  if (parts.length) {
+    var d = document.createElement('span'); d.className = 'd';
+    d.textContent = parts.join('  ·  '); div.appendChild(d);
+  }
+  return div;
+}
+
+function renderNode(p, gen) {
+  var wrapper = document.createElement('div'); wrapper.className = 'tree-node';
+  var body = document.createElement('div'); body.className = 'node-body';
+  var marriages = p.m || [];
+  var allKids = [];
+  for (var i = 0; i < marriages.length; i++) {
+    var ks = marriages[i].kids || [];
+    for (var j = 0; j < ks.length; j++) allKids.push(ks[j]);
+  }
+  var cls = gen === 0 ? 'root' : (p.priv ? 'priv' : '');
+  if (allKids.length) cls += (cls ? ' ' : '') + 'collapsible';
+  var mc = makeCard(p, cls);
+  if (marriages.length > 0) {
+    var row = document.createElement('div'); row.className = 'couple-row';
+    row.appendChild(mc);
+    if (marriages[0].sp) {
+      var dot = document.createElement('span'); dot.className = 'cx';
+      dot.textContent = '×'; row.appendChild(dot);
+      var spCls = 'spouse' + (marriages[0].sp.priv ? ' priv' : '');
+      row.appendChild(makeCard(marriages[0].sp, spCls));
+    }
+    body.appendChild(row);
+    for (var mi = 1; mi < marriages.length; mi++) {
+      var mg = marriages[mi];
+      if (mg.label) {
+        var lbl = document.createElement('div'); lbl.className = 'remarriage-lbl';
+        lbl.textContent = mg.label + ':'; body.appendChild(lbl);
+      }
+      if (mg.sp) {
+        var r2 = document.createElement('div'); r2.className = 'couple-row';
+        var ph = document.createElement('div'); ph.style.cssText = 'width:148px;flex-shrink:0;';
+        r2.appendChild(ph);
+        var d2 = document.createElement('span'); d2.className = 'cx';
+        d2.textContent = '×'; r2.appendChild(d2);
+        var sp2Cls = 'spouse' + (mg.sp.priv ? ' priv' : '');
+        r2.appendChild(makeCard(mg.sp, sp2Cls)); body.appendChild(r2);
+      }
+    }
+  } else {
+    var soloRow = document.createElement('div'); soloRow.className = 'couple-row';
+    soloRow.appendChild(mc); body.appendChild(soloRow);
+  }
+  wrapper.appendChild(body);
+  if (allKids.length) {
+    wrapper.classList.add('has-ch');
+    var cr = document.createElement('div'); cr.className = 'tree-children';
+    for (var ki = 0; ki < allKids.length; ki++) cr.appendChild(renderNode(allKids[ki], gen + 1));
+    wrapper.appendChild(cr);
+    mc.addEventListener('click', (function(nd) {
+      return function(e) { e.stopPropagation(); nd.classList.toggle('closed'); };
+    }(wrapper)));
+  }
+  return wrapper;
+}
+
+function buildSection(title, data, showTitle) {
+  var sec = document.createElement('div'); sec.className = 'tree-section';
+  if (showTitle) {
+    var h = document.createElement('h2'); h.className = 'tree-section-heading';
+    h.textContent = title; sec.appendChild(h);
+  }
+  var root = document.createElement('div'); root.className = 'tree-root';
+  root.appendChild(renderNode(data, 0)); sec.appendChild(root);
+  return sec;
+}
+
+var forest = document.getElementById('forest');
+var multiTree = TREES.length > 1;
+for (var ti = 0; ti < TREES.length; ti++) {
+  forest.appendChild(buildSection(TREE_TITLES[ti], TREES[ti], multiTree));
+}
+</script>
 </body>
 </html>

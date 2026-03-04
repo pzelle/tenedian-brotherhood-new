@@ -3,8 +3,88 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Sfakianos Family Tree — Tenedian Brotherhood</title>
+  <title>Sfakianos Family — Tenedian Brotherhood</title>
   <link rel="stylesheet" href="css/style.css">
+  <style>
+    .tree-page { padding: 0; }
+    .tree-outer { overflow-x: auto; padding: 2.5rem 1.5rem 3rem;
+                  background: var(--color-off-white, #f8f5f0); }
+    .tree-forest { display: flex; flex-direction: column; gap: 3.5rem; }
+    .tree-section-heading {
+      font-family: var(--font-heading, 'Playfair Display', serif);
+      color: var(--color-navy, #0a1628); font-size: 1.2rem;
+      margin: 0 0 1.25rem; padding-bottom: 0.4rem;
+      border-bottom: 2px solid var(--color-gold, #c9a227); }
+    .tree-legend { display: flex; gap: 1.2rem; flex-wrap: wrap;
+                   margin-bottom: 2rem; font-size: 0.8rem; color: #555;
+                   align-items: center; }
+    .legend-item { display: flex; align-items: center; gap: 5px; }
+    .ls { width: 20px; height: 13px; border-radius: 3px;
+          border: 2px solid var(--color-gold, #c9a227);
+          display: inline-block; flex-shrink: 0; }
+    .ls.navy  { background: var(--color-navy, #0a1628); }
+    .ls.white { background: #fff; }
+    .ls.blue  { background: #dce8ff; border-color: #6888cc; }
+    .ls.gray  { background: #eee; border-color: #bbb; }
+    /* Tree layout */
+    .tree-section { overflow-x: auto; padding-bottom: 0.5rem; }
+    .tree-root { display: inline-flex; flex-direction: column;
+                 align-items: center; padding: 0.5rem 1rem; }
+    .tree-node { display: flex; flex-direction: column; align-items: center;
+                 position: relative; }
+    .node-body { display: flex; flex-direction: column; align-items: center;
+                 gap: 3px; position: relative; }
+    .couple-row { display: flex; align-items: center; gap: 5px; }
+    .cx { color: var(--color-gold, #c9a227); font-weight: 700; font-size: 1rem;
+          padding: 0 2px; flex-shrink: 0; }
+    .remarriage-lbl { font-size: 0.65rem; color: #999; font-style: italic;
+                      text-align: center; margin-top: 5px; }
+    /* Cards */
+    .card { background: #fff; border: 2px solid var(--color-gold, #c9a227);
+            border-radius: 6px; padding: 7px 10px; width: 148px;
+            text-align: center; font-size: 0.74rem; line-height: 1.35;
+            position: relative; }
+    .card .n { font-weight: 700; color: var(--color-navy, #0a1628);
+               display: block; font-size: 0.78rem; }
+    .card .d { color: #888; font-size: 0.67rem; display: block; margin-top: 2px; }
+    .card.root { background: var(--color-navy, #0a1628);
+                 border-color: var(--color-gold, #c9a227); }
+    .card.root .n { color: var(--color-gold, #c9a227); }
+    .card.root .d { color: #99aabb; }
+    .card.spouse { background: #dce8ff; border-color: #6888cc; }
+    .card.spouse .n { color: #1a3a80; }
+    .card.priv  { background: #eee; border-color: #bbb; }
+    .card.priv .n { color: #666; }
+    .card.priv .d { color: #aaa; }
+    .card.collapsible { cursor: pointer; }
+    .card.collapsible::after { content: '\25BE'; position: absolute;
+      bottom: 3px; right: 5px; font-size: 0.6rem;
+      color: var(--color-gold, #c9a227); }
+    .tree-node.closed > .node-body .card.collapsible::after { content: '\25B8'; }
+    /* Connector lines (CSS pseudo-elements) */
+    :root { --gap: 44px; }
+    .tree-node.has-ch > .node-body::after {
+      content: ''; position: absolute; left: 50%; transform: translateX(-50%);
+      top: 100%; width: 2px; height: var(--gap);
+      background: var(--color-gold, #c9a227); }
+    .tree-children { display: flex; flex-direction: row; gap: 14px;
+                     align-items: flex-start; justify-content: center;
+                     margin-top: var(--gap); }
+    .tree-node.closed > .node-body::after  { display: none !important; }
+    .tree-node.closed > .tree-children     { display: none !important; }
+    .tree-children > .tree-node { position: relative; }
+    .tree-children > .tree-node::before {
+      content: ''; position: absolute; left: 50%; transform: translateX(-50%);
+      top: calc(-1 * var(--gap)); width: 2px; height: var(--gap);
+      background: var(--color-gold, #c9a227); }
+    .tree-children > .tree-node::after {
+      content: ''; position: absolute; top: calc(-1 * var(--gap));
+      left: 0; right: 0; height: 2px;
+      background: var(--color-gold, #c9a227); }
+    .tree-children > .tree-node:first-child::after  { left: 50%; }
+    .tree-children > .tree-node:last-child::after   { right: 50%; }
+    .tree-children > .tree-node:first-child:last-child::after { display: none; }
+  </style>
 </head>
 <body>
 
@@ -29,523 +109,22 @@
 <main>
   <header class="page-header">
     <div class="page-header-inner">
-      <h1 class="page-title">Sfakianos Family Tree</h1>
-      <p class="page-subtitle"><a href="family-trees.html" style="color:rgba(255,255,255,.6); font-size:.85rem;">&larr; Back to Family Trees</a></p>
+      <h1 class="page-title">Sfakianos Family</h1>
+      <p class="page-subtitle"><a href="family-trees.html" style="color:rgba(255,255,255,.65);font-size:.85rem;">&larr; Back to Family Trees</a></p>
     </div>
   </header>
 
-  <div class="page-content">
-    <div class="privacy-notice">
-      <strong>Privacy notice:</strong> Per the original website policy, birth dates are not
-      disclosed for individuals born after 1920 unless they are deceased.
-    </div>
-
-    <div class="family-tree-content">
-<div class="tree-entry gen-0 note">Sfakianos 
-Family</div>
-<div class="tree-entry gen-0 note">1  John Sfakianos  b: 
-Unknown</div>
-<div class="tree-entry gen-0 spouse">+ Kyriaki  b: Unknown</div>
-<div class="tree-entry gen-0 note">2 Nicholas Sfakianos 
-b: Unknown in Tenedos, Greece</div>
-<div class="tree-entry gen-0 note">+Persiphone 
-Margaritas b: 
-Unknown in Tenedos, Greece</div>
-<div class="tree-entry gen-2">Constantinos N. Sfakianos b: September 18, 1886 in Tenedos d: Dec 1984</div>
-<div class="tree-entry gen-2 note">+Maria Grammatas b: 
-1901 in Greece d: November 28, 1942</div>
-<div class="tree-entry gen-3">Nicholas 'Nick' C. Sfakianos  b: May 08, 1919 in Tenedos d: Nov 28, 1974</div>
-<div class="tree-entry gen-3 note">+Despina 
-'Bessie' Mavrikos  b: January 10, 1920</div>
-<div class="tree-entry gen-4">Constantine N. 'Takie' Sfakianos b: Private</div>
-<div class="tree-entry gen-4 spouse">+ Cynthia b: Private</div>
-<div class="tree-entry gen-4">Angeliki Maria Sfakianos b: Private</div>
-<div class="tree-entry gen-4 spouse">+ Hunter Finch b: Private</div>
-<div class="tree-entry gen-4 note">*2nd Wife of Constantine N. 'Takie' Sfakianos:</div>
-<div class="tree-entry gen-4 spouse">+ Johnnie McKee b. Private</div>
-<div class="tree-entry gen-4">Peter N. Sfakianos b: Private</div>
-<div class="tree-entry gen-4 spouse">+ Barbara Jean 'Jeanie' b: Private</div>
-<div class="tree-entry gen-4">Jeffrey Nicholas Sfakianos b: Private</div>
-<div class="tree-entry gen-4 spouse">+ Min Dan Huang b: Private</div>
-<div class="tree-entry gen-4">Unknown Son b: Unknown</div>
-<div class="tree-entry gen-4">Gregory Sfakiaons, Dr. b: Private</div>
-<div class="tree-entry gen-4">Elizabeth 'Beth' Sfakianos b: Private</div>
-<div class="tree-entry gen-4">James N. Sfakianos b: Private</div>
-<div class="tree-entry gen-4">Tina Marie Sfakianos b: Private</div>
-<div class="tree-entry gen-4 note">4  John 
-C. Sfakianos b: June 21, 1920 d: January 18, 2005</div>
-<div class="tree-entry gen-4 note">+ 
-Lillie Diamontakos b: Unknown d: Unknown</div>
-<div class="tree-entry gen-4 note">*2nd 
-wife of John C. Sfakianos:</div>
-<div class="tree-entry gen-4 spouse">+ Jean W. b: Private</div>
-<div class="tree-entry gen-4 note">4  Peter 
-C. Sfakianos b: February 02, 1927 d: September 1977</div>
-<div class="tree-entry gen-4 spouse">+ Victoria 'Vicki' Sologiozy b: Private</div>
-<div class="tree-entry gen-4">Constantine P. 'Dino' Sfakianos b: Private</div>
-<div class="tree-entry gen-4 spouse">+ Sharon Wilkerson b: Private</div>
-<div class="tree-entry gen-4">Zena Sfakianos b: Private</div>
-<div class="tree-entry gen-4 spouse">+ Peter C. Jones b: Privare</div>
-<div class="tree-entry gen-4">Victoria Elizabeth Jones b: Private</div>
-<div class="tree-entry gen-4">Peter C. Jones b: Private</div>
-<div class="tree-entry gen-3">Persiphone 'Persi' Sfakianos b: Private</div>
-<div class="tree-entry gen-3 note">+Themistocles 
-'Themis' L. Pappadenis b: July 21, 1921 d: Nov 14, 2004</div>
-<div class="tree-entry gen-3 note">4  Helen 
-Sfakianos b: Private</div>
-<div class="tree-entry gen-3 spouse">+ George P. Zannis b: January 14, 1925  d: Feb. 2, 2008</div>
-<div class="tree-entry gen-3">Clairo 'Clara' Sfakianos b: Private</div>
-<div class="tree-entry gen-3 spouse">+ Jack Miller b: Private</div>
-<div class="tree-entry gen-4">Marilyn Miller b: Private</div>
-<div class="tree-entry gen-4">Susan Miller b: Private</div>
-<div class="tree-entry gen-4">Jackie Miller b: Private</div>
-<div class="tree-entry gen-4 note">3 Antonios N. 
-Sfakianos b: 1888 in Tenedos, Greece</div>
-<div class="tree-entry gen-4 note">3 Polyxines 
-Sfakianos b: Unknown in Tenedos, Greece</div>
-<div class="tree-entry gen-4 note">3 Eleni 
-Sfakianos b: Unknown in Tenedos, Greece</div>
-<div class="tree-entry gen-4 note">3 George N. 
-Sfakianos   b: August 10, 1894 in Tenedos, Greece</div>
-<div class="tree-entry gen-4 note">+Martha b: 
-December 20, 1907 d: April 21, 1992</div>
-<div class="tree-entry gen-4 note">4 
-Persiphone 
-Sfakianos b: Private</div>
-<div class="tree-entry gen-3">Nicholas G. Sfakianos b: Private</div>
-<div class="tree-entry gen-3">Eleni Sfakianos b: Private</div>
-<div class="tree-entry gen-3 note">3 Katherine 
-Sfakianos b: Private</div>
-<div class="tree-entry gen-3 note">2 Achilles Sfakianos 
-b: Unknown in Tenedos, Greece d: Abt. 1912</div>
-<div class="tree-entry gen-3 note">+Kalliope Fanoudas b: 
-Unknown in Tenedos d: 1940-41 in Bahia Blanca, Argentina</div>
-<div class="tree-entry gen-2">Nicola A. Sfakianos b: Abt. 1893 in Tenedos d: 1950 in Bahia Blanca, Argentina</div>
-<div class="tree-entry gen-2 note">+Natalia b: 
-Unknown</div>
-<div class="tree-entry gen-3">Achilles N. Sfakianos b: Private</div>
-<div class="tree-entry gen-3 spouse">+ Rosita b: Private</div>
-<div class="tree-entry gen-4">Ricardo Sfakianos b: Private</div>
-<div class="tree-entry gen-4 spouse">+ Susannah b: Private</div>
-<div class="tree-entry gen-4">Sebastian Sfakianos  b: Private</div>
-<div class="tree-entry gen-4">Laura Sfakianos b: Private</div>
-<div class="tree-entry gen-4 note">6 Natalia Sfakianos b: 
-Private</div>
-<div class="tree-entry gen-4 note">4 John 
-N. Sfakianos b: Private</div>
-<div class="tree-entry gen-4 note">+Eva 
-b: Private</div>
-<div class="tree-entry gen-4">Alberto Sfakianos b: Private</div>
-<div class="tree-entry gen-4 spouse">+ Gracella b: Private</div>
-<div class="tree-entry gen-4 note">3 Georgios A. 
-Sfakianos b: April 07, 1894 in Tenedos d: June 01, 1962</div>
-<div class="tree-entry gen-4 note">+Paraskevi 
-'Freda' Hulles b: January 06, 1894 in Tenedos d: January 06, 1949</div>
-<div class="tree-entry gen-3">Kalliope 'Penny' Sfakianos b: Private</div>
-<div class="tree-entry gen-3 spouse">+ Theodore Grevis b: Private</div>
-<div class="tree-entry gen-4">[1] Achilles Terrence George 'Terry' Grevis Perris b: Private</div>
-<div class="tree-entry gen-4 note">*2nd 
-Husband of Kalliope 'Penny' Sfakianos:</div>
-<div class="tree-entry gen-4 spouse">+ Nicholas Alexander Perris b: Private</div>
-<div class="tree-entry gen-4">[1] Achilles Terrence George 'Terry' Grevis Perris b: Private</div>
-<div class="tree-entry gen-4">Paraskevi 'Patty' Perris b: Private</div>
-<div class="tree-entry gen-4 spouse">+ David John Farrell b: Nov. 21, 1948 d: Sept., 10, 2010</div>
-<div class="tree-entry gen-4">Jennifer Deann Farrell b: Private</div>
-<div class="tree-entry gen-4">Christopher David Farrell b: Private</div>
-<div class="tree-entry gen-4 spouse">+ Deeann Joseph b: Private</div>
-<div class="tree-entry gen-4">Andrea Nicole Farrell b: Private</div>
-<div class="tree-entry gen-4 note">*2nd 
-Husband of Paraskevi 'Patty' Perris:</div>
-<div class="tree-entry gen-4 spouse">+ Stephen Leslie Bellner b: Private</div>
-<div class="tree-entry gen-4">Alexandra 'Sandy' Perris b: Private</div>
-<div class="tree-entry gen-4 spouse">+ James E. Thompson b: Private</div>
-<div class="tree-entry gen-4">Nicholas Doss Thompson   b: Private</div>
-<div class="tree-entry gen-4">Tricia Thompson b: Private</div>
-<div class="tree-entry gen-4 spouse">+ Chadwick Walasinski b: Private</div>
-<div class="tree-entry gen-4 note">*3rd 
-Husband of Kalliope 'Penny' Sfakianos:</div>
-<div class="tree-entry gen-4 spouse">+ Thomas Papps   b: Private</div>
-<div class="tree-entry gen-4">Maria Christina Papps b: Private</div>
-<div class="tree-entry gen-4 spouse">+ Raed A. Alroub b: Private</div>
-<div class="tree-entry gen-4 note">*2nd 
-Husband of Maria Christina Papps:</div>
-<div class="tree-entry gen-4 spouse">+ Philip J. Dollimore b: Private</div>
-<div class="tree-entry gen-4 note">*3rd 
-Husband of Maria Christina Papps:</div>
-<div class="tree-entry gen-4 spouse">+ Robert Rosales b: Private</div>
-<div class="tree-entry gen-4 note">*2nd Wife of 
-Georgios A. Sfakianos:</div>
-<div class="tree-entry gen-4 note">+Eugenia 
-Cabacum b: November 25, 1892 in Tenedos d: March 24, 1976</div>
-<div class="tree-entry gen-4 note">3 Akaterini A. 
-Sfakianos b: April 08, 1901 in Tenedos d: March 17, 1990</div>
-<div class="tree-entry gen-4 note">+Stavros C. 
-Mormanis / Morris b: Sept. 14, 1892 in Tenedos d: July 28, 1941</div>
-<div class="tree-entry gen-3">Achilles S. 'Johnny' Morris b: May 21, 1923 in Tenedos d: April 19, 1991</div>
-<div class="tree-entry gen-3 spouse">+ Fatima Mohamed b: Private</div>
-<div class="tree-entry gen-4">Julia Ann Morris b: Private</div>
-<div class="tree-entry gen-4">Stavros Achilles Morris  b: Private</div>
-<div class="tree-entry gen-4 note">4 
-Konstantinos S. 
-'Gus' Morris b: August 10, 1925 d: June 24, 1987</div>
-<div class="tree-entry gen-4 spouse">+ Gloria Fiocco  b: March 11, 1928   d: September 12, 2005</div>
-<div class="tree-entry gen-4">Stevan Morris  b: Private</div>
-<div class="tree-entry gen-4 spouse">+ Charlotte Kucharski  b: Private</div>
-<div class="tree-entry gen-4">Katherine Morris  b: Private</div>
-<div class="tree-entry gen-4 spouse">+ Richard S. Smiouskas b: Private</div>
-<div class="tree-entry gen-4 note">6 Christine Patricia Smiouskas b: 
-Private</div>
-<div class="tree-entry gen-4 spouse">+ Dean R. Herfindahl, III b: Private</div>
-<div class="tree-entry gen-4 note">7 Gregory James Herfindahl b: 
-Private</div>
-<div class="tree-entry gen-4 note">7 Alanna Gloriann Herfindahl b: 
-Private</div>
-<div class="tree-entry gen-4">Richard Smiouskas b: Private</div>
-<div class="tree-entry gen-4 spouse">+ Hellin VaaSehlen b: Private</div>
-<div class="tree-entry gen-4 note">*2nd Husband of Katherine Morris:</div>
-<div class="tree-entry gen-4 spouse">+ Steve Levine b: Private</div>
-<div class="tree-entry gen-4">Ricardo Morris b: Private</div>
-<div class="tree-entry gen-3">Despina S. 'Virginia' Morris b: Nov. 25, 1926  d. Oct. 1, 2010</div>
-<div class="tree-entry gen-3 spouse">+ Emanuel E. Kountouris b: May 20, 1900 in Greece d: January 1968</div>
-<div class="tree-entry gen-3 note">*2nd 
-Husband of Despina S. 'Virginia' Morris:</div>
-<div class="tree-entry gen-3 spouse">+ Michael A. Barlos b: November 05, 1922 d: March 10, 2001</div>
-<div class="tree-entry gen-4">Margot Catherine Barlos  b: Private</div>
-<div class="tree-entry gen-4 spouse">+ Michael Robert Foldes  b: Private</div>
-<div class="tree-entry gen-4">Maya Alexandra Foldes  b: Private</div>
-<div class="tree-entry gen-4">Adam Jory Stephen Foldes  b: Private</div>
-<div class="tree-entry gen-4">Peter Miles Foldes b: Private</div>
-<div class="tree-entry gen-4">Haralambos 'Harry' Stavros Barlos b: Private</div>
-<div class="tree-entry gen-4 spouse">+ Jenny Lynn Fisher b: Private</div>
-<div class="tree-entry gen-4">Michael Barlos b: Private</div>
-<div class="tree-entry gen-4">Graham Barlos b: Private</div>
-<div class="tree-entry gen-4 note">4 Peter 
-S. Morris b: Private</div>
-<div class="tree-entry gen-4 note">+Alfreda 
-'Fritzi' Kaloger b: Private</div>
-<div class="tree-entry gen-4">Catherine A. 'Cathy' Morris b: Private</div>
-<div class="tree-entry gen-4 spouse">+ Samuel Nicholas 'Sam' Manol b: Private</div>
-<div class="tree-entry gen-4">Nicholas Paul Manol b: Private</div>
-<div class="tree-entry gen-4">Zachary Manol b: Private</div>
-<div class="tree-entry gen-4 note">* 
-2nd Husband of Catherine Morris:</div>
-<div class="tree-entry gen-4 spouse">+ Bruce Sorg b: Private</div>
-<div class="tree-entry gen-4">Panagiota 'Pamela' Sue Morris b: Private</div>
-<div class="tree-entry gen-4 spouse">+ James William Martin b: Private</div>
-<div class="tree-entry gen-4">Natalie Jo Martin b: Private</div>
-<div class="tree-entry gen-4 spouse">+ Michael J. Jackson b: Private</div>
-<div class="tree-entry gen-4">Evelyn Reese Jackson b: Private</div>
-<div class="tree-entry gen-4">August 'Gus' Jackson b: Private</div>
-<div class="tree-entry gen-4">Jamie Lynn Martin b: Private</div>
-<div class="tree-entry gen-4 spouse">+ Jeremy John Marinis b: Private</div>
-<div class="tree-entry gen-4">Karris Marinis b: Private</div>
-<div class="tree-entry gen-4">Neco Marinis b: Private</div>
-<div class="tree-entry gen-4">Sonia Marie 'Susan' Morris b: Private</div>
-<div class="tree-entry gen-4 spouse">+ Randall Montrie b: Private</div>
-<div class="tree-entry gen-4 note">*2nd Husband of Sonia Marie 'Susan' Morris:</div>
-<div class="tree-entry gen-4 spouse">+ Kenneth E. Anderson b: Private</div>
-<div class="tree-entry gen-4">Cynthia Lynn 'Cindi' Morris b: Private</div>
-<div class="tree-entry gen-4 spouse">+ Steve Balint b: Private</div>
-<div class="tree-entry gen-4">Joey Balint b: Private</div>
-<div class="tree-entry gen-4 note">4 George 
-S. Morris b: August 02, 1931 d: March 29, 1996</div>
-<div class="tree-entry gen-4 note">+Athanasia 
-'Anne' S. Tsantles b: November 11, 1932 d: June 11, 2004</div>
-<div class="tree-entry gen-4">Gregory Andonios Morris b: Private</div>
-<div class="tree-entry gen-4 spouse">+ Katherine b: Private</div>
-<div class="tree-entry gen-4">Stephanie Morris b: Private</div>
-<div class="tree-entry gen-4 note">*2nd Wife of Gregory Andonios Morris:</div>
-<div class="tree-entry gen-4 spouse">+ Rosemarie b: Private</div>
-<div class="tree-entry gen-4">Anthony P. Morris b: Private</div>
-<div class="tree-entry gen-4 spouse">+ Debra Stacy b: Private</div>
-<div class="tree-entry gen-4">Andrea Morris b: Private</div>
-<div class="tree-entry gen-4">Stacy Morris b: Private</div>
-<div class="tree-entry gen-4">James George Morris, Sr. b: Private</div>
-<div class="tree-entry gen-4 spouse">+ Georgina 'Gina' Arvanitis b: Private</div>
-<div class="tree-entry gen-4">James George Morris, Jr. b: Private</div>
-<div class="tree-entry gen-4 note">+Ashly Brooke Webb 
-b: Private</div>
-<div class="tree-entry gen-4">Jackson Webb Morris b: Private</div>
-<div class="tree-entry gen-4">Nicholas James Morris b: Private</div>
-<div class="tree-entry gen-4 spouse">+ Kristin Ann Hansen b: Private</div>
-<div class="tree-entry gen-4 note">*2nd Wife of James George Morris, Sr.:</div>
-<div class="tree-entry gen-4 spouse">+ Anastacia 'Anne' Choratis b: Private</div>
-<div class="tree-entry gen-4">Alex Morris b: Private</div>
-<div class="tree-entry gen-4">Anne Morris  b: Private</div>
-<div class="tree-entry gen-4 spouse">+ Unknown Husband b: Private</div>
-<div class="tree-entry gen-4">Madison b: Private</div>
-<div class="tree-entry gen-4">Ava b: Private</div>
-<div class="tree-entry gen-4 note">*2nd 
-Wife of George S. Morris:</div>
-<div class="tree-entry gen-4 spouse">+ Brenda M. Nelson b: Private</div>
-<div class="tree-entry gen-4">Virginia 'Ginny' Morris b: Private</div>
-<div class="tree-entry gen-3">Gregoris Morris b: April 23, 1933  d: March 12, 2010</div>
-<div class="tree-entry gen-3 spouse">+ Barbara J. DeStella b: Private</div>
-<div class="tree-entry gen-4">Christina A. 'Chrissy' Morris b: Private</div>
-<div class="tree-entry gen-4 note">+ Unknown Kilis 
-b: Private</div>
-<div class="tree-entry gen-4">Gregory Richard Kilis b: Private</div>
-<div class="tree-entry gen-4">Amy Jo Morris b: Private</div>
-<div class="tree-entry gen-4 spouse">+ Robert Cosentino b: Private</div>
-<div class="tree-entry gen-4 note">*2nd Husband of 
-Akaterini A. Sfakianos:</div>
-<div class="tree-entry gen-4 note">+Anthony P. 
-Pilateris b: September 14, 1900 d: September 23, 1965</div>
-<div class="tree-entry gen-4 note">3 Stylini 
-'Stella' Sfakianos b: April 02, 1904 in Tenedos d: June 26, 1973</div>
-<div class="tree-entry gen-4 note">+John A. 
-Mormanis / Morris b: March 01, 1895 in Tenedos d: June 02, 1955</div>
-<div class="tree-entry gen-4 note">4 Anesti 
-J. 
-'Ernest' Morris b: Private</div>
-<div class="tree-entry gen-4 spouse">+ Stella Nicholas b: Private</div>
-<div class="tree-entry gen-4 note">*2nd Wife 
-of Anesti 'Ernest' Morris:</div>
-<div class="tree-entry gen-4 spouse">+ Doreen Smith b: Private</div>
-<div class="tree-entry gen-3">Theodore J. Morris b: Private</div>
-<div class="tree-entry gen-3 spouse">+ Charlotte F. Schnieder b: April 24, 1928  d: May 29, 1994</div>
-<div class="tree-entry gen-3 note">*2nd Wife 
-of Theodore J. Morris:</div>
-<div class="tree-entry gen-3 note">+ Mandy 
-Kersey b: Private</div>
-<div class="tree-entry gen-3 note">*2nd Husband of 
-Stylini 'Stella' Sfakianos:</div>
-<div class="tree-entry gen-3 note">+James G. 
-Kotichas   b: October 26, 1896 d: December 15, 1963</div>
-<div class="tree-entry gen-3 note">3 Stelios A. 
-Sfakianos b: Abt. 1906 d: Abt. August 1954</div>
-<div class="tree-entry gen-3 note">+Maria 
-Georgakopoulos b: Private</div>
-<div class="tree-entry gen-3">Achilles S. Sfakianos b: 1939  d: 1986</div>
-<div class="tree-entry gen-3 note">4 Nikola 
-S. Sfakianos b: Private</div>
-<div class="tree-entry gen-3 spouse">+ Unknown Wife b: Private</div>
-<div class="tree-entry gen-4">Marcello Sfakianos b: Private</div>
-<div class="tree-entry gen-4">Maria Hernandez Sfakianos b: Private</div>
-<div class="tree-entry gen-4 note">3 Despina 
-Sfakianos b: July 02, 1908 in Tenedos, Greece d: May 05, 1981</div>
-<div class="tree-entry gen-4 note">+Panagiotas 
-'Peter' G. Makras b: Sept 28, 1903 in Tenedos d: June 19, 1983</div>
-<div class="tree-entry gen-3">Kalliope 'Clara' Peter Makras   b: Private</div>
-<div class="tree-entry gen-3 spouse">+ Constantine 'Gus' Denos b: Mar 06, 1927 d: June 28, 1992</div>
-<div class="tree-entry gen-4">Dimitrios 'James' Denos b: Private</div>
-<div class="tree-entry gen-4">Argero 'Gloria' Denos b: Private</div>
-<div class="tree-entry gen-4">Panagiotis 'Peter' Denos   b: Private</div>
-<div class="tree-entry gen-4 note">*2nd 
-Husband of Kalliope 'Clara' Peter Makras:</div>
-<div class="tree-entry gen-4 note">+Troy 
-Upton b: December 20, 1919   d: June 06, 1991</div>
-<div class="tree-entry gen-4 note">4 George 
-Peter Makras b: Private</div>
-<div class="tree-entry gen-4 spouse">+ Nancy Cook b: Private</div>
-<div class="tree-entry gen-4">Joseph Makras b: July 10, 1959</div>
-<div class="tree-entry gen-4 note">*2nd 
-Wife of George Peter Makras:</div>
-<div class="tree-entry gen-4 note">+Ardith 
-b: Private</div>
-<div class="tree-entry gen-4">Despina Makras b: July 17, 1960 d: September 19, 1977</div>
-<div class="tree-entry gen-4">Unknown Son Makras b: Private</div>
-<div class="tree-entry gen-4 note">…………… *3rd Wife of 
-George Peter Makras:</div>
-<div class="tree-entry gen-4 note">……………… + Betty b: Private</div>
-<div class="tree-entry gen-4 note">*4th 
-Wife of George Peter Makras:</div>
-<div class="tree-entry gen-4 spouse">+ Constance Louise 'Connie' b: Private</div>
-<div class="tree-entry gen-4">George A. Makras  b: Private</div>
-<div class="tree-entry gen-4">Michael J. Makras  b: Private</div>
-<div class="tree-entry gen-4">Melissa M. Makras b: Private</div>
-<div class="tree-entry gen-3">Achilles 'Ike' Peter Makras b: March 2, 1932  d: July 1, 2011</div>
-<div class="tree-entry gen-3 note">+Fotini 
-'Tulla' Kantaras b: Private</div>
-<div class="tree-entry gen-4">Peter Makras b: Private</div>
-<div class="tree-entry gen-4">Maria Despina Makras b: Private</div>
-<div class="tree-entry gen-4 note">3 Eleni 'Helen' 
-Sfakianos b: July 02, 1908 in Tenedos d: January 22, 1984</div>
-<div class="tree-entry gen-4 note">+Nicholas S. 
-Hatzinikolis b: December 10, 1898 d: December 15, 1963</div>
-<div class="tree-entry gen-3">Stavros N. Hatzinikolis   b: October 22, 1929 d: May 30, 1930</div>
-<div class="tree-entry gen-3 note">4 Mary 
-N. Hatzinikolis b: Private</div>
-<div class="tree-entry gen-3 note">+Theodore P. Korogianos b: March 25, 1919 d: June 11, 
-2003</div>
-<div class="tree-entry gen-4">Peter T. Korogianos b: Private</div>
-<div class="tree-entry gen-4 spouse">+ Janelle Eghan b: Private</div>
-<div class="tree-entry gen-4">Mary Rose Korogianos b: Private</div>
-<div class="tree-entry gen-4">Eleni Andrea Korogianos b: Private</div>
-<div class="tree-entry gen-4">Andrea Korogianos b: Private</div>
-<div class="tree-entry gen-4 note">4 Steve 
-Nicholas Hatzinikolis b: August 09, 1932 d: July 11, 1999</div>
-<div class="tree-entry gen-4 spouse">+ Diane Marie Walczak b: Private</div>
-<div class="tree-entry gen-4">Georgina Marie Hatzinikolis b: Private</div>
-<div class="tree-entry gen-4 spouse">+ Eulalio Rodriguez b: Private</div>
-<div class="tree-entry gen-4">Maria Rodriguez b: Private</div>
-<div class="tree-entry gen-4 note">*2nd Husband of Georgina Marie Hatzinikolis:</div>
-<div class="tree-entry gen-4 spouse">+ Alfred G. 'Fred' Molina b: Private</div>
-<div class="tree-entry gen-4">Steve N. Hatzinikolis b: Private</div>
-<div class="tree-entry gen-4 spouse">+ Kimberly Nowakowski b: Private</div>
-<div class="tree-entry gen-4">Steven N. Hatzinikolis b: Private</div>
-<div class="tree-entry gen-4">Sarah Hatzinikolis b: Private</div>
-<div class="tree-entry gen-4 note">+ 
-Mark Perry b: Unknown</div>
-<div class="tree-entry gen-4">Deacon Perry b: Unknown</div>
-<div class="tree-entry gen-4">Nicole Hatzinikolis b: Private</div>
-<div class="tree-entry gen-4 spouse">+ Christian Volger  b: Unknown</div>
-<div class="tree-entry gen-4">Elizabeth Nicole Volger b: Private</div>
-<div class="tree-entry gen-4">Sheila Hatzinikolis b: Private</div>
-<div class="tree-entry gen-4 spouse">+ Adolph Gonzales b: Private</div>
-<div class="tree-entry gen-4">Adolph Gonzales, Jr. b: Private</div>
-<div class="tree-entry gen-4 note">* 2nd 
-Husband of Sheila Hatzinikolis:</div>
-<div class="tree-entry gen-4 spouse">+ Marcus Zagoric b: Private</div>
-<div class="tree-entry gen-4">Tina Hatzinikolis   b: Private</div>
-<div class="tree-entry gen-4 spouse">+ James Lang b: Private</div>
-<div class="tree-entry gen-4">Jamie Lang b: Private</div>
-<div class="tree-entry gen-4">Valerie Lang   b: Private</div>
-<div class="tree-entry gen-4">James Lang b: Private</div>
-<div class="tree-entry gen-4 note">*2nd Wife 
-of Steve Nicholas Hatzinikolis:</div>
-<div class="tree-entry gen-4 spouse">+ Nancy Kerr b: April 21, 1938 d: January 26, 2005</div>
-<div class="tree-entry gen-4">Michael Hatzinikolis b: Private (adopted)</div>
-<div class="tree-entry gen-3">Theodossia N. 'Lucy' Hatzinikolis b: Private</div>
-<div class="tree-entry gen-3">Achilles N. Hatzinikolis b: Private</div>
-<div class="tree-entry gen-3 spouse">+ Barbara Charlene Dushane b: Private</div>
-<div class="tree-entry gen-4">Nicholas George Hatzinikolis b: Private</div>
-<div class="tree-entry gen-4 spouse">+ Diane Zeman b: Private</div>
-<div class="tree-entry gen-4">Kendra Nicole Hatzinikolis b: Private</div>
-<div class="tree-entry gen-4 spouse">+ Unknown b: Private</div>
-<div class="tree-entry gen-4">Bryant Hatzinikolis b: Private</div>
-<div class="tree-entry gen-4">Marissa Hatzinikolis  b: Private</div>
-<div class="tree-entry gen-4 spouse">+ Unknown Bracken</div>
-<div class="tree-entry gen-4">Ally Bracken b: Private</div>
-<div class="tree-entry gen-4">Jenna Hatzinikolis b: Private</div>
-<div class="tree-entry gen-4">Joseph Kenneth Hatzinikolis b: Private</div>
-<div class="tree-entry gen-4 spouse">+ Karen M. Janish b: Private</div>
-<div class="tree-entry gen-4">Nicole Elaine Hatzinikolis b: Private</div>
-<div class="tree-entry gen-4">Kenneth Joseph Hatzinikolis b: Private</div>
-<div class="tree-entry gen-4">Stephanie Marie Hatzinikolis b: Private</div>
-<div class="tree-entry gen-4">Joseph Kenneth Hatzinikolis b: Private</div>
-<div class="tree-entry gen-4">Christine Hatzinikolis b: Private</div>
-<div class="tree-entry gen-4">Elaine Ann Hatzinikolis b: Private</div>
-<div class="tree-entry gen-4 spouse">+ Donald A. Rowland b: Private</div>
-<div class="tree-entry gen-4">Alisa Renee Rowland b: Private</div>
-<div class="tree-entry gen-4">Kayla Rowland b: Private</div>
-<div class="tree-entry gen-4 spouse">+ John Kowalski b: Private</div>
-<div class="tree-entry gen-4">Rylee Renee Kowalski b: Private</div>
-<div class="tree-entry gen-4">Reagan Kowalski b: Private</div>
-<div class="tree-entry gen-3">Georgia Pagona Hatzinikolis b: February 22, 1942  d: Jan. 15, 2000</div>
-<div class="tree-entry gen-3 note">+Louis 
-Brown b: Private</div>
-<div class="tree-entry gen-3">Despina 'Bess' Hatzinikolis b: November 05, 1943  d: Feb. 09, 2005</div>
-<div class="tree-entry gen-3 spouse">+ Dennis Gunter b: Private</div>
-<div class="tree-entry gen-4">Christopher D. Gunter b: Private</div>
-<div class="tree-entry gen-4 spouse">+ Jill b: Private</div>
-<div class="tree-entry gen-4 note">4 
-Theodora 'Dorothy' Hatzinikolis  b: Sept. 25, 1945  d. July 13, 
-2008</div>
-<div class="tree-entry gen-4 note">3 Yiannis 'John' 
-A. Sfakianos b: August 29, 1911</div>
-<div class="tree-entry gen-4 note">+Stamatia 
-Dinos b: Private</div>
-<div class="tree-entry gen-3">Achilles John Sfakianos b: Private</div>
-<div class="tree-entry gen-3 note">+Lucy 
-b: Private</div>
-<div class="tree-entry gen-4">Claudia Sfakianos   b: Private</div>
-<div class="tree-entry gen-4">Victor Sfakianos b: Private</div>
-<div class="tree-entry gen-4 note">2 Anna Sfakianos b: 
-Unknown</div>
-<div class="tree-entry gen-4 note">+Nicholas Gangas   b: 
-Unknown</div>
-<div class="tree-entry gen-4 note">3 John Gangas   
-b: 1867in Tenedos, Greece d: June 30, 1961</div>
-<div class="tree-entry gen-4 note">+Anastacia 
-'Rose' Xiriches   b: 1878 in Tenedos  d: December 01, 1936</div>
-<div class="tree-entry gen-4 note">4 Zoe 
-'Jennie' Grevis b: November 04, 1922 d: November 1979</div>
-<div class="tree-entry gen-4 note">+Stavros 
-'Steve' (Karakostas) Caras b: 1914</div>
-<div class="tree-entry gen-4">Albert G. Caras b: December 07, 1942 d: June 10, 2005</div>
-<div class="tree-entry gen-4 spouse">+ Donna Hope  b: Private</div>
-<div class="tree-entry gen-4">John Leonidas Caras b: October 21, 1946 d: April 19, 2004</div>
-<div class="tree-entry gen-4 note">3 Marika Gangas 
-b: Private</div>
-<div class="tree-entry gen-4 note">+Ilie 
-Gheorghiu b: Private</div>
-<div class="tree-entry gen-3">Panagiotas Gheorghiu b: Private</div>
-<div class="tree-entry gen-3 note">4 Mihali 
-Gheorghiu b: Private</div>
-<div class="tree-entry gen-3 spouse">+ Claudia b: Private</div>
-<div class="tree-entry gen-4">Horia Gheorghiu b: Private</div>
-<div class="tree-entry gen-4">Aphrodita Gheorghiu b: Private</div>
-<div class="tree-entry gen-3">Eiolanda Gheorghiu b: Private</div>
-<div class="tree-entry gen-3 note">3 Nicholas 
-Gangas b: Private</div>
-<div class="tree-entry gen-3 note">+Penelope b: 
-Private</div>
-<div class="tree-entry gen-3">Christopher N. Gangas   b: Private</div>
-<div class="tree-entry gen-3 spouse">+ Amelia b: Private</div>
-<div class="tree-entry gen-4">Violanda Gangas b: Private</div>
-<div class="tree-entry gen-4">Liana Gangas b: Private</div>
-<div class="tree-entry gen-4">Paula Gangas b: Private</div>
-<div class="tree-entry gen-4 note">3 Christopher 
-Gangas b: Private</div>
-<div class="tree-entry gen-4 note">3 Alexandros 
-'Alex' Gangas b: April 14, 1887 in Tenedos d: Aug. 11, 1962</div>
-<div class="tree-entry gen-4 note">+Zafera A. 
-Mormanis / Morris b: Jan. 10, 1898 in Tenedos d: Mar. 30, 1989</div>
-<div class="tree-entry gen-3">Katherine Gangas b: August 28, 1928 d: June 10, 1948</div>
-<div class="tree-entry gen-3">Nicholas Gangas   b: Private</div>
-<div class="tree-entry gen-3 spouse">+ Jeanne Allen b: Private</div>
-<div class="tree-entry gen-4">Nicki Ekaterini Gangas b: Private</div>
-<div class="tree-entry gen-4 spouse">+ Eugene J. Perry, Jr. b: Private</div>
-<div class="tree-entry gen-4">Gregory Alexander Gangas b: Private</div>
-<div class="tree-entry gen-4 spouse">+ Lana J. Duckett b: Private</div>
-<div class="tree-entry gen-4 note">*2nd Wife of Gregory Alexander Gangas:</div>
-<div class="tree-entry gen-4 spouse">+ Jacklyn Lynn Ross b: Private</div>
-<div class="tree-entry gen-4">Nickolas Ross Gangas b: Private</div>
-<div class="tree-entry gen-4 note">4 Angelo 
-Gangas b: Private</div>
-<div class="tree-entry gen-4 note">3 Helen 'Elaine' 
-Gangas b: 1890 in Tenedos, Greece d: December 03, 1962</div>
-<div class="tree-entry gen-4 note">+Efstratios 
-'Steve' N. Demos b: April 20, 1889 in Tenedos d: Oct. 15, 1965</div>
-<div class="tree-entry gen-3">Gramatiki 'Jessica' Demos b: February 18, 1917 d: May 03, 1988</div>
-<div class="tree-entry gen-3 note">+Gus 
-P. (Komninos) Comis b: June 12, 1902 in Tenedos d: Jan. 10, 1985</div>
-<div class="tree-entry gen-4">Panagiotis 'Pano' Comis   b: June 15, 1944  d: May 04, 1963</div>
-<div class="tree-entry gen-4 note">4 Anna 
-Demos b: 1918</div>
-<div class="tree-entry gen-3">Christopher Demos b: September 12, 1920</div>
-<div class="tree-entry gen-3 spouse">+ Dorothea 'Dorothy' Matthews b: Private</div>
-<div class="tree-entry gen-4">Stephen Christopher Demos b: August 29, 1950 d: Sept. 06, 1980</div>
-<div class="tree-entry gen-4">George Edward Demos b: Private</div>
-<div class="tree-entry gen-4 spouse">+ Tina Cowart b: Private</div>
-<div class="tree-entry gen-4">Mark Christopher Demos b: Private</div>
-<div class="tree-entry gen-4 spouse">+ LeAnn Chapman b: Private</div>
-<div class="tree-entry gen-4 note">6 Stephanie Michelle Demos b: 
-Private</div>
-<div class="tree-entry gen-4">Christy Nicole Demos b: Private</div>
-<div class="tree-entry gen-3">Nicholas Demos b: Private</div>
-<div class="tree-entry gen-3 note">+Joan 
-b: Private</div>
-<div class="tree-entry gen-4">Matthew Demos b: Private</div>
-<div class="tree-entry gen-4">Ricca Demos b: Private</div>
-<div class="tree-entry gen-4 spouse">+ Brennan S. Voboril b: Private</div>
-<div class="tree-entry gen-4">Holly Voboril   b: Private</div>
-<div class="tree-entry gen-4">Brennan Voboril b: Private</div>
-<div class="tree-entry gen-4">Mark Demos b: Private</div>
-<div class="tree-entry gen-4 note">2 Antonis Sfakianos  b: 
-Unknown</div>
-<div class="tree-entry gen-4 note">2 Spiros Sfakianos 
-b: Unknown</div>
-<div class="tree-entry gen-4 note">+Dimitra b: 
-Unknown</div>
-<div class="tree-entry gen-4 note">2 Constantinos 
-Sfakianos b: Unknown</div>
-<div class="tree-entry gen-4 note">2 George Sfakianos   
-b: Unknown</div>
-<div class="tree-entry gen-4 note">2 Dimitrios 
-Sfakianos b: Unknown</div>
-
+  <div class="page-content tree-page">
+    <div class="tree-outer">
+      <div class="tree-legend">
+        <div class="legend-item"><div class="ls navy"></div> Ancestor</div>
+        <div class="legend-item"><div class="ls white"></div> Descendant</div>
+        <div class="legend-item"><div class="ls blue"></div> Spouse (married-in)</div>
+        <div class="legend-item"><div class="ls gray"></div> Living (private)</div>
+        <div class="legend-item" style="color:var(--color-gold,#c9a227);font-weight:700;font-size:1rem">&times;</div>&thinsp;Married
+        <div class="legend-item" style="font-size:.75rem;color:#999">Click a descendant card to collapse/expand</div>
+      </div>
+      <div class="tree-forest" id="forest"></div>
     </div>
   </div>
 </main>
@@ -561,11 +140,101 @@ Sfakianos b: Unknown</div>
       <a href="contact.html">Contact</a>
       <a href="not-recovered.html">Not Archived</a>
     </nav>
-    <p class="footer-copy">
-      Original content &copy; Tenedian Brotherhood. Website restored and modernized from archived materials.
-    </p>
+    <p class="footer-copy">Original content &copy; Tenedian Brotherhood.
+      Website restored and modernized from archived materials.</p>
   </div>
 </footer>
 
+<script>
+var TREES = [{"id":"p1","name":"John Sfakianos","m":[{"sp":{"id":"p2","name":"Kyriaki","birth":"Unknown"},"kids":[{"id":"p3","name":"Nicholas Sfakianos","m":[{"sp":{"id":"p4","name":"Persiphone Margaritas","birth":"Unknown"},"kids":[{"id":"p5","name":"Constantinos N. Sfakianos","m":[{"sp":{"id":"p6","name":"Maria Grammatas","birth":"1901","death":"November 28, 1942"},"kids":[{"id":"p7","name":"Nicholas 'Nick' C. Sfakianos","m":[{"sp":{"id":"p8","name":"Despina 'Bessie' Mavrikos","birth":"January 10, 1920","priv":true},"kids":[{"id":"p9","name":"Constantine N. 'Takie' Sfakianos","m":[{"sp":{"id":"p10","name":"Cynthia","priv":true},"kids":[{"id":"p11","name":"Angeliki Maria Sfakianos","m":[{"sp":{"id":"p12","name":"Hunter Finch","priv":true},"kids":[]}],"priv":true}]},{"sp":{"id":"p13","name":"Johnnie McKee","priv":true},"kids":[],"label":"2nd marriage"}],"priv":true},{"id":"p14","name":"Peter N. Sfakianos","m":[{"sp":{"id":"p15","name":"Barbara Jean 'Jeanie'","priv":true},"kids":[{"id":"p16","name":"Jeffrey Nicholas Sfakianos","m":[{"sp":{"id":"p17","name":"Min Dan Huang","priv":true},"kids":[{"id":"p18","name":"Unknown Son","m":[],"birth":"Unknown"}]}],"priv":true},{"id":"p19","name":"Gregory Sfakiaons, Dr.","m":[],"priv":true},{"id":"p20","name":"Elizabeth 'Beth' Sfakianos","m":[],"priv":true}]}],"priv":true},{"id":"p21","name":"James N. Sfakianos","m":[],"priv":true},{"id":"p22","name":"Tina Marie Sfakianos","m":[],"priv":true}]}],"birth":"May 08, 1919","death":"Nov 28, 1974"},{"id":"p23","name":"John C. Sfakianos","m":[{"sp":{"id":"p24","name":"Lillie Diamontakos","birth":"Unknown","death":"Unknown"},"kids":[]},{"sp":{"id":"p25","name":"Jean W.","priv":true},"kids":[],"label":"2nd marriage"}],"birth":"June 21, 1920","death":"January 18, 2005"},{"id":"p26","name":"Peter C. Sfakianos","m":[{"sp":{"id":"p27","name":"Victoria 'Vicki' Sologiozy","priv":true},"kids":[{"id":"p28","name":"Constantine P. 'Dino' Sfakianos","m":[{"sp":{"id":"p29","name":"Sharon Wilkerson","priv":true},"kids":[]}],"priv":true},{"id":"p30","name":"Zena Sfakianos","m":[{"sp":{"id":"p31","name":"Peter C. Jones","birth":"Privare"},"kids":[{"id":"p32","name":"Victoria Elizabeth Jones","m":[],"priv":true},{"id":"p33","name":"Peter C. Jones","m":[],"priv":true}]}],"priv":true}]}],"birth":"February 02, 1927","death":"September 1977"},{"id":"p34","name":"Persiphone 'Persi' Sfakianos","m":[{"sp":{"id":"p35","name":"Themistocles 'Themis' L. Pappadenis","birth":"July 21, 1921","death":"Nov 14, 2004"},"kids":[]}],"priv":true},{"id":"p36","name":"Helen Sfakianos","m":[{"sp":{"id":"p37","name":"George P. Zannis","birth":"January 14, 1925","death":"Feb. 2, 2008"},"kids":[]}],"priv":true},{"id":"p38","name":"Clairo 'Clara' Sfakianos","m":[{"sp":{"id":"p39","name":"Jack Miller","priv":true},"kids":[{"id":"p40","name":"Marilyn Miller","m":[],"priv":true},{"id":"p41","name":"Susan Miller","m":[],"priv":true},{"id":"p42","name":"Jackie Miller","m":[],"priv":true}]}],"priv":true}]}],"birth":"September 18, 1886","death":"Dec 1984"},{"id":"p43","name":"Antonios N. Sfakianos","m":[],"birth":"1888"},{"id":"p44","name":"Polyxines Sfakianos","m":[],"birth":"Unknown"},{"id":"p45","name":"Eleni Sfakianos","m":[],"birth":"Unknown"},{"id":"p46","name":"George N. Sfakianos","m":[{"sp":{"id":"p47","name":"Martha","birth":"December 20, 1907","death":"April 21, 1992"},"kids":[{"id":"p48","name":"Persiphone Sfakianos","m":[],"priv":true},{"id":"p49","name":"Nicholas G. Sfakianos","m":[],"priv":true},{"id":"p50","name":"Eleni Sfakianos","m":[],"priv":true}]}],"birth":"August 10, 1894"},{"id":"p51","name":"Katherine Sfakianos","m":[],"priv":true}]}],"birth":"Unknown"},{"id":"p52","name":"Achilles Sfakianos","m":[{"sp":{"id":"p53","name":"Kalliope Fanoudas","birth":"Unknown","death":"1940-41 in Bahia Blanca, Argentina"},"kids":[{"id":"p54","name":"Nicola A. Sfakianos","m":[{"sp":{"id":"p55","name":"Natalia","birth":"Unknown"},"kids":[{"id":"p56","name":"Achilles N. Sfakianos","m":[{"sp":{"id":"p57","name":"Rosita","priv":true},"kids":[{"id":"p58","name":"Ricardo Sfakianos","m":[{"sp":{"id":"p59","name":"Susannah","priv":true},"kids":[{"id":"p60","name":"Sebastian Sfakianos","m":[],"priv":true},{"id":"p61","name":"Laura Sfakianos","m":[],"priv":true},{"id":"p62","name":"Natalia Sfakianos","m":[],"priv":true}]}],"priv":true}]}],"priv":true},{"id":"p63","name":"John N. Sfakianos","m":[{"sp":{"id":"p64","name":"Eva","priv":true},"kids":[{"id":"p65","name":"Alberto Sfakianos","m":[{"sp":{"id":"p66","name":"Gracella","priv":true},"kids":[]}],"priv":true}]}],"priv":true}]}],"birth":"Abt. 1893","death":"1950 in Bahia Blanca, Argentina"},{"id":"p67","name":"Georgios A. Sfakianos","m":[{"sp":{"id":"p68","name":"Paraskevi 'Freda' Hulles","birth":"January 06, 1894","death":"January 06, 1949"},"kids":[{"id":"p69","name":"Kalliope 'Penny' Sfakianos","m":[{"sp":{"id":"p70","name":"Theodore Grevis","priv":true},"kids":[{"id":"p71","name":"[1] Achilles Terrence George 'Terry' Grevis Perris","m":[],"priv":true}]},{"sp":{"id":"p72","name":"Nicholas Alexander Perris","priv":true},"kids":[{"id":"p73","name":"[1] Achilles Terrence George 'Terry' Grevis Perris","m":[],"priv":true},{"id":"p74","name":"Paraskevi 'Patty' Perris","m":[{"sp":{"id":"p75","name":"David John Farrell","birth":"Nov. 21, 1948","death":"Sept., 10, 2010"},"kids":[{"id":"p76","name":"Jennifer Deann Farrell","m":[],"priv":true},{"id":"p77","name":"Christopher David Farrell","m":[{"sp":{"id":"p78","name":"Deeann Joseph","priv":true},"kids":[]}],"priv":true},{"id":"p79","name":"Andrea Nicole Farrell","m":[{"sp":{"id":"p80","name":"Stephen Leslie Bellner","priv":true},"kids":[]}],"priv":true}]}],"priv":true},{"id":"p81","name":"Alexandra 'Sandy' Perris","m":[{"sp":{"id":"p82","name":"James E. Thompson","priv":true},"kids":[{"id":"p83","name":"Nicholas Doss Thompson","m":[],"priv":true},{"id":"p84","name":"Tricia Thompson","m":[{"sp":{"id":"p85","name":"Chadwick Walasinski","priv":true},"kids":[]}],"priv":true}]}],"priv":true}],"label":"2nd marriage"},{"sp":{"id":"p86","name":"Thomas Papps","priv":true},"kids":[{"id":"p87","name":"Maria Christina Papps","m":[{"sp":{"id":"p88","name":"Raed A. Alroub","priv":true},"kids":[]},{"sp":{"id":"p89","name":"Philip J. Dollimore","priv":true},"kids":[],"label":"2nd marriage"},{"sp":{"id":"p90","name":"Robert Rosales","priv":true},"kids":[],"label":"3rd marriage"}],"priv":true}],"label":"3rd marriage"}],"priv":true}]},{"sp":{"id":"p91","name":"Eugenia Cabacum","birth":"November 25, 1892","death":"March 24, 1976"},"kids":[],"label":"2nd marriage"}],"birth":"April 07, 1894","death":"June 01, 1962"},{"id":"p92","name":"Akaterini A. Sfakianos","m":[{"sp":{"id":"p93","name":"Stavros C. Mormanis / Morris","birth":"Sept. 14, 1892","death":"July 28, 1941"},"kids":[{"id":"p94","name":"Achilles S. 'Johnny' Morris","m":[{"sp":{"id":"p95","name":"Fatima Mohamed","priv":true},"kids":[{"id":"p96","name":"Julia Ann Morris","m":[],"priv":true},{"id":"p97","name":"Stavros Achilles Morris","m":[],"priv":true}]}],"birth":"May 21, 1923","death":"April 19, 1991"},{"id":"p98","name":"Konstantinos S. 'Gus' Morris","m":[{"sp":{"id":"p99","name":"Gloria Fiocco","birth":"March 11, 1928","death":"September 12, 2005"},"kids":[{"id":"p100","name":"Stevan Morris","m":[{"sp":{"id":"p101","name":"Charlotte Kucharski","priv":true},"kids":[]}],"priv":true},{"id":"p102","name":"Katherine Morris","m":[{"sp":{"id":"p103","name":"Richard S. Smiouskas","priv":true},"kids":[{"id":"p104","name":"Christine Patricia Smiouskas","m":[{"sp":{"id":"p105","name":"Dean R. Herfindahl, III","priv":true},"kids":[{"id":"p106","name":"Gregory James Herfindahl","m":[],"priv":true},{"id":"p107","name":"Alanna Gloriann Herfindahl","m":[],"priv":true}]}],"priv":true},{"id":"p108","name":"Richard Smiouskas","m":[{"sp":{"id":"p109","name":"Hellin VaaSehlen","priv":true},"kids":[]},{"sp":{"id":"p110","name":"Steve Levine","priv":true},"kids":[],"label":"2nd marriage"}],"priv":true}]}],"priv":true},{"id":"p111","name":"Ricardo Morris","m":[],"priv":true}]}],"birth":"August 10, 1925","death":"June 24, 1987"},{"id":"p112","name":"Despina S. 'Virginia' Morris","m":[{"sp":{"id":"p113","name":"Emanuel E. Kountouris","birth":"May 20, 1900","death":"January 1968"},"kids":[]},{"sp":{"id":"p114","name":"Michael A. Barlos","birth":"November 05, 1922","death":"March 10, 2001"},"kids":[{"id":"p115","name":"Margot Catherine Barlos","m":[{"sp":{"id":"p116","name":"Michael Robert Foldes","priv":true},"kids":[{"id":"p117","name":"Maya Alexandra Foldes","m":[],"priv":true},{"id":"p118","name":"Adam Jory Stephen Foldes","m":[],"priv":true},{"id":"p119","name":"Peter Miles Foldes","m":[],"priv":true}]}],"priv":true},{"id":"p120","name":"Haralambos 'Harry' Stavros Barlos","m":[{"sp":{"id":"p121","name":"Jenny Lynn Fisher","priv":true},"kids":[{"id":"p122","name":"Michael Barlos","m":[],"priv":true},{"id":"p123","name":"Graham Barlos","m":[],"priv":true}]}],"priv":true}],"label":"2nd marriage"}],"birth":"Nov. 25, 1926","death":"Oct. 1, 2010"},{"id":"p124","name":"Peter S. Morris","m":[{"sp":{"id":"p125","name":"Alfreda 'Fritzi' Kaloger","priv":true},"kids":[{"id":"p126","name":"Catherine A. 'Cathy' Morris","m":[{"sp":{"id":"p127","name":"Samuel Nicholas 'Sam' Manol","priv":true},"kids":[{"id":"p128","name":"Nicholas Paul Manol","m":[],"priv":true},{"id":"p129","name":"Zachary Manol","m":[],"priv":true}]},{"sp":{"id":"p130","name":"Bruce Sorg","priv":true},"kids":[],"label":"2nd marriage"}],"priv":true},{"id":"p131","name":"Panagiota 'Pamela' Sue Morris","m":[{"sp":{"id":"p132","name":"James William Martin","priv":true},"kids":[{"id":"p133","name":"Natalie Jo Martin","m":[{"sp":{"id":"p134","name":"Michael J. Jackson","priv":true},"kids":[{"id":"p135","name":"Evelyn Reese Jackson","m":[],"priv":true},{"id":"p136","name":"August 'Gus' Jackson","m":[],"priv":true}]}],"priv":true},{"id":"p137","name":"Jamie Lynn Martin","m":[{"sp":{"id":"p138","name":"Jeremy John Marinis","priv":true},"kids":[{"id":"p139","name":"Karris Marinis","m":[],"priv":true},{"id":"p140","name":"Neco Marinis","m":[],"priv":true}]}],"priv":true}]}],"priv":true},{"id":"p141","name":"Sonia Marie 'Susan' Morris","m":[{"sp":{"id":"p142","name":"Randall Montrie","priv":true},"kids":[]},{"sp":{"id":"p143","name":"Kenneth E. Anderson","priv":true},"kids":[],"label":"2nd marriage"}],"priv":true},{"id":"p144","name":"Cynthia Lynn 'Cindi' Morris","m":[{"sp":{"id":"p145","name":"Steve Balint","priv":true},"kids":[{"id":"p146","name":"Joey Balint","m":[],"priv":true}]}],"priv":true}]}],"priv":true},{"id":"p147","name":"George S. Morris","m":[{"sp":{"id":"p148","name":"Athanasia 'Anne' S. Tsantles","birth":"November 11, 1932","death":"June 11, 2004"},"kids":[{"id":"p149","name":"Gregory Andonios Morris","m":[{"sp":{"id":"p150","name":"Katherine","priv":true},"kids":[{"id":"p151","name":"Stephanie Morris","m":[],"priv":true}]},{"sp":{"id":"p152","name":"Rosemarie","priv":true},"kids":[],"label":"2nd marriage"}],"priv":true},{"id":"p153","name":"Anthony P. Morris","m":[{"sp":{"id":"p154","name":"Debra Stacy","priv":true},"kids":[{"id":"p155","name":"Andrea Morris","m":[],"priv":true},{"id":"p156","name":"Stacy Morris","m":[],"priv":true}]}],"priv":true},{"id":"p157","name":"James George Morris, Sr.","m":[{"sp":{"id":"p158","name":"Georgina 'Gina' Arvanitis","priv":true},"kids":[{"id":"p159","name":"James George Morris, Jr.","m":[{"sp":{"id":"p160","name":"Ashly Brooke Webb","priv":true},"kids":[{"id":"p161","name":"Jackson Webb Morris","m":[],"priv":true}]}],"priv":true},{"id":"p162","name":"Nicholas James Morris","m":[{"sp":{"id":"p163","name":"Kristin Ann Hansen","priv":true},"kids":[]}],"priv":true}]},{"sp":{"id":"p164","name":"Anastacia 'Anne' Choratis","priv":true},"kids":[{"id":"p165","name":"Alex Morris","m":[],"priv":true},{"id":"p166","name":"Anne Morris","m":[{"sp":{"id":"p167","name":"Unknown Husband","priv":true},"kids":[{"id":"p168","name":"Madison","m":[],"priv":true},{"id":"p169","name":"Ava","m":[],"priv":true}]}],"priv":true}],"label":"2nd marriage"}],"priv":true}]},{"sp":{"id":"p170","name":"Brenda M. Nelson","priv":true},"kids":[{"id":"p171","name":"Virginia 'Ginny' Morris","m":[],"priv":true}],"label":"2nd marriage"}],"birth":"August 02, 1931","death":"March 29, 1996"},{"id":"p172","name":"Gregoris Morris","m":[{"sp":{"id":"p173","name":"Barbara J. DeStella","priv":true},"kids":[{"id":"p174","name":"Christina A. 'Chrissy' Morris","m":[{"sp":{"id":"p175","name":"Unknown Kilis","priv":true},"kids":[{"id":"p176","name":"Gregory Richard Kilis","m":[],"priv":true}]}],"priv":true},{"id":"p177","name":"Amy Jo Morris","m":[{"sp":{"id":"p178","name":"Robert Cosentino","priv":true},"kids":[]}],"priv":true}]}],"birth":"April 23, 1933","death":"March 12, 2010"}]},{"sp":{"id":"p179","name":"Anthony P. Pilateris","birth":"September 14, 1900","death":"September 23, 1965"},"kids":[],"label":"2nd marriage"}],"birth":"April 08, 1901","death":"March 17, 1990"},{"id":"p180","name":"Stylini 'Stella' Sfakianos","m":[{"sp":{"id":"p181","name":"John A. Mormanis / Morris","birth":"March 01, 1895","death":"June 02, 1955"},"kids":[{"id":"p182","name":"Anesti J. 'Ernest' Morris","m":[{"sp":{"id":"p183","name":"Stella Nicholas","priv":true},"kids":[]},{"sp":{"id":"p184","name":"Doreen Smith","priv":true},"kids":[],"label":"2nd marriage"}],"priv":true},{"id":"p185","name":"Theodore J. Morris","m":[{"sp":{"id":"p186","name":"Charlotte F. Schnieder","birth":"April 24, 1928","death":"May 29, 1994"},"kids":[]},{"sp":{"id":"p187","name":"Mandy Kersey","priv":true},"kids":[],"label":"2nd marriage"}],"priv":true}]},{"sp":{"id":"p188","name":"James G. Kotichas","birth":"October 26, 1896","death":"December 15, 1963"},"kids":[],"label":"2nd marriage"}],"birth":"April 02, 1904","death":"June 26, 1973"},{"id":"p189","name":"Stelios A. Sfakianos","m":[{"sp":{"id":"p190","name":"Maria Georgakopoulos","priv":true},"kids":[{"id":"p191","name":"Achilles S. Sfakianos","m":[],"birth":"1939","death":"1986"},{"id":"p192","name":"Nikola S. Sfakianos","m":[{"sp":{"id":"p193","name":"Unknown Wife","priv":true},"kids":[{"id":"p194","name":"Marcello Sfakianos","m":[],"priv":true},{"id":"p195","name":"Maria Hernandez Sfakianos","m":[],"priv":true}]}],"priv":true}]}],"birth":"Abt. 1906","death":"Abt. August 1954"},{"id":"p196","name":"Despina Sfakianos","m":[{"sp":{"id":"p197","name":"Panagiotas 'Peter' G. Makras","birth":"Sept 28, 1903","death":"June 19, 1983"},"kids":[{"id":"p198","name":"Kalliope 'Clara' Peter Makras","m":[{"sp":{"id":"p199","name":"Constantine 'Gus' Denos","birth":"Mar 06, 1927","death":"June 28, 1992"},"kids":[{"id":"p200","name":"Dimitrios 'James' Denos","m":[],"priv":true},{"id":"p201","name":"Argero 'Gloria' Denos","m":[],"priv":true},{"id":"p202","name":"Panagiotis 'Peter' Denos","m":[],"priv":true}]},{"sp":{"id":"p203","name":"Troy Upton","birth":"December 20, 1919","death":"June 06, 1991"},"kids":[],"label":"2nd marriage"}],"priv":true},{"id":"p204","name":"George Peter Makras","m":[{"sp":{"id":"p205","name":"Nancy Cook","priv":true},"kids":[{"id":"p206","name":"Joseph Makras","m":[],"birth":"July 10, 1959","priv":true}]},{"sp":{"id":"p207","name":"Ardith","priv":true},"kids":[{"id":"p208","name":"Despina Makras","m":[],"birth":"July 17, 1960","death":"September 19, 1977"},{"id":"p209","name":"Unknown Son Makras","m":[],"priv":true}],"label":"2nd marriage"},{"sp":{"id":"p210","name":"Constance Louise 'Connie'","priv":true},"kids":[{"id":"p211","name":"George A. Makras","m":[],"priv":true},{"id":"p212","name":"Michael J. Makras","m":[],"priv":true},{"id":"p213","name":"Melissa M. Makras","m":[],"priv":true}],"label":"3rd marriage"}],"priv":true},{"id":"p214","name":"Achilles 'Ike' Peter Makras","m":[{"sp":{"id":"p215","name":"Fotini 'Tulla' Kantaras","priv":true},"kids":[{"id":"p216","name":"Peter Makras","m":[],"priv":true},{"id":"p217","name":"Maria Despina Makras","m":[],"priv":true}]}],"birth":"March 2, 1932","death":"July 1, 2011"}]}],"birth":"July 02, 1908","death":"May 05, 1981"},{"id":"p218","name":"Eleni 'Helen' Sfakianos","m":[{"sp":{"id":"p219","name":"Nicholas S. Hatzinikolis","birth":"December 10, 1898","death":"December 15, 1963"},"kids":[{"id":"p220","name":"Stavros N. Hatzinikolis","m":[],"birth":"October 22, 1929","death":"May 30, 1930"},{"id":"p221","name":"Mary N. Hatzinikolis","m":[{"sp":{"id":"p222","name":"Theodore P. Korogianos","birth":"March 25, 1919","death":"June 11, 2003"},"kids":[{"id":"p223","name":"Peter T. Korogianos","m":[{"sp":{"id":"p224","name":"Janelle Eghan","priv":true},"kids":[{"id":"p225","name":"Mary Rose Korogianos","m":[],"priv":true},{"id":"p226","name":"Eleni Andrea Korogianos","m":[],"priv":true}]}],"priv":true},{"id":"p227","name":"Andrea Korogianos","m":[],"priv":true}]}],"priv":true},{"id":"p228","name":"Steve Nicholas Hatzinikolis","m":[{"sp":{"id":"p229","name":"Diane Marie Walczak","priv":true},"kids":[{"id":"p230","name":"Georgina Marie Hatzinikolis","m":[{"sp":{"id":"p231","name":"Eulalio Rodriguez","priv":true},"kids":[{"id":"p232","name":"Maria Rodriguez","m":[],"priv":true}]},{"sp":{"id":"p233","name":"Alfred G. 'Fred' Molina","priv":true},"kids":[],"label":"2nd marriage"}],"priv":true},{"id":"p234","name":"Steve N. Hatzinikolis","m":[{"sp":{"id":"p235","name":"Kimberly Nowakowski","priv":true},"kids":[{"id":"p236","name":"Steven N. Hatzinikolis","m":[],"priv":true},{"id":"p237","name":"Sarah Hatzinikolis","m":[{"sp":{"id":"p238","name":"Mark Perry","birth":"Unknown"},"kids":[{"id":"p239","name":"Deacon Perry","m":[],"birth":"Unknown"}]}],"priv":true},{"id":"p240","name":"Nicole Hatzinikolis","m":[{"sp":{"id":"p241","name":"Christian Volger","birth":"Unknown"},"kids":[{"id":"p242","name":"Elizabeth Nicole Volger","m":[],"priv":true}]}],"priv":true}]}],"priv":true},{"id":"p243","name":"Sheila Hatzinikolis","m":[{"sp":{"id":"p244","name":"Adolph Gonzales","priv":true},"kids":[{"id":"p245","name":"Adolph Gonzales, Jr.","m":[{"sp":{"id":"p246","name":"Marcus Zagoric","priv":true},"kids":[]}],"priv":true}]}],"priv":true},{"id":"p247","name":"Tina Hatzinikolis","m":[{"sp":{"id":"p248","name":"James Lang","priv":true},"kids":[{"id":"p249","name":"Jamie Lang","m":[],"priv":true},{"id":"p250","name":"Valerie Lang","m":[],"priv":true},{"id":"p251","name":"James Lang","m":[],"priv":true}]}],"priv":true}]},{"sp":{"id":"p252","name":"Nancy Kerr","birth":"April 21, 1938","death":"January 26, 2005"},"kids":[{"id":"p253","name":"Michael Hatzinikolis","m":[],"birth":"Private (adopted)"}],"label":"2nd marriage"}],"birth":"August 09, 1932","death":"July 11, 1999"},{"id":"p254","name":"Theodossia N. 'Lucy' Hatzinikolis","m":[],"priv":true},{"id":"p255","name":"Achilles N. Hatzinikolis","m":[{"sp":{"id":"p256","name":"Barbara Charlene Dushane","priv":true},"kids":[{"id":"p257","name":"Nicholas George Hatzinikolis","m":[{"sp":{"id":"p258","name":"Diane Zeman","priv":true},"kids":[{"id":"p259","name":"Kendra Nicole Hatzinikolis","m":[{"sp":{"id":"p260","name":"Unknown","priv":true},"kids":[{"id":"p261","name":"Bryant Hatzinikolis","m":[],"priv":true}]}],"priv":true},{"id":"p262","name":"Marissa Hatzinikolis","m":[{"sp":{"id":"p263","name":"Unknown Bracken"},"kids":[{"id":"p264","name":"Ally Bracken","m":[],"priv":true}]}],"priv":true},{"id":"p265","name":"Jenna Hatzinikolis","m":[],"priv":true}]}],"priv":true},{"id":"p266","name":"Joseph Kenneth Hatzinikolis","m":[{"sp":{"id":"p267","name":"Karen M. Janish","priv":true},"kids":[{"id":"p268","name":"Nicole Elaine Hatzinikolis","m":[],"priv":true},{"id":"p269","name":"Kenneth Joseph Hatzinikolis","m":[],"priv":true},{"id":"p270","name":"Stephanie Marie Hatzinikolis","m":[],"priv":true},{"id":"p271","name":"Joseph Kenneth Hatzinikolis","m":[],"priv":true},{"id":"p272","name":"Christine Hatzinikolis","m":[],"priv":true}]}],"priv":true},{"id":"p273","name":"Elaine Ann Hatzinikolis","m":[{"sp":{"id":"p274","name":"Donald A. Rowland","priv":true},"kids":[{"id":"p275","name":"Alisa Renee Rowland","m":[],"priv":true},{"id":"p276","name":"Kayla Rowland","m":[{"sp":{"id":"p277","name":"John Kowalski","priv":true},"kids":[{"id":"p278","name":"Rylee Renee Kowalski","m":[],"priv":true},{"id":"p279","name":"Reagan Kowalski","m":[],"priv":true}]}],"priv":true}]}],"priv":true}]}],"priv":true},{"id":"p280","name":"Georgia Pagona Hatzinikolis","m":[{"sp":{"id":"p281","name":"Louis Brown","priv":true},"kids":[]}],"birth":"February 22, 1942","death":"Jan. 15, 2000"},{"id":"p282","name":"Despina 'Bess' Hatzinikolis","m":[{"sp":{"id":"p283","name":"Dennis Gunter","priv":true},"kids":[{"id":"p284","name":"Christopher D. Gunter","m":[{"sp":{"id":"p285","name":"Jill","priv":true},"kids":[]}],"death":"Gunter b: Private","priv":true}]}],"birth":"November 05, 1943","death":"Feb. 09, 2005"},{"id":"p286","name":"Theodora 'Dorothy' Hatzinikolis","m":[],"birth":"Sept. 25, 1945","death":"July 13, 2008"}]}],"birth":"July 02, 1908","death":"January 22, 1984"},{"id":"p287","name":"Yiannis 'John' A. Sfakianos","m":[{"sp":{"id":"p288","name":"Stamatia Dinos","priv":true},"kids":[{"id":"p289","name":"Achilles John Sfakianos","m":[{"sp":{"id":"p290","name":"Lucy","priv":true},"kids":[{"id":"p291","name":"Claudia Sfakianos","m":[],"priv":true},{"id":"p292","name":"Victor Sfakianos","m":[],"priv":true}]}],"priv":true}]}],"birth":"August 29, 1911"}]}],"birth":"Unknown","death":"Abt. 1912"},{"id":"p293","name":"Anna Sfakianos","m":[{"sp":{"id":"p294","name":"Nicholas Gangas","birth":"Unknown"},"kids":[{"id":"p295","name":"John Gangas","m":[{"sp":{"id":"p296","name":"Anastacia 'Rose' Xiriches","birth":"1878","death":"December 01, 1936"},"kids":[{"id":"p297","name":"Zoe 'Jennie' Grevis","m":[{"sp":{"id":"p298","name":"Stavros 'Steve' (Karakostas) Caras","birth":"1914"},"kids":[{"id":"p299","name":"Albert G. Caras","m":[{"sp":{"id":"p300","name":"Donna Hope","priv":true},"kids":[]}],"birth":"December 07, 1942","death":"June 10, 2005"},{"id":"p301","name":"John Leonidas Caras","m":[],"birth":"October 21, 1946","death":"April 19, 2004"}]}],"birth":"November 04, 1922","death":"November 1979"}]}],"birth":"1867in Tenedos, Greece","death":"June 30, 1961"},{"id":"p302","name":"Marika Gangas","m":[{"sp":{"id":"p303","name":"Ilie Gheorghiu","priv":true},"kids":[{"id":"p304","name":"Panagiotas Gheorghiu","m":[],"priv":true},{"id":"p305","name":"Mihali Gheorghiu","m":[{"sp":{"id":"p306","name":"Claudia","priv":true},"kids":[{"id":"p307","name":"Horia Gheorghiu","m":[],"priv":true},{"id":"p308","name":"Aphrodita Gheorghiu","m":[],"priv":true}]}],"priv":true},{"id":"p309","name":"Eiolanda Gheorghiu","m":[],"priv":true}]}],"priv":true},{"id":"p310","name":"Nicholas Gangas","m":[{"sp":{"id":"p311","name":"Penelope","priv":true},"kids":[{"id":"p312","name":"Christopher N. Gangas","m":[{"sp":{"id":"p313","name":"Amelia","priv":true},"kids":[{"id":"p314","name":"Violanda Gangas","m":[],"priv":true},{"id":"p315","name":"Liana Gangas","m":[],"priv":true},{"id":"p316","name":"Paula Gangas","m":[],"priv":true}]}],"priv":true}]}],"priv":true},{"id":"p317","name":"Christopher Gangas","m":[],"priv":true},{"id":"p318","name":"Alexandros 'Alex' Gangas","m":[{"sp":{"id":"p319","name":"Zafera A. Mormanis / Morris","birth":"Jan. 10, 1898","death":"Mar. 30, 1989"},"kids":[{"id":"p320","name":"Katherine Gangas","m":[],"birth":"August 28, 1928","death":"June 10, 1948"},{"id":"p321","name":"Nicholas Gangas","m":[{"sp":{"id":"p322","name":"Jeanne Allen","priv":true},"kids":[{"id":"p323","name":"Nicki Ekaterini Gangas","m":[{"sp":{"id":"p324","name":"Eugene J. Perry, Jr.","priv":true},"kids":[]}],"priv":true},{"id":"p325","name":"Gregory Alexander Gangas","m":[{"sp":{"id":"p326","name":"Lana J. Duckett","priv":true},"kids":[]},{"sp":{"id":"p327","name":"Jacklyn Lynn Ross","priv":true},"kids":[{"id":"p328","name":"Nickolas Ross Gangas","m":[],"priv":true}],"label":"2nd marriage"}],"priv":true}]}],"priv":true},{"id":"p329","name":"Angelo Gangas","m":[],"priv":true}]}],"birth":"April 14, 1887","death":"Aug. 11, 1962"},{"id":"p330","name":"Helen 'Elaine' Gangas","m":[{"sp":{"id":"p331","name":"Efstratios 'Steve' N. Demos","birth":"April 20, 1889","death":"Oct. 15, 1965"},"kids":[{"id":"p332","name":"Gramatiki 'Jessica' Demos","m":[{"sp":{"id":"p333","name":"Gus P. (Komninos) Comis","birth":"June 12, 1902","death":"Jan. 10, 1985"},"kids":[{"id":"p334","name":"Panagiotis 'Pano' Comis","m":[],"birth":"June 15, 1944","death":"May 04, 1963"}]}],"birth":"February 18, 1917","death":"May 03, 1988"},{"id":"p335","name":"Anna Demos","m":[],"birth":"1918"},{"id":"p336","name":"Christopher Demos","m":[{"sp":{"id":"p337","name":"Dorothea 'Dorothy' Matthews","priv":true},"kids":[{"id":"p338","name":"Stephen Christopher Demos","m":[],"birth":"August 29, 1950","death":"Sept. 06, 1980"},{"id":"p339","name":"George Edward Demos","m":[{"sp":{"id":"p340","name":"Tina Cowart","priv":true},"kids":[]}],"priv":true},{"id":"p341","name":"Mark Christopher Demos","m":[{"sp":{"id":"p342","name":"LeAnn Chapman","priv":true},"kids":[{"id":"p343","name":"Stephanie Michelle Demos","m":[],"priv":true},{"id":"p344","name":"Christy Nicole Demos","m":[],"priv":true}]}],"priv":true}]}],"birth":"September 12, 1920","priv":true},{"id":"p345","name":"Nicholas Demos","m":[{"sp":{"id":"p346","name":"Joan","priv":true},"kids":[{"id":"p347","name":"Matthew Demos","m":[],"priv":true},{"id":"p348","name":"Ricca Demos","m":[{"sp":{"id":"p349","name":"Brennan S. Voboril","priv":true},"kids":[{"id":"p350","name":"Holly Voboril","m":[],"priv":true},{"id":"p351","name":"Brennan Voboril","m":[],"priv":true}]}],"priv":true},{"id":"p352","name":"Mark Demos","m":[],"priv":true}]}],"priv":true}]}],"birth":"1890","death":"December 03, 1962"}]}],"birth":"Unknown"},{"id":"p353","name":"Antonis Sfakianos","m":[],"birth":"Unknown"},{"id":"p354","name":"Spiros Sfakianos","m":[{"sp":{"id":"p355","name":"Dimitra","birth":"Unknown"},"kids":[]}],"birth":"Unknown"},{"id":"p356","name":"Constantinos Sfakianos","m":[],"birth":"Unknown"},{"id":"p357","name":"George Sfakianos","m":[],"birth":"Unknown"},{"id":"p358","name":"Dimitrios Sfakianos","m":[],"birth":"Unknown"}]}],"birth":"Unknown"}];
+var TREE_TITLES = ["Sfakianos Family"];
+function makeCard(p, cls) {
+  var div = document.createElement('div');
+  div.className = 'card ' + (cls || '');
+  var n = document.createElement('span'); n.className = 'n';
+  n.textContent = p.name; div.appendChild(n);
+  var parts = [];
+  if (p.birth) parts.push('b. ' + p.birth);
+  if (p.death) parts.push('d. ' + p.death);
+  if (p.priv && !p.birth && !p.death) parts.push('Living');
+  if (parts.length) {
+    var d = document.createElement('span'); d.className = 'd';
+    d.textContent = parts.join('  ·  '); div.appendChild(d);
+  }
+  return div;
+}
+
+function renderNode(p, gen) {
+  var wrapper = document.createElement('div'); wrapper.className = 'tree-node';
+  var body = document.createElement('div'); body.className = 'node-body';
+  var marriages = p.m || [];
+  var allKids = [];
+  for (var i = 0; i < marriages.length; i++) {
+    var ks = marriages[i].kids || [];
+    for (var j = 0; j < ks.length; j++) allKids.push(ks[j]);
+  }
+  var cls = gen === 0 ? 'root' : (p.priv ? 'priv' : '');
+  if (allKids.length) cls += (cls ? ' ' : '') + 'collapsible';
+  var mc = makeCard(p, cls);
+  if (marriages.length > 0) {
+    var row = document.createElement('div'); row.className = 'couple-row';
+    row.appendChild(mc);
+    if (marriages[0].sp) {
+      var dot = document.createElement('span'); dot.className = 'cx';
+      dot.textContent = '×'; row.appendChild(dot);
+      var spCls = 'spouse' + (marriages[0].sp.priv ? ' priv' : '');
+      row.appendChild(makeCard(marriages[0].sp, spCls));
+    }
+    body.appendChild(row);
+    for (var mi = 1; mi < marriages.length; mi++) {
+      var mg = marriages[mi];
+      if (mg.label) {
+        var lbl = document.createElement('div'); lbl.className = 'remarriage-lbl';
+        lbl.textContent = mg.label + ':'; body.appendChild(lbl);
+      }
+      if (mg.sp) {
+        var r2 = document.createElement('div'); r2.className = 'couple-row';
+        var ph = document.createElement('div'); ph.style.cssText = 'width:148px;flex-shrink:0;';
+        r2.appendChild(ph);
+        var d2 = document.createElement('span'); d2.className = 'cx';
+        d2.textContent = '×'; r2.appendChild(d2);
+        var sp2Cls = 'spouse' + (mg.sp.priv ? ' priv' : '');
+        r2.appendChild(makeCard(mg.sp, sp2Cls)); body.appendChild(r2);
+      }
+    }
+  } else {
+    var soloRow = document.createElement('div'); soloRow.className = 'couple-row';
+    soloRow.appendChild(mc); body.appendChild(soloRow);
+  }
+  wrapper.appendChild(body);
+  if (allKids.length) {
+    wrapper.classList.add('has-ch');
+    var cr = document.createElement('div'); cr.className = 'tree-children';
+    for (var ki = 0; ki < allKids.length; ki++) cr.appendChild(renderNode(allKids[ki], gen + 1));
+    wrapper.appendChild(cr);
+    mc.addEventListener('click', (function(nd) {
+      return function(e) { e.stopPropagation(); nd.classList.toggle('closed'); };
+    }(wrapper)));
+  }
+  return wrapper;
+}
+
+function buildSection(title, data, showTitle) {
+  var sec = document.createElement('div'); sec.className = 'tree-section';
+  if (showTitle) {
+    var h = document.createElement('h2'); h.className = 'tree-section-heading';
+    h.textContent = title; sec.appendChild(h);
+  }
+  var root = document.createElement('div'); root.className = 'tree-root';
+  root.appendChild(renderNode(data, 0)); sec.appendChild(root);
+  return sec;
+}
+
+var forest = document.getElementById('forest');
+var multiTree = TREES.length > 1;
+for (var ti = 0; ti < TREES.length; ti++) {
+  forest.appendChild(buildSection(TREE_TITLES[ti], TREES[ti], multiTree));
+}
+</script>
 </body>
 </html>

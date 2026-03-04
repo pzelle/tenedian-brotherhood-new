@@ -5,6 +5,86 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Zembekis Family — Tenedian Brotherhood</title>
   <link rel="stylesheet" href="css/style.css">
+  <style>
+    .tree-page { padding: 0; }
+    .tree-outer { overflow-x: auto; padding: 2.5rem 1.5rem 3rem;
+                  background: var(--color-off-white, #f8f5f0); }
+    .tree-forest { display: flex; flex-direction: column; gap: 3.5rem; }
+    .tree-section-heading {
+      font-family: var(--font-heading, 'Playfair Display', serif);
+      color: var(--color-navy, #0a1628); font-size: 1.2rem;
+      margin: 0 0 1.25rem; padding-bottom: 0.4rem;
+      border-bottom: 2px solid var(--color-gold, #c9a227); }
+    .tree-legend { display: flex; gap: 1.2rem; flex-wrap: wrap;
+                   margin-bottom: 2rem; font-size: 0.8rem; color: #555;
+                   align-items: center; }
+    .legend-item { display: flex; align-items: center; gap: 5px; }
+    .ls { width: 20px; height: 13px; border-radius: 3px;
+          border: 2px solid var(--color-gold, #c9a227);
+          display: inline-block; flex-shrink: 0; }
+    .ls.navy  { background: var(--color-navy, #0a1628); }
+    .ls.white { background: #fff; }
+    .ls.blue  { background: #dce8ff; border-color: #6888cc; }
+    .ls.gray  { background: #eee; border-color: #bbb; }
+    /* Tree layout */
+    .tree-section { overflow-x: auto; padding-bottom: 0.5rem; }
+    .tree-root { display: inline-flex; flex-direction: column;
+                 align-items: center; padding: 0.5rem 1rem; }
+    .tree-node { display: flex; flex-direction: column; align-items: center;
+                 position: relative; }
+    .node-body { display: flex; flex-direction: column; align-items: center;
+                 gap: 3px; position: relative; }
+    .couple-row { display: flex; align-items: center; gap: 5px; }
+    .cx { color: var(--color-gold, #c9a227); font-weight: 700; font-size: 1rem;
+          padding: 0 2px; flex-shrink: 0; }
+    .remarriage-lbl { font-size: 0.65rem; color: #999; font-style: italic;
+                      text-align: center; margin-top: 5px; }
+    /* Cards */
+    .card { background: #fff; border: 2px solid var(--color-gold, #c9a227);
+            border-radius: 6px; padding: 7px 10px; width: 148px;
+            text-align: center; font-size: 0.74rem; line-height: 1.35;
+            position: relative; }
+    .card .n { font-weight: 700; color: var(--color-navy, #0a1628);
+               display: block; font-size: 0.78rem; }
+    .card .d { color: #888; font-size: 0.67rem; display: block; margin-top: 2px; }
+    .card.root { background: var(--color-navy, #0a1628);
+                 border-color: var(--color-gold, #c9a227); }
+    .card.root .n { color: var(--color-gold, #c9a227); }
+    .card.root .d { color: #99aabb; }
+    .card.spouse { background: #dce8ff; border-color: #6888cc; }
+    .card.spouse .n { color: #1a3a80; }
+    .card.priv  { background: #eee; border-color: #bbb; }
+    .card.priv .n { color: #666; }
+    .card.priv .d { color: #aaa; }
+    .card.collapsible { cursor: pointer; }
+    .card.collapsible::after { content: '\25BE'; position: absolute;
+      bottom: 3px; right: 5px; font-size: 0.6rem;
+      color: var(--color-gold, #c9a227); }
+    .tree-node.closed > .node-body .card.collapsible::after { content: '\25B8'; }
+    /* Connector lines (CSS pseudo-elements) */
+    :root { --gap: 44px; }
+    .tree-node.has-ch > .node-body::after {
+      content: ''; position: absolute; left: 50%; transform: translateX(-50%);
+      top: 100%; width: 2px; height: var(--gap);
+      background: var(--color-gold, #c9a227); }
+    .tree-children { display: flex; flex-direction: row; gap: 14px;
+                     align-items: flex-start; justify-content: center;
+                     margin-top: var(--gap); }
+    .tree-node.closed > .node-body::after  { display: none !important; }
+    .tree-node.closed > .tree-children     { display: none !important; }
+    .tree-children > .tree-node { position: relative; }
+    .tree-children > .tree-node::before {
+      content: ''; position: absolute; left: 50%; transform: translateX(-50%);
+      top: calc(-1 * var(--gap)); width: 2px; height: var(--gap);
+      background: var(--color-gold, #c9a227); }
+    .tree-children > .tree-node::after {
+      content: ''; position: absolute; top: calc(-1 * var(--gap));
+      left: 0; right: 0; height: 2px;
+      background: var(--color-gold, #c9a227); }
+    .tree-children > .tree-node:first-child::after  { left: 50%; }
+    .tree-children > .tree-node:last-child::after   { right: 50%; }
+    .tree-children > .tree-node:first-child:last-child::after { display: none; }
+  </style>
 </head>
 <body>
 
@@ -30,261 +110,21 @@
   <header class="page-header">
     <div class="page-header-inner">
       <h1 class="page-title">Zembekis Family</h1>
-      <p class="page-subtitle"><a href="family-trees.html" style="color:rgba(255,255,255,.6); font-size:.85rem;">&larr; Back to Family Trees</a></p>
+      <p class="page-subtitle"><a href="family-trees.html" style="color:rgba(255,255,255,.65);font-size:.85rem;">&larr; Back to Family Trees</a></p>
     </div>
   </header>
 
-  <div class="page-content">
-    <div class="privacy-notice">
-      <strong>Privacy notice:</strong> Per the original website policy, birth dates are not
-      disclosed for individuals born after 1920 unless they are deceased.
-    </div>
-
-    <div class="family-tree-content">
-<div class="tree-entry gen-0 note">Zebekis Family</div>
-<div class="tree-entry gen-0 note">Note:There are 2 different families listed. I do not know if or how they are 
-related</div>
-<div class="tree-entry gen-0">Apostolos Zebecki b: in Tenedos, Greece</div>
-<div class="tree-entry gen-0 spouse">+ Unknown Wife b: in Tenedos, Greece</div>
-<div class="tree-entry gen-0 note">2 Angeliki 'Angela' Zebecki b: March 23, 1893 in Tenedos, Greece d: 
-June 25, 1972</div>
-<div class="tree-entry gen-0 note">+Charles K. Petros b: November 13, 1889 in Tenedos, Greece d: 
-July 27, 1965</div>
-<div class="tree-entry gen-2">Helen 'Elaine' Petros b: July 29, 1922 d: January 22, 1996</div>
-<div class="tree-entry gen-2 note">+Periklis J. Kasidonis b: November 10, 1907  d: 
-May 08, 1981</div>
-<div class="tree-entry gen-3">John P. Kasidonis b: Private</div>
-<div class="tree-entry gen-3 spouse">+ Tina b: Private</div>
-<div class="tree-entry gen-3">Gloria Kasidonis b: Private</div>
-<div class="tree-entry gen-3 spouse">+ Unknown Wall b: Private</div>
-<div class="tree-entry gen-3">Vickie Kasidonis b: Private</div>
-<div class="tree-entry gen-3 spouse">+ Unknown Frank b: Private</div>
-<div class="tree-entry gen-3">Steven P. Kasidonis b: Private</div>
-<div class="tree-entry gen-3 spouse">+ June Jeanette b: Private</div>
-<div class="tree-entry gen-2">John Petros b: Private</div>
-<div class="tree-entry gen-2 note">3 Gustavas 'Gus' Petros b: March 31, 1925 d: February 10, 
-2006</div>
-<div class="tree-entry gen-2 note">+Mattie Faye 'Faye' Nickell b: May 1, 1934  d: 
-October 2, 2011</div>
-<div class="tree-entry gen-0">Christ Zembekis b: Unknown in Tenedos, Greece</div>
-<div class="tree-entry gen-0 spouse">+ Zaphira b: Unknown in Tenedos, Greece</div>
-<div class="tree-entry gen-0 note">2 Eleni 'Helen' Zembekis b: 1862 in Tenedos, Greece d: August 23, 
-1957</div>
-<div class="tree-entry gen-0 spouse">+ Constantine G. Cherpas b: Unknown in Tenedos d: 1915 in Tenedos</div>
-<div class="tree-entry gen-0 note">3 John C. Cherpas b: August 10, 1889 in Tenedos, Greece d: 
-July 05, 1965</div>
-<div class="tree-entry gen-0 note">+Hareklia Kalfametrios b: 1896 in Tenedos, Greece d: 
-February 1967</div>
-<div class="tree-entry gen-0 note">4 Christina J. Cherpas b: January 31, 1922 d: September 
-11, 2011</div>
-<div class="tree-entry gen-0 note">+Michael Anthony Skulas b: April 18, 1923  d: 
-April 20, 2007</div>
-<div class="tree-entry gen-4">Irene Michelle Skulas, Dr. b: Private</div>
-<div class="tree-entry gen-4 note">5 Martin Christopher Skulas  
-b: Private</div>
-<div class="tree-entry gen-4 note">+Diane Susan Beach  
-b: Private</div>
-<div class="tree-entry gen-4 note">6 Matthew Karl Skulas  
-b: Private</div>
-<div class="tree-entry gen-4 note">+Debra J. Pesetski  
-b: Private</div>
-<div class="tree-entry gen-4 note">7 Mitchel Anthony Skulas  
-b: Private</div>
-<div class="tree-entry gen-4 note">7 Jacob Martin Skulas  
-b: Private</div>
-<div class="tree-entry gen-4 note">6 Ann Skulas  
-b: Private</div>
-<div class="tree-entry gen-4 note">+Ethan Ray  
-b: Private</div>
-<div class="tree-entry gen-4 note">5 Myron Andrew Skulas, Dr.  
-b: Private</div>
-<div class="tree-entry gen-4 note">+Diane Marie Thornton b: October 20, 1950  
-d: October 12, 2005</div>
-<div class="tree-entry gen-4 note">6 Mark A. Skulas  
-b: Private</div>
-<div class="tree-entry gen-4 note">+Mary Rankin  
-b: Private</div>
-<div class="tree-entry gen-4 note">6 Paul Andrew Skulas  
-b: Private</div>
-<div class="tree-entry gen-4 note">+Gillian Kemp  
-b: Private</div>
-<div class="tree-entry gen-4 note">*2nd Wife of Myron Andrew Skulas, Dr.:</div>
-<div class="tree-entry gen-4 note">+Elizabeth Ann Marie Maggard  
-b: Private</div>
-<div class="tree-entry gen-4 note">4 Anthony J. 'Tony' Cherpas b: January 20, 1923  
-d: January 16, 2001</div>
-<div class="tree-entry gen-4 note">+Athena Sideris 
-b: Private</div>
-<div class="tree-entry gen-4 note">5 Patti Ann Cherpas  
-b: Private</div>
-<div class="tree-entry gen-4 note">+Paul E. Mendenhall   
-b: Private</div>
-<div class="tree-entry gen-4 note">6 Nicholas Mendenhall  
-b: Private</div>
-<div class="tree-entry gen-4 note">6 Hali Mendenhall  
-b: Private</div>
-<div class="tree-entry gen-4 note">5 Janice Cherpas   
-b: Private</div>
-<div class="tree-entry gen-4 note">+Robert Gigli  
-b: Private</div>
-<div class="tree-entry gen-2">Anna Cherpas b: Unknown in Tenedos, Greece</div>
-<div class="tree-entry gen-2 spouse">+ Paul Stamatidis b: Unknown d: 1923</div>
-<div class="tree-entry gen-2 note">*2nd Husband of Anna Cherpas:</div>
-<div class="tree-entry gen-2 spouse">+ Christ Moskos b: March 04, 1881 in Tenedos, Greece</div>
-<div class="tree-entry gen-3">Bessie Moskos  b: Unknown</div>
-<div class="tree-entry gen-3 note">4 Chris Moskos  b: Unknown  d: in W.W. II in 
-Orleans, France</div>
-<div class="tree-entry gen-3">Georgia Moskos b: Unknown</div>
-<div class="tree-entry gen-3 note">3 George Cherpas b: Unknown in (in Infancy) Tenedos d: Unknown 
-in Tenedos</div>
-<div class="tree-entry gen-2">Christ C. Cherpas b: November 05, 1895 in Tenedos, Greece</div>
-<div class="tree-entry gen-2 spouse">+ Anna Chrestethon b: 1898</div>
-<div class="tree-entry gen-2 note">4 Gus Cherpas b: February 09, 1922  d: August 05, 
-1999</div>
-<div class="tree-entry gen-2 note">4 Lula Cherpas   
-b: Private</div>
-<div class="tree-entry gen-2 note">4 Nary Cherpas  
-b: Private</div>
-<div class="tree-entry gen-2 note">3 Chryssanthy Cherpas b: April 15, 1899 in Tenedos  d: 
-September 20, 1986</div>
-<div class="tree-entry gen-2 note">+Harry Alexander b: September 09, 1886  d: May 08, 
-1958</div>
-<div class="tree-entry gen-2 note">4 Elizabeth Alexander b: December 06, 1921 d: July 15, 
-2011</div>
-<div class="tree-entry gen-2 note">+Nicholas George Allemenos b: December 23, 1921 d: 
-February 24, 1987</div>
-<div class="tree-entry gen-2 note">5 Joan Marie 'Jody' Allemenos  
-b: Private</div>
-<div class="tree-entry gen-2 note">+Charles Keeton  
-b: Private</div>
-<div class="tree-entry gen-2 note">*2nd Husband of Joan Marie 'Jody' Allemenos:</div>
-<div class="tree-entry gen-2 note">+Harry Daniel 'Dan' McFarland  
-b: Private</div>
-<div class="tree-entry gen-2 note">6 Stephanie Elizabeth McFarland  
-b: Private</div>
-<div class="tree-entry gen-2 note">+Aaron John Canty  
-b: Private</div>
-<div class="tree-entry gen-2 note">7 Liam Canty  
-b: Private</div>
-<div class="tree-entry gen-2 note">6 Alexander Daniel McFarland  
-b: Private</div>
-<div class="tree-entry gen-2 note">+Katherine Rose Macklin 
-b: Private</div>
-<div class="tree-entry gen-2 note">5 George Nicholas Allemenos  
-b: Private</div>
-<div class="tree-entry gen-2 note">+Debra Streets  
-b: Private</div>
-<div class="tree-entry gen-2 note">6 Nicholas George Allemenos b: Sept 23, 
-1976  d: March 17, 1994</div>
-<div class="tree-entry gen-2 note">6 Lisa Nicole Allemenos b: May 28, 1980  
-d: March 17, 1994</div>
-<div class="tree-entry gen-2 note">*2nd Wife of George Nicholas Allemenos:</div>
-<div class="tree-entry gen-2 note">+Barbara Collins  
-b: Private</div>
-<div class="tree-entry gen-2 note">*3rd Wife of George Nicholas Allemenos:</div>
-<div class="tree-entry gen-2 note">+Lorettta Le Beau  
-b: Private</div>
-<div class="tree-entry gen-2 note">4 Joseph Alexander  
-b: Private</div>
-<div class="tree-entry gen-2 note">+Mary Berles b: August 07, 1927 d: December 31, 
-1989</div>
-<div class="tree-entry gen-2 note">5 Harry J. Alexander  
-b: Private</div>
-<div class="tree-entry gen-2 note">+Lisa Marie Martin  
-b: Private</div>
-<div class="tree-entry gen-2 note">5 James J. Alexander  
-b: Private</div>
-<div class="tree-entry gen-2 note">+Debbie Fields  
-b: Private</div>
-<div class="tree-entry gen-2 note">6 Mary JoAnne Alexander  
-b: Private</div>
-<div class="tree-entry gen-2 note">6 Fields Joseph Alexander   
-b: Private</div>
-<div class="tree-entry gen-2 note">5 John J. Alexander  
-b: Private</div>
-<div class="tree-entry gen-2 note">+Melissa Ann Carnegie  
-b: Private</div>
-<div class="tree-entry gen-2 note">6 Amanda Jo Alexander  
-b: Private</div>
-<div class="tree-entry gen-2 note">6 Katie Marie Alexander  
-b: Private</div>
-<div class="tree-entry gen-2 note">6 John J. Alexander   
-b: Private</div>
-<div class="tree-entry gen-2 note">6 Nicholas Alexander   
-b: Private</div>
-<div class="tree-entry gen-2 note">6 Molly Ann Alexander  
-b: Private</div>
-<div class="tree-entry gen-2 note">5 Christine Alexander  
-b: Private</div>
-<div class="tree-entry gen-2 note">+Theodore Lee Nicholas  
-b: Private</div>
-<div class="tree-entry gen-2 note">6 Alexander Joseph Nicholas  
-b: Private</div>
-<div class="tree-entry gen-2 note">6 Marrisa Nicholas  
-b: Private</div>
-<div class="tree-entry gen-2 note">5 Andrew J. Alexander  
-b: Private</div>
-<div class="tree-entry gen-2 note">4 Constantine 'Deno' Alexander b: November 16, 1926 d: 
-February 23, 2006</div>
-<div class="tree-entry gen-2 spouse">+ Georgia Clones b: June 30, 1930 d: May 15, 1998</div>
-<div class="tree-entry gen-2 note">5 Harry Nicholas Alexander  
-b: Private</div>
-<div class="tree-entry gen-2 note">+Jennifer Sipes  
-b: Private</div>
-<div class="tree-entry gen-2 note">6 Nicholas Harry Alexander  
-b: Private</div>
-<div class="tree-entry gen-2 note">6 Margaret Louise Alexander  
-b: Private</div>
-<div class="tree-entry gen-2 note">*2nd Wife of Harry Nicholas Alexander:</div>
-<div class="tree-entry gen-2 note">+Patricia Ann Piggott  
-b: Private</div>
-<div class="tree-entry gen-2 note">*3rd Wife of Harry Nicholas Alexander:</div>
-<div class="tree-entry gen-2 note">+Robin Brown  
-b: Private</div>
-<div class="tree-entry gen-2 note">5 Suzanne Alexander  
-b: Private</div>
-<div class="tree-entry gen-2 note">+Harry A. Siamas  
-b: Private</div>
-<div class="tree-entry gen-2 note">6 Hadley Siamas  
-b: Private</div>
-<div class="tree-entry gen-2 note">6 Alexis Siamas  
-b: Private</div>
-<div class="tree-entry gen-2 note">6 Christanne Siamas  
-b: Private</div>
-<div class="tree-entry gen-2 note">5 Jamie Alexander  
-b: Private</div>
-<div class="tree-entry gen-2 note">+Carol Slazyk  
-b: Private</div>
-<div class="tree-entry gen-2 note">4 Helen Alexander  
-b: Private</div>
-<div class="tree-entry gen-2 note">+John Anthony Zarvas b: May 16, 1928 d: May 24, 
-2005</div>
-<div class="tree-entry gen-2 note">5 Anthony John Zarvas   
-b: Private</div>
-<div class="tree-entry gen-2 note">+Dianne Green  
-b: Private</div>
-<div class="tree-entry gen-2 note">6 Christopher Zarvas   
-b: Private</div>
-<div class="tree-entry gen-2 note">6 Matthew Zarvas  
-b: Private</div>
-<div class="tree-entry gen-2 note">6 Cassandra Leigh Zarvas  
-b: Private</div>
-<div class="tree-entry gen-2 note">5 Angelo Alexander Zarvas  
-b: Private</div>
-<div class="tree-entry gen-2 note">+Pamela Heos  
-b: Private</div>
-<div class="tree-entry gen-2 note">6 Christiellen Zarvas 
-b: Private</div>
-<div class="tree-entry gen-2 note">*2nd Wife of Angelo Alexander Zarvas:</div>
-<div class="tree-entry gen-2 note">+Lynn Thompson  
-b: Private</div>
-<div class="tree-entry gen-2 note">5 Karen Elizabeth Zarvas  
-b: Private</div>
-<div class="tree-entry gen-2 note">+John Joseph Spring  
-b: Private</div>
-<div class="tree-entry gen-2 note">6 Eleni Nicole Spring  b: 
-Private</div>
-
+  <div class="page-content tree-page">
+    <div class="tree-outer">
+      <div class="tree-legend">
+        <div class="legend-item"><div class="ls navy"></div> Ancestor</div>
+        <div class="legend-item"><div class="ls white"></div> Descendant</div>
+        <div class="legend-item"><div class="ls blue"></div> Spouse (married-in)</div>
+        <div class="legend-item"><div class="ls gray"></div> Living (private)</div>
+        <div class="legend-item" style="color:var(--color-gold,#c9a227);font-weight:700;font-size:1rem">&times;</div>&thinsp;Married
+        <div class="legend-item" style="font-size:.75rem;color:#999">Click a descendant card to collapse/expand</div>
+      </div>
+      <div class="tree-forest" id="forest"></div>
     </div>
   </div>
 </main>
@@ -300,11 +140,101 @@ Private</div>
       <a href="contact.html">Contact</a>
       <a href="not-recovered.html">Not Archived</a>
     </nav>
-    <p class="footer-copy">
-      Original content &copy; Tenedian Brotherhood. Website restored and modernized from archived materials.
-    </p>
+    <p class="footer-copy">Original content &copy; Tenedian Brotherhood.
+      Website restored and modernized from archived materials.</p>
   </div>
 </footer>
 
+<script>
+var TREES = [{"id":"p1","name":"Apostolos Zebecki","m":[{"sp":{"id":"p2","name":"Unknown Wife","birth":"in Tenedos, Greece"},"kids":[{"id":"p3","name":"Angeliki 'Angela' Zebecki","m":[{"sp":{"id":"p4","name":"Charles K. Petros","birth":"November 13, 1889","death":"July 27, 1965"},"kids":[{"id":"p5","name":"Helen 'Elaine' Petros","m":[{"sp":{"id":"p6","name":"Periklis J. Kasidonis","birth":"November 10, 1907","death":"May 08, 1981"},"kids":[{"id":"p7","name":"John P. Kasidonis","m":[{"sp":{"id":"p8","name":"Tina","priv":true},"kids":[]}],"priv":true},{"id":"p9","name":"Gloria Kasidonis","m":[{"sp":{"id":"p10","name":"Unknown Wall","priv":true},"kids":[]}],"priv":true},{"id":"p11","name":"Vickie Kasidonis","m":[{"sp":{"id":"p12","name":"Unknown Frank","priv":true},"kids":[]}],"priv":true},{"id":"p13","name":"Steven P. Kasidonis","m":[{"sp":{"id":"p14","name":"June Jeanette","priv":true},"kids":[]}],"priv":true}]}],"birth":"July 29, 1922","death":"January 22, 1996"},{"id":"p15","name":"John Petros","m":[],"priv":true},{"id":"p16","name":"Gustavas 'Gus' Petros","m":[{"sp":{"id":"p17","name":"Mattie Faye 'Faye' Nickell","birth":"May 1, 1934","death":"October 2, 2011"},"kids":[]}],"birth":"March 31, 1925","death":"February 10, 2006"}]}],"birth":"March 23, 1893","death":"June 25, 1972"}]}],"birth":"in Tenedos, Greece"},{"id":"p18","name":"Christ Zembekis","m":[{"sp":{"id":"p19","name":"Zaphira","birth":"Unknown"},"kids":[{"id":"p20","name":"Eleni 'Helen' Zembekis","m":[{"sp":{"id":"p21","name":"Constantine G. Cherpas","birth":"Unknown","death":"1915 in Tenedos"},"kids":[{"id":"p22","name":"John C. Cherpas","m":[{"sp":{"id":"p23","name":"Hareklia Kalfametrios","birth":"1896","death":"February 1967"},"kids":[{"id":"p24","name":"Christina J. Cherpas","m":[{"sp":{"id":"p25","name":"Michael Anthony Skulas","birth":"April 18, 1923","death":"April 20, 2007"},"kids":[{"id":"p26","name":"Irene Michelle Skulas, Dr.","m":[],"priv":true},{"id":"p27","name":"Martin Christopher Skulas","m":[{"sp":{"id":"p28","name":"Diane Susan Beach","priv":true},"kids":[{"id":"p29","name":"Matthew Karl Skulas","m":[{"sp":{"id":"p30","name":"Debra J. Pesetski","priv":true},"kids":[{"id":"p31","name":"Mitchel Anthony Skulas","m":[],"priv":true},{"id":"p32","name":"Jacob Martin Skulas","m":[],"priv":true}]}],"priv":true},{"id":"p33","name":"Ann Skulas","m":[{"sp":{"id":"p34","name":"Ethan Ray","priv":true},"kids":[]}],"priv":true}]}],"priv":true},{"id":"p35","name":"Myron Andrew Skulas, Dr.","m":[{"sp":{"id":"p36","name":"Diane Marie Thornton","birth":"October 20, 1950","death":"October 12, 2005"},"kids":[{"id":"p37","name":"Mark A. Skulas","m":[{"sp":{"id":"p38","name":"Mary Rankin","priv":true},"kids":[]}],"priv":true},{"id":"p39","name":"Paul Andrew Skulas","m":[{"sp":{"id":"p40","name":"Gillian Kemp","priv":true},"kids":[]}],"priv":true}]},{"sp":{"id":"p41","name":"Elizabeth Ann Marie Maggard","priv":true},"kids":[],"label":"2nd marriage"}],"priv":true}]}],"birth":"January 31, 1922","death":"September 11, 2011"},{"id":"p42","name":"Anthony J. 'Tony' Cherpas","m":[{"sp":{"id":"p43","name":"Athena Sideris","priv":true},"kids":[{"id":"p44","name":"Patti Ann Cherpas","m":[{"sp":{"id":"p45","name":"Paul E. Mendenhall","priv":true},"kids":[{"id":"p46","name":"Nicholas Mendenhall","m":[],"priv":true},{"id":"p47","name":"Hali Mendenhall","m":[],"priv":true}]}],"priv":true},{"id":"p48","name":"Janice Cherpas","m":[{"sp":{"id":"p49","name":"Robert Gigli","priv":true},"kids":[]}],"priv":true}]}],"birth":"January 20, 1923","death":"January 16, 2001"}]}],"birth":"August 10, 1889","death":"July 05, 1965"},{"id":"p50","name":"Anna Cherpas","m":[{"sp":{"id":"p51","name":"Paul Stamatidis","birth":"Unknown","death":"1923"},"kids":[]},{"sp":{"id":"p52","name":"Christ Moskos","birth":"March 04, 1881"},"kids":[{"id":"p53","name":"Bessie Moskos","m":[],"birth":"Unknown"},{"id":"p54","name":"Chris Moskos","m":[],"birth":"Unknown","death":"in W.W. II in Orleans, France"},{"id":"p55","name":"Georgia Moskos","m":[],"birth":"Unknown"}],"label":"2nd marriage"}],"birth":"Unknown"},{"id":"p56","name":"George Cherpas","m":[],"birth":"Unknown","death":"Unknown in Tenedos"},{"id":"p57","name":"Christ C. Cherpas","m":[{"sp":{"id":"p58","name":"Anna Chrestethon","birth":"1898"},"kids":[{"id":"p59","name":"Gus Cherpas","m":[],"birth":"February 09, 1922","death":"August 05, 1999"},{"id":"p60","name":"Lula Cherpas","m":[],"priv":true},{"id":"p61","name":"Nary Cherpas","m":[],"priv":true}]}],"birth":"November 05, 1895"},{"id":"p62","name":"Chryssanthy Cherpas","m":[{"sp":{"id":"p63","name":"Harry Alexander","birth":"September 09, 1886","death":"May 08, 1958"},"kids":[{"id":"p64","name":"Elizabeth Alexander","m":[{"sp":{"id":"p65","name":"Nicholas George Allemenos","birth":"December 23, 1921","death":"February 24, 1987"},"kids":[{"id":"p66","name":"Joan Marie 'Jody' Allemenos","m":[{"sp":{"id":"p67","name":"Charles Keeton","priv":true},"kids":[]},{"sp":{"id":"p68","name":"Harry Daniel 'Dan' McFarland","priv":true},"kids":[{"id":"p69","name":"Stephanie Elizabeth McFarland","m":[{"sp":{"id":"p70","name":"Aaron John Canty","priv":true},"kids":[{"id":"p71","name":"Liam Canty","m":[],"priv":true}]}],"priv":true},{"id":"p72","name":"Alexander Daniel McFarland","m":[{"sp":{"id":"p73","name":"Katherine Rose Macklin","priv":true},"kids":[]}],"priv":true}],"label":"2nd marriage"}],"priv":true},{"id":"p74","name":"George Nicholas Allemenos","m":[{"sp":{"id":"p75","name":"Debra Streets","priv":true},"kids":[{"id":"p76","name":"Nicholas George Allemenos","m":[],"birth":"Sept 23, 1976","death":"March 17, 1994"},{"id":"p77","name":"Lisa Nicole Allemenos","m":[],"birth":"May 28, 1980","death":"March 17, 1994"}]},{"sp":{"id":"p78","name":"Barbara Collins","priv":true},"kids":[],"label":"2nd marriage"},{"sp":{"id":"p79","name":"Lorettta Le Beau","priv":true},"kids":[],"label":"3rd marriage"}],"priv":true}]}],"birth":"December 06, 1921","death":"July 15, 2011"},{"id":"p80","name":"Joseph Alexander","m":[{"sp":{"id":"p81","name":"Mary Berles","birth":"August 07, 1927","death":"December 31, 1989"},"kids":[{"id":"p82","name":"Harry J. Alexander","m":[{"sp":{"id":"p83","name":"Lisa Marie Martin","priv":true},"kids":[]}],"priv":true},{"id":"p84","name":"James J. Alexander","m":[{"sp":{"id":"p85","name":"Debbie Fields","priv":true},"kids":[{"id":"p86","name":"Mary JoAnne Alexander","m":[],"priv":true},{"id":"p87","name":"Fields Joseph Alexander","m":[],"priv":true}]}],"priv":true},{"id":"p88","name":"John J. Alexander","m":[{"sp":{"id":"p89","name":"Melissa Ann Carnegie","priv":true},"kids":[{"id":"p90","name":"Amanda Jo Alexander","m":[],"priv":true},{"id":"p91","name":"Katie Marie Alexander","m":[],"priv":true},{"id":"p92","name":"John J. Alexander","m":[],"priv":true},{"id":"p93","name":"Nicholas Alexander","m":[],"priv":true},{"id":"p94","name":"Molly Ann Alexander","m":[],"priv":true}]}],"priv":true},{"id":"p95","name":"Christine Alexander","m":[{"sp":{"id":"p96","name":"Theodore Lee Nicholas","priv":true},"kids":[{"id":"p97","name":"Alexander Joseph Nicholas","m":[],"priv":true},{"id":"p98","name":"Marrisa Nicholas","m":[],"priv":true}]}],"priv":true},{"id":"p99","name":"Andrew J. Alexander","m":[],"priv":true}]}],"priv":true},{"id":"p100","name":"Constantine 'Deno' Alexander","m":[{"sp":{"id":"p101","name":"Georgia Clones","birth":"June 30, 1930","death":"May 15, 1998"},"kids":[{"id":"p102","name":"Harry Nicholas Alexander","m":[{"sp":{"id":"p103","name":"Jennifer Sipes","priv":true},"kids":[{"id":"p104","name":"Nicholas Harry Alexander","m":[],"priv":true},{"id":"p105","name":"Margaret Louise Alexander","m":[],"priv":true}]},{"sp":{"id":"p106","name":"Patricia Ann Piggott","priv":true},"kids":[],"label":"2nd marriage"},{"sp":{"id":"p107","name":"Robin Brown","priv":true},"kids":[],"label":"3rd marriage"}],"priv":true},{"id":"p108","name":"Suzanne Alexander","m":[{"sp":{"id":"p109","name":"Harry A. Siamas","priv":true},"kids":[{"id":"p110","name":"Hadley Siamas","m":[],"priv":true},{"id":"p111","name":"Alexis Siamas","m":[],"priv":true},{"id":"p112","name":"Christanne Siamas","m":[],"priv":true}]}],"priv":true},{"id":"p113","name":"Jamie Alexander","m":[{"sp":{"id":"p114","name":"Carol Slazyk","priv":true},"kids":[]}],"priv":true}]}],"birth":"November 16, 1926","death":"February 23, 2006"},{"id":"p115","name":"Helen Alexander","m":[{"sp":{"id":"p116","name":"John Anthony Zarvas","birth":"May 16, 1928","death":"May 24, 2005"},"kids":[{"id":"p117","name":"Anthony John Zarvas","m":[{"sp":{"id":"p118","name":"Dianne Green","priv":true},"kids":[{"id":"p119","name":"Christopher Zarvas","m":[],"priv":true},{"id":"p120","name":"Matthew Zarvas","m":[],"priv":true},{"id":"p121","name":"Cassandra Leigh Zarvas","m":[],"priv":true}]}],"priv":true},{"id":"p122","name":"Angelo Alexander Zarvas","m":[{"sp":{"id":"p123","name":"Pamela Heos","priv":true},"kids":[{"id":"p124","name":"Christiellen Zarvas","m":[],"priv":true}]},{"sp":{"id":"p125","name":"Lynn Thompson","priv":true},"kids":[],"label":"2nd marriage"}],"priv":true},{"id":"p126","name":"Karen Elizabeth Zarvas","m":[{"sp":{"id":"p127","name":"John Joseph Spring","priv":true},"kids":[{"id":"p128","name":"Eleni Nicole Spring","m":[],"priv":true}]}],"priv":true}]}],"priv":true}]}],"birth":"April 15, 1899","death":"September 20, 1986"}]}],"birth":"1862","death":"August 23, 1957"}]}],"birth":"Unknown"}];
+var TREE_TITLES = ["Descendants of Apostolos Zebecki","Descendants of Christ Zembekis"];
+function makeCard(p, cls) {
+  var div = document.createElement('div');
+  div.className = 'card ' + (cls || '');
+  var n = document.createElement('span'); n.className = 'n';
+  n.textContent = p.name; div.appendChild(n);
+  var parts = [];
+  if (p.birth) parts.push('b. ' + p.birth);
+  if (p.death) parts.push('d. ' + p.death);
+  if (p.priv && !p.birth && !p.death) parts.push('Living');
+  if (parts.length) {
+    var d = document.createElement('span'); d.className = 'd';
+    d.textContent = parts.join('  ·  '); div.appendChild(d);
+  }
+  return div;
+}
+
+function renderNode(p, gen) {
+  var wrapper = document.createElement('div'); wrapper.className = 'tree-node';
+  var body = document.createElement('div'); body.className = 'node-body';
+  var marriages = p.m || [];
+  var allKids = [];
+  for (var i = 0; i < marriages.length; i++) {
+    var ks = marriages[i].kids || [];
+    for (var j = 0; j < ks.length; j++) allKids.push(ks[j]);
+  }
+  var cls = gen === 0 ? 'root' : (p.priv ? 'priv' : '');
+  if (allKids.length) cls += (cls ? ' ' : '') + 'collapsible';
+  var mc = makeCard(p, cls);
+  if (marriages.length > 0) {
+    var row = document.createElement('div'); row.className = 'couple-row';
+    row.appendChild(mc);
+    if (marriages[0].sp) {
+      var dot = document.createElement('span'); dot.className = 'cx';
+      dot.textContent = '×'; row.appendChild(dot);
+      var spCls = 'spouse' + (marriages[0].sp.priv ? ' priv' : '');
+      row.appendChild(makeCard(marriages[0].sp, spCls));
+    }
+    body.appendChild(row);
+    for (var mi = 1; mi < marriages.length; mi++) {
+      var mg = marriages[mi];
+      if (mg.label) {
+        var lbl = document.createElement('div'); lbl.className = 'remarriage-lbl';
+        lbl.textContent = mg.label + ':'; body.appendChild(lbl);
+      }
+      if (mg.sp) {
+        var r2 = document.createElement('div'); r2.className = 'couple-row';
+        var ph = document.createElement('div'); ph.style.cssText = 'width:148px;flex-shrink:0;';
+        r2.appendChild(ph);
+        var d2 = document.createElement('span'); d2.className = 'cx';
+        d2.textContent = '×'; r2.appendChild(d2);
+        var sp2Cls = 'spouse' + (mg.sp.priv ? ' priv' : '');
+        r2.appendChild(makeCard(mg.sp, sp2Cls)); body.appendChild(r2);
+      }
+    }
+  } else {
+    var soloRow = document.createElement('div'); soloRow.className = 'couple-row';
+    soloRow.appendChild(mc); body.appendChild(soloRow);
+  }
+  wrapper.appendChild(body);
+  if (allKids.length) {
+    wrapper.classList.add('has-ch');
+    var cr = document.createElement('div'); cr.className = 'tree-children';
+    for (var ki = 0; ki < allKids.length; ki++) cr.appendChild(renderNode(allKids[ki], gen + 1));
+    wrapper.appendChild(cr);
+    mc.addEventListener('click', (function(nd) {
+      return function(e) { e.stopPropagation(); nd.classList.toggle('closed'); };
+    }(wrapper)));
+  }
+  return wrapper;
+}
+
+function buildSection(title, data, showTitle) {
+  var sec = document.createElement('div'); sec.className = 'tree-section';
+  if (showTitle) {
+    var h = document.createElement('h2'); h.className = 'tree-section-heading';
+    h.textContent = title; sec.appendChild(h);
+  }
+  var root = document.createElement('div'); root.className = 'tree-root';
+  root.appendChild(renderNode(data, 0)); sec.appendChild(root);
+  return sec;
+}
+
+var forest = document.getElementById('forest');
+var multiTree = TREES.length > 1;
+for (var ti = 0; ti < TREES.length; ti++) {
+  forest.appendChild(buildSection(TREE_TITLES[ti], TREES[ti], multiTree));
+}
+</script>
 </body>
 </html>

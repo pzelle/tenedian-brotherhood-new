@@ -3,8 +3,88 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Descendants of Panayiotis Kirkines — Tenedian Brotherhood</title>
+  <title>Panayiotis Kirkines Family — Tenedian Brotherhood</title>
   <link rel="stylesheet" href="css/style.css">
+  <style>
+    .tree-page { padding: 0; }
+    .tree-outer { overflow-x: auto; padding: 2.5rem 1.5rem 3rem;
+                  background: var(--color-off-white, #f8f5f0); }
+    .tree-forest { display: flex; flex-direction: column; gap: 3.5rem; }
+    .tree-section-heading {
+      font-family: var(--font-heading, 'Playfair Display', serif);
+      color: var(--color-navy, #0a1628); font-size: 1.2rem;
+      margin: 0 0 1.25rem; padding-bottom: 0.4rem;
+      border-bottom: 2px solid var(--color-gold, #c9a227); }
+    .tree-legend { display: flex; gap: 1.2rem; flex-wrap: wrap;
+                   margin-bottom: 2rem; font-size: 0.8rem; color: #555;
+                   align-items: center; }
+    .legend-item { display: flex; align-items: center; gap: 5px; }
+    .ls { width: 20px; height: 13px; border-radius: 3px;
+          border: 2px solid var(--color-gold, #c9a227);
+          display: inline-block; flex-shrink: 0; }
+    .ls.navy  { background: var(--color-navy, #0a1628); }
+    .ls.white { background: #fff; }
+    .ls.blue  { background: #dce8ff; border-color: #6888cc; }
+    .ls.gray  { background: #eee; border-color: #bbb; }
+    /* Tree layout */
+    .tree-section { overflow-x: auto; padding-bottom: 0.5rem; }
+    .tree-root { display: inline-flex; flex-direction: column;
+                 align-items: center; padding: 0.5rem 1rem; }
+    .tree-node { display: flex; flex-direction: column; align-items: center;
+                 position: relative; }
+    .node-body { display: flex; flex-direction: column; align-items: center;
+                 gap: 3px; position: relative; }
+    .couple-row { display: flex; align-items: center; gap: 5px; }
+    .cx { color: var(--color-gold, #c9a227); font-weight: 700; font-size: 1rem;
+          padding: 0 2px; flex-shrink: 0; }
+    .remarriage-lbl { font-size: 0.65rem; color: #999; font-style: italic;
+                      text-align: center; margin-top: 5px; }
+    /* Cards */
+    .card { background: #fff; border: 2px solid var(--color-gold, #c9a227);
+            border-radius: 6px; padding: 7px 10px; width: 148px;
+            text-align: center; font-size: 0.74rem; line-height: 1.35;
+            position: relative; }
+    .card .n { font-weight: 700; color: var(--color-navy, #0a1628);
+               display: block; font-size: 0.78rem; }
+    .card .d { color: #888; font-size: 0.67rem; display: block; margin-top: 2px; }
+    .card.root { background: var(--color-navy, #0a1628);
+                 border-color: var(--color-gold, #c9a227); }
+    .card.root .n { color: var(--color-gold, #c9a227); }
+    .card.root .d { color: #99aabb; }
+    .card.spouse { background: #dce8ff; border-color: #6888cc; }
+    .card.spouse .n { color: #1a3a80; }
+    .card.priv  { background: #eee; border-color: #bbb; }
+    .card.priv .n { color: #666; }
+    .card.priv .d { color: #aaa; }
+    .card.collapsible { cursor: pointer; }
+    .card.collapsible::after { content: '\25BE'; position: absolute;
+      bottom: 3px; right: 5px; font-size: 0.6rem;
+      color: var(--color-gold, #c9a227); }
+    .tree-node.closed > .node-body .card.collapsible::after { content: '\25B8'; }
+    /* Connector lines (CSS pseudo-elements) */
+    :root { --gap: 44px; }
+    .tree-node.has-ch > .node-body::after {
+      content: ''; position: absolute; left: 50%; transform: translateX(-50%);
+      top: 100%; width: 2px; height: var(--gap);
+      background: var(--color-gold, #c9a227); }
+    .tree-children { display: flex; flex-direction: row; gap: 14px;
+                     align-items: flex-start; justify-content: center;
+                     margin-top: var(--gap); }
+    .tree-node.closed > .node-body::after  { display: none !important; }
+    .tree-node.closed > .tree-children     { display: none !important; }
+    .tree-children > .tree-node { position: relative; }
+    .tree-children > .tree-node::before {
+      content: ''; position: absolute; left: 50%; transform: translateX(-50%);
+      top: calc(-1 * var(--gap)); width: 2px; height: var(--gap);
+      background: var(--color-gold, #c9a227); }
+    .tree-children > .tree-node::after {
+      content: ''; position: absolute; top: calc(-1 * var(--gap));
+      left: 0; right: 0; height: 2px;
+      background: var(--color-gold, #c9a227); }
+    .tree-children > .tree-node:first-child::after  { left: 50%; }
+    .tree-children > .tree-node:last-child::after   { right: 50%; }
+    .tree-children > .tree-node:first-child:last-child::after { display: none; }
+  </style>
 </head>
 <body>
 
@@ -29,86 +109,22 @@
 <main>
   <header class="page-header">
     <div class="page-header-inner">
-      <h1 class="page-title">Descendants of Panayiotis Kirkines</h1>
-      <p class="page-subtitle"><a href="family-trees.html" style="color:rgba(255,255,255,.6); font-size:.85rem;">&larr; Back to Family Trees</a></p>
+      <h1 class="page-title">Panayiotis Kirkines Family</h1>
+      <p class="page-subtitle"><a href="family-trees.html" style="color:rgba(255,255,255,.65);font-size:.85rem;">&larr; Back to Family Trees</a></p>
     </div>
   </header>
 
-  <div class="page-content">
-    <div class="privacy-notice">
-      <strong>Privacy notice:</strong> Per the original website policy, birth dates are not
-      disclosed for individuals born after 1920 unless they are deceased.
-    </div>
-
-    <div class="family-tree-content">
-<div class="tree-entry gen-0 note">Kirkines Family</div>
-<div class="tree-entry gen-0 note">(There are 2 families on this page. I do not know 
-if or how they are related)</div>
-<div class="tree-entry gen-0">Panayiotis Kirkines b: in Tenedos, Greece</div>
-<div class="tree-entry gen-0 spouse">+ Stiliani Margaritis b: in Tenedos, Greece</div>
-<div class="tree-entry gen-0 note">2 Athena Kirkines b: September 14, 1900 in 
-Tenedos d: January 17, 1990</div>
-<div class="tree-entry gen-0 note">+Panagiotis 'Peter' Hliaroudis b: May 31, 
-1890 in Tenedos d: January 12, 1953</div>
-<div class="tree-entry gen-0 note">3 Hriso 'Goldie' Hliaroudis b: August 
-26, 1923  d: July 21, 2002</div>
-<div class="tree-entry gen-0 note">+Elias 'Lewis' Anthony Skulas b: 
-October 07, 1926  d: March 17, 1960</div>
-<div class="tree-entry gen-0 note">4 Panagiota Anastasia 
-'Patricia' Skulas  b: Private</div>
-<div class="tree-entry gen-0 note">4 Jerasimos 'Jeffery' Skulas  
-b: Private</div>
-<div class="tree-entry gen-0 note">*2nd Husband of Goldie Hliaroudis:</div>
-<div class="tree-entry gen-0 note">+George Peter Saclarides  b:
- Private</div>
-<div class="tree-entry gen-0 note">4 Maria Athena Saclarides
- b: 
-Private</div>
-<div class="tree-entry gen-0 note">+Ronald 
-Charles Tyre b: Private</div>
-<div class="tree-entry gen-0 note">5 Krista Jean Tyre b:  
-Private</div>
-<div class="tree-entry gen-0 note">4 Peter George Saclarides b: 
-April 22, 1965 d: October 16, 2002</div>
-<div class="tree-entry gen-1">Susanna Kirkines b: in Tenedos, Greece</div>
-<div class="tree-entry gen-1 spouse">+ Panagiotis Saltos b: in Tenedos, Greece</div>
-<div class="tree-entry gen-2">Aspasia Saltos  b: Private</div>
-<div class="tree-entry gen-2 spouse">+ Unknown Houvardas  b: Private</div>
-<div class="tree-entry gen-2">Maria Saltos  b: Private</div>
-<div class="tree-entry gen-2 spouse">+ Unknown Marangos  b: Private</div>
-<div class="tree-entry gen-2">Dimitrios P. Saltos  b: Private</div>
-<div class="tree-entry gen-2 note">3 Evangelia Saltos  b: Unknown d: 
-Abt. 1967</div>
-<div class="tree-entry gen-2 spouse">+ Lazaris Kolosenta  b: Private</div>
-<div class="tree-entry gen-2 note">4 Susanna Kolosenta 
- b: Private</div>
-<div class="tree-entry gen-2">Athena Saltos  b: Private</div>
-<div class="tree-entry gen-2">Sophia Saltos  b: Private</div>
-<div class="tree-entry gen-2 note">+Unknown Kanavoutsos  b: 
-Private</div>
-<div class="tree-entry gen-2">Katerina Saltos  b: Private</div>
-<div class="tree-entry gen-2 spouse">+ Unknown Tsiknas  b: Private</div>
-<div class="tree-entry gen-2">Eleni Saltos  b: Private</div>
-<div class="tree-entry gen-2 note">+Stratos Kondos 
- b: Private</div>
-<div class="tree-entry gen-2 note">4 Annoula 'Joanna' Marie Kondos  b: 
-Private</div>
-<div class="tree-entry gen-2 note">+Jeffrey Scott Warren b: 
-Private</div>
-<div class="tree-entry gen-2 note">5 Alexander Daniel 
-Warren b: Private</div>
-<div class="tree-entry gen-1">Yiorgos Kirkines  b: Private</div>
-<div class="tree-entry gen-1">Evangelos Kirkines  b: Private</div>
-<div class="tree-entry gen-1">Efthimia Kirkines  b: Private</div>
-<div class="tree-entry gen-1">Ekaterini Kirkines  b: Private</div>
-<div class="tree-entry gen-1">Yiannis Kirkines  b: Private</div>
-<div class="tree-entry gen-1">Maria Kirkines  b: Private</div>
-<div class="tree-entry gen-1">Vasiliki Kirkines  b: Private</div>
-<div class="tree-entry gen-0">Andonis Kirkines  b: Unknown</div>
-<div class="tree-entry gen-0 spouse">+ Unknown Wife  b: Unknown</div>
-<div class="tree-entry gen-0 note">2 Stergios A. 'Steve' Kirkines b: January 06, 
-1873 in Tenedos, Greece d: Nov. 19, 1948</div>
-
+  <div class="page-content tree-page">
+    <div class="tree-outer">
+      <div class="tree-legend">
+        <div class="legend-item"><div class="ls navy"></div> Ancestor</div>
+        <div class="legend-item"><div class="ls white"></div> Descendant</div>
+        <div class="legend-item"><div class="ls blue"></div> Spouse (married-in)</div>
+        <div class="legend-item"><div class="ls gray"></div> Living (private)</div>
+        <div class="legend-item" style="color:var(--color-gold,#c9a227);font-weight:700;font-size:1rem">&times;</div>&thinsp;Married
+        <div class="legend-item" style="font-size:.75rem;color:#999">Click a descendant card to collapse/expand</div>
+      </div>
+      <div class="tree-forest" id="forest"></div>
     </div>
   </div>
 </main>
@@ -124,11 +140,101 @@ Warren b: Private</div>
       <a href="contact.html">Contact</a>
       <a href="not-recovered.html">Not Archived</a>
     </nav>
-    <p class="footer-copy">
-      Original content &copy; Tenedian Brotherhood. Website restored and modernized from archived materials.
-    </p>
+    <p class="footer-copy">Original content &copy; Tenedian Brotherhood.
+      Website restored and modernized from archived materials.</p>
   </div>
 </footer>
 
+<script>
+var TREES = [{"id":"p1","name":"Panayiotis Kirkines","m":[{"sp":{"id":"p2","name":"Stiliani Margaritis","birth":"in Tenedos, Greece"},"kids":[{"id":"p3","name":"Athena Kirkines","m":[{"sp":{"id":"p4","name":"Panagiotis 'Peter' Hliaroudis","birth":"May 31, 1890","death":"January 12, 1953"},"kids":[{"id":"p5","name":"Hriso 'Goldie' Hliaroudis","m":[{"sp":{"id":"p6","name":"Elias 'Lewis' Anthony Skulas","birth":"October 07, 1926","death":"March 17, 1960"},"kids":[{"id":"p7","name":"Panagiota Anastasia 'Patricia' Skulas","m":[],"priv":true},{"id":"p8","name":"Jerasimos 'Jeffery' Skulas","m":[],"priv":true}]},{"sp":{"id":"p9","name":"George Peter Saclarides","priv":true},"kids":[{"id":"p10","name":"Maria Athena Saclarides","m":[{"sp":{"id":"p11","name":"Ronald Charles Tyre","priv":true},"kids":[{"id":"p12","name":"Krista Jean Tyre","m":[],"priv":true}]}],"priv":true},{"id":"p13","name":"Peter George Saclarides","m":[],"birth":"April 22, 1965","death":"October 16, 2002"}],"label":"2nd marriage"}],"birth":"August 26, 1923","death":"July 21, 2002"}]}],"birth":"September 14, 1900","death":"January 17, 1990"},{"id":"p14","name":"Susanna Kirkines","m":[{"sp":{"id":"p15","name":"Panagiotis Saltos","birth":"in Tenedos, Greece"},"kids":[{"id":"p16","name":"Aspasia Saltos","m":[{"sp":{"id":"p17","name":"Unknown Houvardas","priv":true},"kids":[]}],"priv":true},{"id":"p18","name":"Maria Saltos","m":[{"sp":{"id":"p19","name":"Unknown Marangos","priv":true},"kids":[]}],"priv":true},{"id":"p20","name":"Dimitrios P. Saltos","m":[],"priv":true},{"id":"p21","name":"Evangelia Saltos","m":[{"sp":{"id":"p22","name":"Lazaris Kolosenta","priv":true},"kids":[{"id":"p23","name":"Susanna Kolosenta","m":[],"priv":true}]}],"birth":"Unknown","death":"Abt. 1967"},{"id":"p24","name":"Athena Saltos","m":[],"priv":true},{"id":"p25","name":"Sophia Saltos","m":[{"sp":{"id":"p26","name":"Unknown Kanavoutsos","priv":true},"kids":[]}],"priv":true},{"id":"p27","name":"Katerina Saltos","m":[{"sp":{"id":"p28","name":"Unknown Tsiknas","priv":true},"kids":[]}],"priv":true},{"id":"p29","name":"Eleni Saltos","m":[{"sp":{"id":"p30","name":"Stratos Kondos","priv":true},"kids":[{"id":"p31","name":"Annoula 'Joanna' Marie Kondos","m":[{"sp":{"id":"p32","name":"Jeffrey Scott Warren","priv":true},"kids":[{"id":"p33","name":"Alexander Daniel Warren","m":[],"priv":true}]}],"priv":true}]}],"priv":true}]}],"birth":"in Tenedos, Greece"},{"id":"p34","name":"Yiorgos Kirkines","m":[],"priv":true},{"id":"p35","name":"Evangelos Kirkines","m":[],"priv":true},{"id":"p36","name":"Efthimia Kirkines","m":[],"priv":true},{"id":"p37","name":"Ekaterini Kirkines","m":[],"priv":true},{"id":"p38","name":"Yiannis Kirkines","m":[],"priv":true},{"id":"p39","name":"Maria Kirkines","m":[],"priv":true},{"id":"p40","name":"Vasiliki Kirkines","m":[],"priv":true}]}],"birth":"in Tenedos, Greece"},{"id":"p41","name":"Andonis Kirkines","m":[{"sp":{"id":"p42","name":"Unknown Wife","birth":"Unknown"},"kids":[{"id":"p43","name":"Stergios A. 'Steve' Kirkines","m":[],"birth":"January 06, 1873","death":"Nov. 19, 1948"}]}],"birth":"Unknown"}];
+var TREE_TITLES = ["Descendants of Panayiotis Kirkines","Descendants of Andonis Kirkines"];
+function makeCard(p, cls) {
+  var div = document.createElement('div');
+  div.className = 'card ' + (cls || '');
+  var n = document.createElement('span'); n.className = 'n';
+  n.textContent = p.name; div.appendChild(n);
+  var parts = [];
+  if (p.birth) parts.push('b. ' + p.birth);
+  if (p.death) parts.push('d. ' + p.death);
+  if (p.priv && !p.birth && !p.death) parts.push('Living');
+  if (parts.length) {
+    var d = document.createElement('span'); d.className = 'd';
+    d.textContent = parts.join('  ·  '); div.appendChild(d);
+  }
+  return div;
+}
+
+function renderNode(p, gen) {
+  var wrapper = document.createElement('div'); wrapper.className = 'tree-node';
+  var body = document.createElement('div'); body.className = 'node-body';
+  var marriages = p.m || [];
+  var allKids = [];
+  for (var i = 0; i < marriages.length; i++) {
+    var ks = marriages[i].kids || [];
+    for (var j = 0; j < ks.length; j++) allKids.push(ks[j]);
+  }
+  var cls = gen === 0 ? 'root' : (p.priv ? 'priv' : '');
+  if (allKids.length) cls += (cls ? ' ' : '') + 'collapsible';
+  var mc = makeCard(p, cls);
+  if (marriages.length > 0) {
+    var row = document.createElement('div'); row.className = 'couple-row';
+    row.appendChild(mc);
+    if (marriages[0].sp) {
+      var dot = document.createElement('span'); dot.className = 'cx';
+      dot.textContent = '×'; row.appendChild(dot);
+      var spCls = 'spouse' + (marriages[0].sp.priv ? ' priv' : '');
+      row.appendChild(makeCard(marriages[0].sp, spCls));
+    }
+    body.appendChild(row);
+    for (var mi = 1; mi < marriages.length; mi++) {
+      var mg = marriages[mi];
+      if (mg.label) {
+        var lbl = document.createElement('div'); lbl.className = 'remarriage-lbl';
+        lbl.textContent = mg.label + ':'; body.appendChild(lbl);
+      }
+      if (mg.sp) {
+        var r2 = document.createElement('div'); r2.className = 'couple-row';
+        var ph = document.createElement('div'); ph.style.cssText = 'width:148px;flex-shrink:0;';
+        r2.appendChild(ph);
+        var d2 = document.createElement('span'); d2.className = 'cx';
+        d2.textContent = '×'; r2.appendChild(d2);
+        var sp2Cls = 'spouse' + (mg.sp.priv ? ' priv' : '');
+        r2.appendChild(makeCard(mg.sp, sp2Cls)); body.appendChild(r2);
+      }
+    }
+  } else {
+    var soloRow = document.createElement('div'); soloRow.className = 'couple-row';
+    soloRow.appendChild(mc); body.appendChild(soloRow);
+  }
+  wrapper.appendChild(body);
+  if (allKids.length) {
+    wrapper.classList.add('has-ch');
+    var cr = document.createElement('div'); cr.className = 'tree-children';
+    for (var ki = 0; ki < allKids.length; ki++) cr.appendChild(renderNode(allKids[ki], gen + 1));
+    wrapper.appendChild(cr);
+    mc.addEventListener('click', (function(nd) {
+      return function(e) { e.stopPropagation(); nd.classList.toggle('closed'); };
+    }(wrapper)));
+  }
+  return wrapper;
+}
+
+function buildSection(title, data, showTitle) {
+  var sec = document.createElement('div'); sec.className = 'tree-section';
+  if (showTitle) {
+    var h = document.createElement('h2'); h.className = 'tree-section-heading';
+    h.textContent = title; sec.appendChild(h);
+  }
+  var root = document.createElement('div'); root.className = 'tree-root';
+  root.appendChild(renderNode(data, 0)); sec.appendChild(root);
+  return sec;
+}
+
+var forest = document.getElementById('forest');
+var multiTree = TREES.length > 1;
+for (var ti = 0; ti < TREES.length; ti++) {
+  forest.appendChild(buildSection(TREE_TITLES[ti], TREES[ti], multiTree));
+}
+</script>
 </body>
 </html>

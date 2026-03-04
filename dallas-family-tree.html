@@ -3,8 +3,88 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>DALLAS FAMILY — Tenedian Brotherhood</title>
+  <title>DALLAS Family — Tenedian Brotherhood</title>
   <link rel="stylesheet" href="css/style.css">
+  <style>
+    .tree-page { padding: 0; }
+    .tree-outer { overflow-x: auto; padding: 2.5rem 1.5rem 3rem;
+                  background: var(--color-off-white, #f8f5f0); }
+    .tree-forest { display: flex; flex-direction: column; gap: 3.5rem; }
+    .tree-section-heading {
+      font-family: var(--font-heading, 'Playfair Display', serif);
+      color: var(--color-navy, #0a1628); font-size: 1.2rem;
+      margin: 0 0 1.25rem; padding-bottom: 0.4rem;
+      border-bottom: 2px solid var(--color-gold, #c9a227); }
+    .tree-legend { display: flex; gap: 1.2rem; flex-wrap: wrap;
+                   margin-bottom: 2rem; font-size: 0.8rem; color: #555;
+                   align-items: center; }
+    .legend-item { display: flex; align-items: center; gap: 5px; }
+    .ls { width: 20px; height: 13px; border-radius: 3px;
+          border: 2px solid var(--color-gold, #c9a227);
+          display: inline-block; flex-shrink: 0; }
+    .ls.navy  { background: var(--color-navy, #0a1628); }
+    .ls.white { background: #fff; }
+    .ls.blue  { background: #dce8ff; border-color: #6888cc; }
+    .ls.gray  { background: #eee; border-color: #bbb; }
+    /* Tree layout */
+    .tree-section { overflow-x: auto; padding-bottom: 0.5rem; }
+    .tree-root { display: inline-flex; flex-direction: column;
+                 align-items: center; padding: 0.5rem 1rem; }
+    .tree-node { display: flex; flex-direction: column; align-items: center;
+                 position: relative; }
+    .node-body { display: flex; flex-direction: column; align-items: center;
+                 gap: 3px; position: relative; }
+    .couple-row { display: flex; align-items: center; gap: 5px; }
+    .cx { color: var(--color-gold, #c9a227); font-weight: 700; font-size: 1rem;
+          padding: 0 2px; flex-shrink: 0; }
+    .remarriage-lbl { font-size: 0.65rem; color: #999; font-style: italic;
+                      text-align: center; margin-top: 5px; }
+    /* Cards */
+    .card { background: #fff; border: 2px solid var(--color-gold, #c9a227);
+            border-radius: 6px; padding: 7px 10px; width: 148px;
+            text-align: center; font-size: 0.74rem; line-height: 1.35;
+            position: relative; }
+    .card .n { font-weight: 700; color: var(--color-navy, #0a1628);
+               display: block; font-size: 0.78rem; }
+    .card .d { color: #888; font-size: 0.67rem; display: block; margin-top: 2px; }
+    .card.root { background: var(--color-navy, #0a1628);
+                 border-color: var(--color-gold, #c9a227); }
+    .card.root .n { color: var(--color-gold, #c9a227); }
+    .card.root .d { color: #99aabb; }
+    .card.spouse { background: #dce8ff; border-color: #6888cc; }
+    .card.spouse .n { color: #1a3a80; }
+    .card.priv  { background: #eee; border-color: #bbb; }
+    .card.priv .n { color: #666; }
+    .card.priv .d { color: #aaa; }
+    .card.collapsible { cursor: pointer; }
+    .card.collapsible::after { content: '\25BE'; position: absolute;
+      bottom: 3px; right: 5px; font-size: 0.6rem;
+      color: var(--color-gold, #c9a227); }
+    .tree-node.closed > .node-body .card.collapsible::after { content: '\25B8'; }
+    /* Connector lines (CSS pseudo-elements) */
+    :root { --gap: 44px; }
+    .tree-node.has-ch > .node-body::after {
+      content: ''; position: absolute; left: 50%; transform: translateX(-50%);
+      top: 100%; width: 2px; height: var(--gap);
+      background: var(--color-gold, #c9a227); }
+    .tree-children { display: flex; flex-direction: row; gap: 14px;
+                     align-items: flex-start; justify-content: center;
+                     margin-top: var(--gap); }
+    .tree-node.closed > .node-body::after  { display: none !important; }
+    .tree-node.closed > .tree-children     { display: none !important; }
+    .tree-children > .tree-node { position: relative; }
+    .tree-children > .tree-node::before {
+      content: ''; position: absolute; left: 50%; transform: translateX(-50%);
+      top: calc(-1 * var(--gap)); width: 2px; height: var(--gap);
+      background: var(--color-gold, #c9a227); }
+    .tree-children > .tree-node::after {
+      content: ''; position: absolute; top: calc(-1 * var(--gap));
+      left: 0; right: 0; height: 2px;
+      background: var(--color-gold, #c9a227); }
+    .tree-children > .tree-node:first-child::after  { left: 50%; }
+    .tree-children > .tree-node:last-child::after   { right: 50%; }
+    .tree-children > .tree-node:first-child:last-child::after { display: none; }
+  </style>
 </head>
 <body>
 
@@ -29,145 +109,22 @@
 <main>
   <header class="page-header">
     <div class="page-header-inner">
-      <h1 class="page-title">DALLAS FAMILY</h1>
-      <p class="page-subtitle"><a href="family-trees.html" style="color:rgba(255,255,255,.6); font-size:.85rem;">&larr; Back to Family Trees</a></p>
+      <h1 class="page-title">DALLAS Family</h1>
+      <p class="page-subtitle"><a href="family-trees.html" style="color:rgba(255,255,255,.65);font-size:.85rem;">&larr; Back to Family Trees</a></p>
     </div>
   </header>
 
-  <div class="page-content">
-    <div class="privacy-notice">
-      <strong>Privacy notice:</strong> Per the original website policy, birth dates are not
-      disclosed for individuals born after 1920 unless they are deceased.
-    </div>
-
-    <div class="family-tree-content">
-<div class="tree-entry gen-0 note">DALLAS / DALLIS FAMILY</div>
-<div class="tree-entry gen-0 note">(There are 2 Family lines listed here. I do 
-not know if or how they are related)</div>
-<div class="tree-entry gen-0">Pandelis Dallas b: Unknown</div>
-<div class="tree-entry gen-0 spouse">+ Despina Pavlis b: Unknown d: Aft. 1957</div>
-<div class="tree-entry gen-0 note">2 Helen Dallas b: 1887 in Tenedos, Greece d: 
-May 15, 1957</div>
-<div class="tree-entry gen-0 note">+Peter Atherine b: August 10, 1884 in 
-Tenedos, Greece d: November 19, 1976</div>
-<div class="tree-entry gen-0 note">3 Everett Peter Atherine, Sr. b: 
-August 10, 1917  d: December 22, 2001</div>
-<div class="tree-entry gen-0 note">+Sophie Christo b: February 4. 1923  
-d: October 17, 2008</div>
-<div class="tree-entry gen-0 note">4 Everett Peter Atherine, Jr. 
-b: Private</div>
-<div class="tree-entry gen-0 spouse">+ Barbara Lindsey b: Private</div>
-<div class="tree-entry gen-0 note">5 Everett Peter 
-Atherine III  b: Private</div>
-<div class="tree-entry gen-0 note">+ Emily Gusses b: 
-Private</div>
-<div class="tree-entry gen-0 note">6 Eliza Suzanne 
-Atherine b: Private</div>
-<div class="tree-entry gen-0 note">6 Everett 
-Gusses Atherine b: Private</div>
-<div class="tree-entry gen-0 note">5 Nicholas Atherine b: 
-Private</div>
-<div class="tree-entry gen-0 spouse">+ Jennifer Sasson b: Private</div>
-<div class="tree-entry gen-0 note">6 Jordan 
-Atherine  b: Private</div>
-<div class="tree-entry gen-0 note">3 Michael Atherine, Sr. b: January 03, 
-1919  d: March 15, 1980</div>
-<div class="tree-entry gen-0 note">+Rose M. Criscio b: April 14, 1919 
-d: May 02, 1997</div>
-<div class="tree-entry gen-0 note">4 Michael Atherine, Jr. b: 
-Private</div>
-<div class="tree-entry gen-0 note">2 Ifigeneia Dallas b: Unknown in Tenedos, 
-Greece d. Unknown</div>
-<div class="tree-entry gen-0 spouse">+ Basil Demetriades b: Unknown</div>
-<div class="tree-entry gen-0 note">*2nd Husband of Ifigeneia Dallas:</div>
-<div class="tree-entry gen-0 spouse">+ Nicholas (Vassilou) Williams b: Unknown  d. Unknown</div>
-<div class="tree-entry gen-2">John Williams b: Private</div>
-<div class="tree-entry gen-2">Pandelis Williams b: Private</div>
-<div class="tree-entry gen-2 note">3 Panagiotis George Williams b: 
-Private</div>
-<div class="tree-entry gen-2 note">2 Spiridon 'Samuel' Pandelis Dallas b: 
-December 15, 1892 in Tenedos d: Aft. 1957</div>
-<div class="tree-entry gen-2 note">+Hazel V. Williams b: April 13, 1894 d: 
-June 19, 1978</div>
-<div class="tree-entry gen-2 private"><em>Living (born after 1920 — name withheld for privacy)</em></div>
-<div class="tree-entry gen-2 spouse">+ Dimitrios Dedes b: Unknown d. Unknown</div>
-<div class="tree-entry gen-3">Samuel Dedes b: Private</div>
-<div class="tree-entry gen-2">Matthew P. Dallas b: Private</div>
-<div class="tree-entry gen-2">Pandelis Dallas b: Private</div>
-<div class="tree-entry gen-2 spouse">+ Yvonne Kay Lemon b: Private</div>
-<div class="tree-entry gen-3">Mark Dallas b: Private</div>
-<div class="tree-entry gen-3 spouse">+ Jill A. Sullins b: Private</div>
-<div class="tree-entry gen-3">Christina Dallas b: Private</div>
-<div class="tree-entry gen-3 note">2 Irene Dallas b: July 15, 1894 in Tenedos, 
-Greece d: December 21, 1993</div>
-<div class="tree-entry gen-3 note">+Demosthenes G. 'Dan' Tolmides b: July 12, 
-1891 in Tenedos d: April 26, 1972</div>
-<div class="tree-entry gen-3 note">2 Paraskevi 'Frieda' Dallas b: April 19, 1900 
-in Tenedos d: October 04, 1992</div>
-<div class="tree-entry gen-3 note">+John S. Evdemon b: January 27, 1896 in 
-Tenedos, Greece d: March 12, 1976</div>
-<div class="tree-entry gen-3 note">3 Despina 'Bette' J. Evdemon b: April 
-25, 1924 d: December 02, 1998</div>
-<div class="tree-entry gen-3 note">+Nicholas (Augustopolos) August b: 
-February 14, 1924 d: Dec. 22, 1982</div>
-<div class="tree-entry gen-3 note">4 Dimitrios 'James' N. August 
-b: November 06, 1947 d: August 17, 1993</div>
-<div class="tree-entry gen-3 note">+Susan B. Macmillan  b: 
-Private</div>
-<div class="tree-entry gen-2">Katherine Evdemon b: Private</div>
-<div class="tree-entry gen-2 spouse">+ Charles H. Resch b: Private</div>
-<div class="tree-entry gen-3">Kristina E. Resch b: Private</div>
-<div class="tree-entry gen-3 note">4 John A. Resch b: December 
-1968 d: August 3, 2007</div>
-<div class="tree-entry gen-3 spouse">+ Jan M. Mack b: Private</div>
-<div class="tree-entry gen-4">Zoe Resch b: Private</div>
-<div class="tree-entry gen-4">Zachary b: Private</div>
-<div class="tree-entry gen-4 note">_________________________________________________________________________________</div>
-<div class="tree-entry gen-0">Dimitrios Dallis b: Unknown</div>
-<div class="tree-entry gen-0 spouse">+ Katherine b: Unknown</div>
-<div class="tree-entry gen-0 note">2 John D. Dallis b: July 22, 1887 in Tenedos, 
-Greece d: March 13, 1969</div>
-<div class="tree-entry gen-0 note">+Despina Perrou b: March 08, 1906 in 
-Tenedos, Greece d: April 16, 1977</div>
-<div class="tree-entry gen-0 note">3 Varvara Dallis b: March 30, 1927  
-d: April 2, 1927</div>
-<div class="tree-entry gen-2">Demetrios J. Dallis b: Private</div>
-<div class="tree-entry gen-2 spouse">+ Lemonitsa 'Nina' b: Private</div>
-<div class="tree-entry gen-2 note">3 Constantine 'Costa' Anargiros Dallis 
-b: Private</div>
-<div class="tree-entry gen-2 spouse">+ Joanne Venetos b: Private</div>
-<div class="tree-entry gen-3">John C. Dallis b: Private</div>
-<div class="tree-entry gen-3">Stratos D. Dallis b: Private</div>
-<div class="tree-entry gen-3 note">4 Dimitrios J. Dallis b: 
-Private</div>
-<div class="tree-entry gen-3 note">2 Stratos D. Dallis b: December 18, 1897 in 
-Tenedos, Greece d: December 26, 1987</div>
-<div class="tree-entry gen-3 note">2 Eleutherios D. 'Sam' Dallis b: February 18, 
-1901 in Tenedos d: Sept. 11, 1990</div>
-<div class="tree-entry gen-3 note">2 Vasilios D. 'William' Dallis b: November 05, 
-1903 in Tenedos d: April 24, 1994</div>
-<div class="tree-entry gen-3 note">+Athanasia Sue 'Sula' Vasilion b: March 23, 
-1916  d: August 08, 2005</div>
-<div class="tree-entry gen-2">Katherine Dallis b: Private</div>
-<div class="tree-entry gen-2 spouse">+ George Keirnan  b: Private</div>
-<div class="tree-entry gen-2 note">4 Michael George Keirnan  b: 
-Private</div>
-<div class="tree-entry gen-3">Kim Keirnan  b: Private</div>
-<div class="tree-entry gen-3 note">+Unknown Hachadoorian  
-b: Private</div>
-<div class="tree-entry gen-3 note">5 Kallista Hachadoorian  
-b: private</div>
-<div class="tree-entry gen-2">James William Dallis  b: Private</div>
-<div class="tree-entry gen-2 spouse">+ Olga  b: Private</div>
-<div class="tree-entry gen-2">Barbara A. Dallis  b: Private</div>
-<div class="tree-entry gen-2 spouse">+ Unknown Dawson  b: Private</div>
-<div class="tree-entry gen-3">Dallis Dawson  b: Private</div>
-<div class="tree-entry gen-3">Thomas Dawson  b: Private</div>
-<div class="tree-entry gen-2">Victoria L. Dallis  b: Private</div>
-<div class="tree-entry gen-2 spouse">+ Nickolas W. Hull</div>
-<div class="tree-entry gen-3">Nickolas Hull  b: Private</div>
-<div class="tree-entry gen-3">Courtney Hull  b: Private</div>
-
+  <div class="page-content tree-page">
+    <div class="tree-outer">
+      <div class="tree-legend">
+        <div class="legend-item"><div class="ls navy"></div> Ancestor</div>
+        <div class="legend-item"><div class="ls white"></div> Descendant</div>
+        <div class="legend-item"><div class="ls blue"></div> Spouse (married-in)</div>
+        <div class="legend-item"><div class="ls gray"></div> Living (private)</div>
+        <div class="legend-item" style="color:var(--color-gold,#c9a227);font-weight:700;font-size:1rem">&times;</div>&thinsp;Married
+        <div class="legend-item" style="font-size:.75rem;color:#999">Click a descendant card to collapse/expand</div>
+      </div>
+      <div class="tree-forest" id="forest"></div>
     </div>
   </div>
 </main>
@@ -183,11 +140,101 @@ b: private</div>
       <a href="contact.html">Contact</a>
       <a href="not-recovered.html">Not Archived</a>
     </nav>
-    <p class="footer-copy">
-      Original content &copy; Tenedian Brotherhood. Website restored and modernized from archived materials.
-    </p>
+    <p class="footer-copy">Original content &copy; Tenedian Brotherhood.
+      Website restored and modernized from archived materials.</p>
   </div>
 </footer>
 
+<script>
+var TREES = [{"id":"p1","name":"Pandelis Dallas","m":[{"sp":{"id":"p2","name":"Despina Pavlis","birth":"Unknown","death":"Aft. 1957"},"kids":[{"id":"p3","name":"Helen Dallas","m":[{"sp":{"id":"p4","name":"Peter Atherine","birth":"August 10, 1884","death":"November 19, 1976"},"kids":[{"id":"p5","name":"Everett Peter Atherine, Sr.","m":[{"sp":{"id":"p6","name":"Sophie Christo","birth":"February 4. 1923","death":"October 17, 2008"},"kids":[{"id":"p7","name":"Everett Peter Atherine, Jr.","m":[{"sp":{"id":"p8","name":"Barbara Lindsey","priv":true},"kids":[{"id":"p9","name":"Everett Peter Atherine III","m":[{"sp":{"id":"p10","name":"Emily Gusses","priv":true},"kids":[{"id":"p11","name":"Eliza Suzanne Atherine","m":[],"priv":true},{"id":"p12","name":"Everett Gusses Atherine","m":[],"priv":true}]}],"priv":true},{"id":"p13","name":"Nicholas Atherine","m":[{"sp":{"id":"p14","name":"Jennifer Sasson","priv":true},"kids":[{"id":"p15","name":"Jordan Atherine","m":[],"priv":true}]}],"priv":true}]}],"priv":true}]}],"birth":"August 10, 1917","death":"December 22, 2001"},{"id":"p16","name":"Michael Atherine, Sr.","m":[{"sp":{"id":"p17","name":"Rose M. Criscio","birth":"April 14, 1919","death":"May 02, 1997"},"kids":[{"id":"p18","name":"Michael Atherine, Jr.","m":[],"priv":true}]}],"birth":"January 03, 1919","death":"March 15, 1980"}]}],"birth":"1887","death":"May 15, 1957"},{"id":"p19","name":"Ifigeneia Dallas","m":[{"sp":{"id":"p20","name":"Basil Demetriades","birth":"Unknown"},"kids":[]},{"sp":{"id":"p21","name":"Nicholas (Vassilou) Williams","birth":"Unknown","death":"Unknown"},"kids":[{"id":"p22","name":"John Williams","m":[],"priv":true},{"id":"p23","name":"Pandelis Williams","m":[],"priv":true},{"id":"p24","name":"Panagiotis George Williams","m":[],"priv":true}],"label":"2nd marriage"}],"birth":"Unknown","death":"Unknown"},{"id":"p25","name":"Spiridon 'Samuel' Pandelis Dallas","m":[{"sp":{"id":"p26","name":"Hazel V. Williams","birth":"April 13, 1894","death":"June 19, 1978"},"kids":[{"id":"p27","name":"Helen C. Dallas","m":[{"sp":{"id":"p28","name":"Dimitrios Dedes","birth":"Unknown","death":"Unknown"},"kids":[{"id":"p29","name":"Samuel Dedes","m":[],"priv":true}]}],"birth":"1920","priv":true},{"id":"p30","name":"Matthew P. Dallas","m":[],"priv":true},{"id":"p31","name":"Pandelis Dallas","m":[{"sp":{"id":"p32","name":"Yvonne Kay Lemon","priv":true},"kids":[{"id":"p33","name":"Mark Dallas","m":[{"sp":{"id":"p34","name":"Jill A. Sullins","priv":true},"kids":[]}],"priv":true},{"id":"p35","name":"Christina Dallas","m":[],"priv":true}]}],"priv":true}]}],"birth":"December 15, 1892","death":"Aft. 1957"},{"id":"p36","name":"Irene Dallas","m":[{"sp":{"id":"p37","name":"Demosthenes G. 'Dan' Tolmides","birth":"July 12, 1891","death":"April 26, 1972"},"kids":[]}],"birth":"July 15, 1894","death":"December 21, 1993"},{"id":"p38","name":"Paraskevi 'Frieda' Dallas","m":[{"sp":{"id":"p39","name":"John S. Evdemon","birth":"January 27, 1896","death":"March 12, 1976"},"kids":[{"id":"p40","name":"Despina 'Bette' J. Evdemon","m":[{"sp":{"id":"p41","name":"Nicholas (Augustopolos) August","birth":"February 14, 1924","death":"Dec. 22, 1982"},"kids":[{"id":"p42","name":"Dimitrios 'James' N. August","m":[{"sp":{"id":"p43","name":"Susan","birth":"Macmillan b: Private"},"kids":[]}],"birth":"November 06, 1947","death":"August 17, 1993"}]}],"birth":"April 25, 1924","death":"December 02, 1998"},{"id":"p44","name":"Katherine Evdemon","m":[{"sp":{"id":"p45","name":"Charles H. Resch","priv":true},"kids":[{"id":"p46","name":"Kristina E. Resch","m":[],"priv":true},{"id":"p47","name":"John A. Resch","m":[{"sp":{"id":"p48","name":"Jan M. Mack","priv":true},"kids":[{"id":"p49","name":"Zoe Resch","m":[],"priv":true},{"id":"p50","name":"Zachary","m":[],"priv":true}]}],"birth":"December 1968","death":"August 3, 2007"}]}],"priv":true}]}],"birth":"April 19, 1900","death":"October 04, 1992"}]}],"birth":"Unknown"},{"id":"p51","name":"Dimitrios Dallis","m":[{"sp":{"id":"p52","name":"Katherine","birth":"Unknown"},"kids":[{"id":"p53","name":"John D. Dallis","m":[{"sp":{"id":"p54","name":"Despina Perrou","birth":"March 08, 1906","death":"April 16, 1977"},"kids":[{"id":"p55","name":"Varvara Dallis","m":[],"birth":"March 30, 1927","death":"April 2, 1927"},{"id":"p56","name":"Demetrios J. Dallis","m":[{"sp":{"id":"p57","name":"Lemonitsa 'Nina'","priv":true},"kids":[]}],"priv":true},{"id":"p58","name":"Constantine 'Costa' Anargiros Dallis","m":[{"sp":{"id":"p59","name":"Joanne Venetos","priv":true},"kids":[{"id":"p60","name":"John C. Dallis","m":[],"priv":true},{"id":"p61","name":"Stratos D. Dallis","m":[],"death":"Dallis b: Private","priv":true},{"id":"p62","name":"Dimitrios J. Dallis","m":[],"priv":true}]}],"priv":true}]}],"birth":"July 22, 1887","death":"Dallis b: July 22, 1887 in Tenedos, Greece d: March 13, 1969"},{"id":"p63","name":"Stratos D. Dallis","m":[],"birth":"December 18, 1897","death":"Dallis b: December 18, 1897 in Tenedos, Greece d: December 26, 1987"},{"id":"p64","name":"Eleutherios D. 'Sam' Dallis","m":[],"birth":"February 18, 1901","death":"'Sam' Dallis b: February 18, 1901 in Tenedos d: Sept. 11, 1990"},{"id":"p65","name":"Vasilios D. 'William' Dallis","m":[{"sp":{"id":"p66","name":"Athanasia Sue 'Sula' Vasilion","birth":"March 23, 1916","death":"August 08, 2005"},"kids":[{"id":"p67","name":"Katherine Dallis","m":[{"sp":{"id":"p68","name":"George Keirnan","priv":true},"kids":[{"id":"p69","name":"Michael George Keirnan","m":[],"priv":true},{"id":"p70","name":"Kim Keirnan","m":[{"sp":{"id":"p71","name":"Unknown Hachadoorian","priv":true},"kids":[{"id":"p72","name":"Kallista Hachadoorian","m":[],"priv":true}]}],"priv":true}]}],"priv":true},{"id":"p73","name":"James William Dallis","m":[{"sp":{"id":"p74","name":"Olga","priv":true},"kids":[]}],"priv":true},{"id":"p75","name":"Barbara A. Dallis","m":[{"sp":{"id":"p76","name":"Unknown Dawson","priv":true},"kids":[{"id":"p77","name":"Dallis Dawson","m":[],"priv":true},{"id":"p78","name":"Thomas Dawson","m":[],"priv":true}]}],"priv":true},{"id":"p79","name":"Victoria L. Dallis","m":[{"sp":{"id":"p80","name":"Nickolas W. Hull"},"kids":[{"id":"p81","name":"Nickolas Hull","m":[],"priv":true},{"id":"p82","name":"Courtney Hull","m":[],"priv":true}]}],"priv":true}]}],"birth":"November 05, 1903","death":"'William' Dallis b: November 05, 1903 in Tenedos d: April 24, 1994"}]}],"birth":"Unknown"}];
+var TREE_TITLES = ["Descendants of Pandelis Dallas","Descendants of Dimitrios Dallis"];
+function makeCard(p, cls) {
+  var div = document.createElement('div');
+  div.className = 'card ' + (cls || '');
+  var n = document.createElement('span'); n.className = 'n';
+  n.textContent = p.name; div.appendChild(n);
+  var parts = [];
+  if (p.birth) parts.push('b. ' + p.birth);
+  if (p.death) parts.push('d. ' + p.death);
+  if (p.priv && !p.birth && !p.death) parts.push('Living');
+  if (parts.length) {
+    var d = document.createElement('span'); d.className = 'd';
+    d.textContent = parts.join('  ·  '); div.appendChild(d);
+  }
+  return div;
+}
+
+function renderNode(p, gen) {
+  var wrapper = document.createElement('div'); wrapper.className = 'tree-node';
+  var body = document.createElement('div'); body.className = 'node-body';
+  var marriages = p.m || [];
+  var allKids = [];
+  for (var i = 0; i < marriages.length; i++) {
+    var ks = marriages[i].kids || [];
+    for (var j = 0; j < ks.length; j++) allKids.push(ks[j]);
+  }
+  var cls = gen === 0 ? 'root' : (p.priv ? 'priv' : '');
+  if (allKids.length) cls += (cls ? ' ' : '') + 'collapsible';
+  var mc = makeCard(p, cls);
+  if (marriages.length > 0) {
+    var row = document.createElement('div'); row.className = 'couple-row';
+    row.appendChild(mc);
+    if (marriages[0].sp) {
+      var dot = document.createElement('span'); dot.className = 'cx';
+      dot.textContent = '×'; row.appendChild(dot);
+      var spCls = 'spouse' + (marriages[0].sp.priv ? ' priv' : '');
+      row.appendChild(makeCard(marriages[0].sp, spCls));
+    }
+    body.appendChild(row);
+    for (var mi = 1; mi < marriages.length; mi++) {
+      var mg = marriages[mi];
+      if (mg.label) {
+        var lbl = document.createElement('div'); lbl.className = 'remarriage-lbl';
+        lbl.textContent = mg.label + ':'; body.appendChild(lbl);
+      }
+      if (mg.sp) {
+        var r2 = document.createElement('div'); r2.className = 'couple-row';
+        var ph = document.createElement('div'); ph.style.cssText = 'width:148px;flex-shrink:0;';
+        r2.appendChild(ph);
+        var d2 = document.createElement('span'); d2.className = 'cx';
+        d2.textContent = '×'; r2.appendChild(d2);
+        var sp2Cls = 'spouse' + (mg.sp.priv ? ' priv' : '');
+        r2.appendChild(makeCard(mg.sp, sp2Cls)); body.appendChild(r2);
+      }
+    }
+  } else {
+    var soloRow = document.createElement('div'); soloRow.className = 'couple-row';
+    soloRow.appendChild(mc); body.appendChild(soloRow);
+  }
+  wrapper.appendChild(body);
+  if (allKids.length) {
+    wrapper.classList.add('has-ch');
+    var cr = document.createElement('div'); cr.className = 'tree-children';
+    for (var ki = 0; ki < allKids.length; ki++) cr.appendChild(renderNode(allKids[ki], gen + 1));
+    wrapper.appendChild(cr);
+    mc.addEventListener('click', (function(nd) {
+      return function(e) { e.stopPropagation(); nd.classList.toggle('closed'); };
+    }(wrapper)));
+  }
+  return wrapper;
+}
+
+function buildSection(title, data, showTitle) {
+  var sec = document.createElement('div'); sec.className = 'tree-section';
+  if (showTitle) {
+    var h = document.createElement('h2'); h.className = 'tree-section-heading';
+    h.textContent = title; sec.appendChild(h);
+  }
+  var root = document.createElement('div'); root.className = 'tree-root';
+  root.appendChild(renderNode(data, 0)); sec.appendChild(root);
+  return sec;
+}
+
+var forest = document.getElementById('forest');
+var multiTree = TREES.length > 1;
+for (var ti = 0; ti < TREES.length; ti++) {
+  forest.appendChild(buildSection(TREE_TITLES[ti], TREES[ti], multiTree));
+}
+</script>
 </body>
 </html>

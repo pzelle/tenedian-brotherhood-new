@@ -5,6 +5,86 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Fotos Family — Tenedian Brotherhood</title>
   <link rel="stylesheet" href="css/style.css">
+  <style>
+    .tree-page { padding: 0; }
+    .tree-outer { overflow-x: auto; padding: 2.5rem 1.5rem 3rem;
+                  background: var(--color-off-white, #f8f5f0); }
+    .tree-forest { display: flex; flex-direction: column; gap: 3.5rem; }
+    .tree-section-heading {
+      font-family: var(--font-heading, 'Playfair Display', serif);
+      color: var(--color-navy, #0a1628); font-size: 1.2rem;
+      margin: 0 0 1.25rem; padding-bottom: 0.4rem;
+      border-bottom: 2px solid var(--color-gold, #c9a227); }
+    .tree-legend { display: flex; gap: 1.2rem; flex-wrap: wrap;
+                   margin-bottom: 2rem; font-size: 0.8rem; color: #555;
+                   align-items: center; }
+    .legend-item { display: flex; align-items: center; gap: 5px; }
+    .ls { width: 20px; height: 13px; border-radius: 3px;
+          border: 2px solid var(--color-gold, #c9a227);
+          display: inline-block; flex-shrink: 0; }
+    .ls.navy  { background: var(--color-navy, #0a1628); }
+    .ls.white { background: #fff; }
+    .ls.blue  { background: #dce8ff; border-color: #6888cc; }
+    .ls.gray  { background: #eee; border-color: #bbb; }
+    /* Tree layout */
+    .tree-section { overflow-x: auto; padding-bottom: 0.5rem; }
+    .tree-root { display: inline-flex; flex-direction: column;
+                 align-items: center; padding: 0.5rem 1rem; }
+    .tree-node { display: flex; flex-direction: column; align-items: center;
+                 position: relative; }
+    .node-body { display: flex; flex-direction: column; align-items: center;
+                 gap: 3px; position: relative; }
+    .couple-row { display: flex; align-items: center; gap: 5px; }
+    .cx { color: var(--color-gold, #c9a227); font-weight: 700; font-size: 1rem;
+          padding: 0 2px; flex-shrink: 0; }
+    .remarriage-lbl { font-size: 0.65rem; color: #999; font-style: italic;
+                      text-align: center; margin-top: 5px; }
+    /* Cards */
+    .card { background: #fff; border: 2px solid var(--color-gold, #c9a227);
+            border-radius: 6px; padding: 7px 10px; width: 148px;
+            text-align: center; font-size: 0.74rem; line-height: 1.35;
+            position: relative; }
+    .card .n { font-weight: 700; color: var(--color-navy, #0a1628);
+               display: block; font-size: 0.78rem; }
+    .card .d { color: #888; font-size: 0.67rem; display: block; margin-top: 2px; }
+    .card.root { background: var(--color-navy, #0a1628);
+                 border-color: var(--color-gold, #c9a227); }
+    .card.root .n { color: var(--color-gold, #c9a227); }
+    .card.root .d { color: #99aabb; }
+    .card.spouse { background: #dce8ff; border-color: #6888cc; }
+    .card.spouse .n { color: #1a3a80; }
+    .card.priv  { background: #eee; border-color: #bbb; }
+    .card.priv .n { color: #666; }
+    .card.priv .d { color: #aaa; }
+    .card.collapsible { cursor: pointer; }
+    .card.collapsible::after { content: '\25BE'; position: absolute;
+      bottom: 3px; right: 5px; font-size: 0.6rem;
+      color: var(--color-gold, #c9a227); }
+    .tree-node.closed > .node-body .card.collapsible::after { content: '\25B8'; }
+    /* Connector lines (CSS pseudo-elements) */
+    :root { --gap: 44px; }
+    .tree-node.has-ch > .node-body::after {
+      content: ''; position: absolute; left: 50%; transform: translateX(-50%);
+      top: 100%; width: 2px; height: var(--gap);
+      background: var(--color-gold, #c9a227); }
+    .tree-children { display: flex; flex-direction: row; gap: 14px;
+                     align-items: flex-start; justify-content: center;
+                     margin-top: var(--gap); }
+    .tree-node.closed > .node-body::after  { display: none !important; }
+    .tree-node.closed > .tree-children     { display: none !important; }
+    .tree-children > .tree-node { position: relative; }
+    .tree-children > .tree-node::before {
+      content: ''; position: absolute; left: 50%; transform: translateX(-50%);
+      top: calc(-1 * var(--gap)); width: 2px; height: var(--gap);
+      background: var(--color-gold, #c9a227); }
+    .tree-children > .tree-node::after {
+      content: ''; position: absolute; top: calc(-1 * var(--gap));
+      left: 0; right: 0; height: 2px;
+      background: var(--color-gold, #c9a227); }
+    .tree-children > .tree-node:first-child::after  { left: 50%; }
+    .tree-children > .tree-node:last-child::after   { right: 50%; }
+    .tree-children > .tree-node:first-child:last-child::after { display: none; }
+  </style>
 </head>
 <body>
 
@@ -30,278 +110,21 @@
   <header class="page-header">
     <div class="page-header-inner">
       <h1 class="page-title">Fotos Family</h1>
-      <p class="page-subtitle"><a href="family-trees.html" style="color:rgba(255,255,255,.6); font-size:.85rem;">&larr; Back to Family Trees</a></p>
+      <p class="page-subtitle"><a href="family-trees.html" style="color:rgba(255,255,255,.65);font-size:.85rem;">&larr; Back to Family Trees</a></p>
     </div>
   </header>
 
-  <div class="page-content">
-    <div class="privacy-notice">
-      <strong>Privacy notice:</strong> Per the original website policy, birth dates are not
-      disclosed for individuals born after 1920 unless they are deceased.
-    </div>
-
-    <div class="family-tree-content">
-<div class="tree-entry gen-0 note">Fotos Family</div>
-<div class="tree-entry gen-0 note">NOTE: A good portion of the work on this 
-family tree comes from Patricia Short Makris</div>
-<div class="tree-entry gen-0">Constantine Fotos b: Abt. 1820 d: in Tenedos, Greece</div>
-<div class="tree-entry gen-0 spouse">+ Panagiota b: Unknown  d: in Tenedos, Greece</div>
-<div class="tree-entry gen-1">Christos Fotos b: Abt. 1845</div>
-<div class="tree-entry gen-1">Paleologos Fotos b: Abt. 1848</div>
-<div class="tree-entry gen-1">Dimitrios Fotos b: Abt. 1850</div>
-<div class="tree-entry gen-1">Athanasios Fotos b: Abt. 1852</div>
-<div class="tree-entry gen-1 spouse">+ Marigo Komninos b: Unknown</div>
-<div class="tree-entry gen-1 note">3 Constantine A. 'Gus' Fotos b: April 17, 1889 in Tenedos  
-d: March 23, 1988</div>
-<div class="tree-entry gen-1 spouse">+ Bertha Stover b: June 07, 1899 d: August 14, 1990</div>
-<div class="tree-entry gen-1 note">4 John Earl Ward Fotos b: January 04, 1920  d: 
-February 12, 2006</div>
-<div class="tree-entry gen-1 note">+Chloe Hazel Miller b: October 25, 1923 d: August 
-10, 2010</div>
-<div class="tree-entry gen-4">Kyra Earl Fotos b: Private</div>
-<div class="tree-entry gen-4 note">+Jorn Otte b: December 02, 1950  d: 
-December 1989</div>
-<div class="tree-entry gen-4">Jorn Earl Otte  b: Private</div>
-<div class="tree-entry gen-4 spouse">+ Kimberly  b: Private</div>
-<div class="tree-entry gen-4">Hazel Kirstine Otte  b: Private</div>
-<div class="tree-entry gen-4 spouse">+ Bob Lewingdon  b: Private</div>
-<div class="tree-entry gen-4 note">6 Konrad Ward Otte b: November 06, 1979   
-d: March 1990</div>
-<div class="tree-entry gen-4 note">*2nd Husband of Kyra Earl Fotos:</div>
-<div class="tree-entry gen-4 spouse">+ Samuel Holbrook  b: Private</div>
-<div class="tree-entry gen-3">Chris Fotos b: June 10, 1921 d: July 16, 2000</div>
-<div class="tree-entry gen-3 note">+Zola Loretta Privett b: August 07, 1929  d: 
-May 1985</div>
-<div class="tree-entry gen-4">Carissa Jean Fotos  b: Private</div>
-<div class="tree-entry gen-4 spouse">+ James F. Ferguson  b: Private</div>
-<div class="tree-entry gen-4">Carrie Leigh Fotos  b: Private</div>
-<div class="tree-entry gen-4 spouse">+ John Michael Ross  b: Private</div>
-<div class="tree-entry gen-4">Chris Ross  b: Private</div>
-<div class="tree-entry gen-4">Natalie Marie Ross  b: Private</div>
-<div class="tree-entry gen-4">Courtney Kathryn Ross  b: Private</div>
-<div class="tree-entry gen-3">Mary Fotos  b: Private</div>
-<div class="tree-entry gen-3 note">+Robert Glenn Anglin b: February 19, 1922  d: 
-October 20, 1983</div>
-<div class="tree-entry gen-4">Melvin 'Glenn' Anglin  b: Private</div>
-<div class="tree-entry gen-4 spouse">+ Paula Fay Nestor  b: Private</div>
-<div class="tree-entry gen-4">Larry Wayne Anglin, Sr.  b: Private</div>
-<div class="tree-entry gen-4 spouse">+ Janet Marie McMillion  b: Private</div>
-<div class="tree-entry gen-4">Larry Wayne Anglin, Jr.  b: Private</div>
-<div class="tree-entry gen-3">Tressie Mae Fotos  b: Private</div>
-<div class="tree-entry gen-3 spouse">+ George Ferrell Cook  b: Private</div>
-<div class="tree-entry gen-4">David Ferrell Cook  b: Private</div>
-<div class="tree-entry gen-4 spouse">+ Donna Arlene Lester  b: Private</div>
-<div class="tree-entry gen-4">Laura Ann Cook  b: Private</div>
-<div class="tree-entry gen-4">David Daniel Cook  b: Private</div>
-<div class="tree-entry gen-4">George Duane Cook  b: Private</div>
-<div class="tree-entry gen-4 note">+Katherine Lynn ''Kathy' Cernuto  b: 
-Private</div>
-<div class="tree-entry gen-3">Martha W. 'Tootsie' Fotos  b: Private</div>
-<div class="tree-entry gen-3 spouse">+ Earl Dinkler  b: Private</div>
-<div class="tree-entry gen-4">Robert Earl Dinkler  b: Private</div>
-<div class="tree-entry gen-4">Ricky Ellis Dinkler  b: Private</div>
-<div class="tree-entry gen-4 spouse">+ Melissa Jones  b: Private</div>
-<div class="tree-entry gen-4 note">3 Nicholas A. 'Nick' Fotos b: Feb. 22, 1894 in Tenedos  
-d: August 08, 1962</div>
-<div class="tree-entry gen-4 note">+Sophia Arvanitis b: March 15, 1907 in Tenedos  d: 
-November 26, 1994</div>
-<div class="tree-entry gen-3">Augustus 'Gus' Nicholas Fotos, Dr.  b: Private</div>
-<div class="tree-entry gen-3 spouse">+ Katherine M. Angelas  b: Private</div>
-<div class="tree-entry gen-4">Nicole Penelope Fotos  b: Private</div>
-<div class="tree-entry gen-4 spouse">+ Lee C. Creuzer  b: Private</div>
-<div class="tree-entry gen-4 note">6 Alexander Nicholas Creuzer  b: 
-Private</div>
-<div class="tree-entry gen-4">Marcie Sophia Fotos  b: Private</div>
-<div class="tree-entry gen-4 spouse">+ Travis Prescott  b: Private</div>
-<div class="tree-entry gen-4 note">4 Nicholas Fotos b: December 07, 1935  d: January 
-03, 1996</div>
-<div class="tree-entry gen-4 note">+Judith 'Judy' Lee Hager b: November 11, 1939  
-d: October 1985</div>
-<div class="tree-entry gen-4">April Fotos  b: Private</div>
-<div class="tree-entry gen-4 spouse">+ Landon S. Waugh  b: Private</div>
-<div class="tree-entry gen-4 note">3 Michael A. Fotos b: September 15, 1895 in Tenedos d: 
-September 29, 1988</div>
-<div class="tree-entry gen-4 note">+Marguerite Boggs b: March 17, 1905  d: October 16, 
-1989</div>
-<div class="tree-entry gen-3">Mary Kathryn Fotos  b: Private</div>
-<div class="tree-entry gen-3 spouse">+ Paul Bobick b: 1918</div>
-<div class="tree-entry gen-4">P. Frederick Bobick  b: Private</div>
-<div class="tree-entry gen-4">Margaret Bobick  b: Private</div>
-<div class="tree-entry gen-4 spouse">+ David Schranck  b: Private</div>
-<div class="tree-entry gen-3">Lois Geraldine Fotos  b: Private</div>
-<div class="tree-entry gen-3 spouse">+ John Paul Foxworthy, Dr.  b: Private</div>
-<div class="tree-entry gen-4">Linda D. Foxworthy  b: Private</div>
-<div class="tree-entry gen-4 spouse">+ Alan Brown  b: Private</div>
-<div class="tree-entry gen-4">Unknown Son  b: Private</div>
-<div class="tree-entry gen-4">Unknown Son  b: Private</div>
-<div class="tree-entry gen-4">Donald Foxworthy  b: Private</div>
-<div class="tree-entry gen-4 note">4 Romona S. Fotos b: October 15, 1928  d: March 
-06, 2005</div>
-<div class="tree-entry gen-4 note">+Thomas Edward Curry, Sr. b: November 19, 1928  
-d: Dec. 05, 2002</div>
-<div class="tree-entry gen-4">Thomas Edward Curry, Jr. Dr.  b: Private</div>
-<div class="tree-entry gen-4 spouse">+ Robin Gay Wehrle  b: Private</div>
-<div class="tree-entry gen-4">Unknown Son  b: Private</div>
-<div class="tree-entry gen-4">Jordan Michael Curry  b: Private</div>
-<div class="tree-entry gen-4">Catherine Curry  b: Private</div>
-<div class="tree-entry gen-4 spouse">+ Phillip Mueller  b: Private</div>
-<div class="tree-entry gen-3">Michael A. Fotos, Jr.  b: Private</div>
-<div class="tree-entry gen-3 spouse">+ Barbara 'Jane' Chapman  b: Private</div>
-<div class="tree-entry gen-4">Margo Fotos  b: Private</div>
-<div class="tree-entry gen-4">Michael A. Fotos III  b: Private</div>
-<div class="tree-entry gen-4 spouse">+ Claudia Lindsey  b: Private</div>
-<div class="tree-entry gen-1">George Fotos b: Abt. 1855 d: 1912 in Tenedos, Greece</div>
-<div class="tree-entry gen-1 spouse">+ Matroni Papadopoulos b: Abt. 1860 d: 1952</div>
-<div class="tree-entry gen-2">Vasiliki Fotos b: Abt. 1880 in Tenedos, Greece</div>
-<div class="tree-entry gen-2 spouse">+ Alexander Kazakos b: Unknown in Tenedos, Greece</div>
-<div class="tree-entry gen-2 note">4 John Kazakos b: January 01, 1898 in Tenedos  d: 
-January 19, 1942</div>
-<div class="tree-entry gen-2 note">+Garnet Laura Vickers b: December 02, 1902  d: 
-June 20, 1931</div>
-<div class="tree-entry gen-4">Darlene Kazakos  b: Private</div>
-<div class="tree-entry gen-2">Steliani Fotos b: Abt. 1883 in Tenedos, Greece d: Aft. 1960</div>
-<div class="tree-entry gen-2 spouse">+ Nicholas Issaias  b: Private</div>
-<div class="tree-entry gen-2 note">4 George N. Issaias b: Unknown in Tenedos, Greece d: 
-September 1977</div>
-<div class="tree-entry gen-2 spouse">+ Niki Mannassi b: 1916 in Tenedos, Greece</div>
-<div class="tree-entry gen-4">Paris Issaias  b: Private</div>
-<div class="tree-entry gen-4 spouse">+ Danae  b: Private</div>
-<div class="tree-entry gen-4">Iolie Issaias  b: Private</div>
-<div class="tree-entry gen-4">George P. Issaias  b: Private</div>
-<div class="tree-entry gen-4">Arianna Issaias  b: Private</div>
-<div class="tree-entry gen-4">Eleni 'Lena' Issaias  b: Private</div>
-<div class="tree-entry gen-4 spouse">+ Unknown Husband  b: Private</div>
-<div class="tree-entry gen-4">Christian  b: Private</div>
-<div class="tree-entry gen-4">Steliani Issaias d: Aft. 1960</div>
-<div class="tree-entry gen-4 spouse">+ Kyriakoe Ethirithis  b: Private</div>
-<div class="tree-entry gen-4">Maria Ethirithis  b: Private</div>
-<div class="tree-entry gen-4">Helen Ethirithis  b: Private</div>
-<div class="tree-entry gen-4">Niki Ethirithis  b: Private</div>
-<div class="tree-entry gen-4 note">3 Hithemene Fotos b: Abt. 1885 in Tenedos, Greece d: 1922 in 
-Tenedos</div>
-<div class="tree-entry gen-4 spouse">+ Unknown Dagris b: Unknown d: 1922 in Tenedos, Greece</div>
-<div class="tree-entry gen-3">Anastasios Dagris b: Abt. 1917 in Tenedos, Greece</div>
-<div class="tree-entry gen-3 spouse">+ Unknown Wife  b: Unknown</div>
-<div class="tree-entry gen-4">Nicholas Dagris</div>
-<div class="tree-entry gen-2">Afradite Fotos b: Abt. 1887 in Tenedos, Greece</div>
-<div class="tree-entry gen-2 spouse">+ Nicholas Vakirtzoglou  b: Private</div>
-<div class="tree-entry gen-3">Marika Vakirtzoglou  b: Private</div>
-<div class="tree-entry gen-3 spouse">+ Andreas Daktylidis b: Unknown d: 1940 - 1945</div>
-<div class="tree-entry gen-4">Franchesca Daktylidis  b: Private</div>
-<div class="tree-entry gen-4 spouse">+ Dr. Bazoglou b: Unknown  d: Abt. 1976</div>
-<div class="tree-entry gen-4">Unknown Daughter   b: Private</div>
-<div class="tree-entry gen-4">Unknown Daughter  b: Private</div>
-<div class="tree-entry gen-4 note">*2nd Husband of Franchesca Daktylidis:</div>
-<div class="tree-entry gen-4 spouse">+ Peter Nikolopoulou, Dr.  b: Private</div>
-<div class="tree-entry gen-3">Haralambos Vakirtzoglou  b: Private</div>
-<div class="tree-entry gen-3">Anastasios Vakirtzoglou  b: Private</div>
-<div class="tree-entry gen-3">Unknown Daughter  b: Private</div>
-<div class="tree-entry gen-3 note">3 Peter George Fotos b: February 16, 1889 in Tenedos  d: 
-September 04, 1961</div>
-<div class="tree-entry gen-3 note">+Harikleia 'Carrie' (Gabrieloude) Lewis b: Aug 02, 1899 in Tenedos 
-d: Jan 27, 1986</div>
-<div class="tree-entry gen-3">Effie Fotos b: February 27, 1924 d: November 1994</div>
-<div class="tree-entry gen-3 spouse">+ Lester Louis Vlahos  b: Private</div>
-<div class="tree-entry gen-4">Louis Lester Vlahos  b: Private</div>
-<div class="tree-entry gen-4 spouse">+ Suzanna Maria Savino  b: Private</div>
-<div class="tree-entry gen-4">Jonathan Vlahos  b: Private</div>
-<div class="tree-entry gen-4 note">6 Christian Vlahos b: April 25, 1980  
-d: November 06, 1981</div>
-<div class="tree-entry gen-4">Christopher Vlahos  b: Private</div>
-<div class="tree-entry gen-4">Matthew Vlahos  b: Private</div>
-<div class="tree-entry gen-3">George Peter Fotos  b: Private</div>
-<div class="tree-entry gen-3 spouse">+ Vasilia 'Bess' Nicholas  b: Private</div>
-<div class="tree-entry gen-4">Peter G. Fotos  b: Private</div>
-<div class="tree-entry gen-4 spouse">+ Angelica Petrides  b: Private</div>
-<div class="tree-entry gen-4">Stephanie Irene Fotos  b: Private</div>
-<div class="tree-entry gen-4">Alexander G. Fotos  b: Private</div>
-<div class="tree-entry gen-4 spouse">+ Suzanne Gail Penland  b: Private</div>
-<div class="tree-entry gen-4">Stratius G. Fotos  b: Private</div>
-<div class="tree-entry gen-4 spouse">+ Donna Livingston  b: Private</div>
-<div class="tree-entry gen-4">Rebecca Carol Fotos  b: Private</div>
-<div class="tree-entry gen-3">Mary Koula Fotos  b: Private</div>
-<div class="tree-entry gen-3 spouse">+ Theodore J. 'Ted' Athanasakes  b: Private</div>
-<div class="tree-entry gen-3 note">5 Demetrius T. Athanasakes b: April 17, 1962 d: 
-July 14, 1980</div>
-<div class="tree-entry gen-3 note">3 Anthony G. 'Tony' Fotos b: August 17, 1892 in Tenedos  
-d: October 03, 1970</div>
-<div class="tree-entry gen-3 note">+Aspasia 'Anna' Makras b: February 02, 1902 in Tenedos  
-d: Nov  09, 1943</div>
-<div class="tree-entry gen-3">Louis Fotos b: 1920 d: 1920</div>
-<div class="tree-entry gen-3">Mary Fotos  b: Private</div>
-<div class="tree-entry gen-3 note">+Christos Pelopedias Makris b: 1903 d: January 14, 
-1957</div>
-<div class="tree-entry gen-4">Steve Pelopedias Makris  b: Private</div>
-<div class="tree-entry gen-4 spouse">+ Patricia Sue 'Pat' Short  b: Private</div>
-<div class="tree-entry gen-4">Christy Jean Makris  b: Private</div>
-<div class="tree-entry gen-4 note">+Donald Garry 'Scrib' Scribner  
-b: Private</div>
-<div class="tree-entry gen-4 note">7 Zachary Lance Scribner  b: 
-Private</div>
-<div class="tree-entry gen-4">Stefanie Suzanne Makris  b: Private</div>
-<div class="tree-entry gen-4">Aspasia 'Ann' Makris  b: Private</div>
-<div class="tree-entry gen-4">Garifalia 'Carolyn' Makris  b: Private</div>
-<div class="tree-entry gen-4">Antoni 'Toni' Makris  b: Private</div>
-<div class="tree-entry gen-4 note">*2nd Husband of Mary Fotos:</div>
-<div class="tree-entry gen-4 note">+Clarion James 'Jimmy' Hicks b: March 22, 1914  
-d: July 04, 1976</div>
-<div class="tree-entry gen-4">Elaine 'Cathy' Hicks  b: Private</div>
-<div class="tree-entry gen-4 spouse">+ Anthony 'Tony' Erb  b: Private</div>
-<div class="tree-entry gen-4">Lauren Gail Erb  b: Private</div>
-<div class="tree-entry gen-4">Anthony James Erb  b: Private</div>
-<div class="tree-entry gen-4">Jimmy Davis Hicks  b: Private</div>
-<div class="tree-entry gen-4 spouse">+ Sandra Jean Piper  b: Private</div>
-<div class="tree-entry gen-3">George Anthony Fotos b: May 13, 1923 d: June 28, 2003</div>
-<div class="tree-entry gen-3 note">+Stella Eliadou b: June 13, 1922 d: November 24, 
-2009</div>
-<div class="tree-entry gen-3 note">5 Angelia Cassandra 'Sandy' Fotos  b: 
-Private</div>
-<div class="tree-entry gen-3 note">+Ioannis M. 'Johnny' Belivanakis  b: 
-Private</div>
-<div class="tree-entry gen-4">Michael F. Belivanakis  b: Private</div>
-<div class="tree-entry gen-4 spouse">+ Judith L. Mowrer  b: Private</div>
-<div class="tree-entry gen-4">George J. Belivanakis  b: Private</div>
-<div class="tree-entry gen-4 spouse">+ Molly A. Warner  b: Private</div>
-<div class="tree-entry gen-4">Aspasia 'Pia' Fotos  b: Private</div>
-<div class="tree-entry gen-4 spouse">+ J. M. Harding  b: Private</div>
-<div class="tree-entry gen-4">George Anthony Harding  b: Private</div>
-<div class="tree-entry gen-4">Antionette 'Toni' Fotos  b: Private</div>
-<div class="tree-entry gen-4 spouse">+ Kevin R. Babbitt  b: Private</div>
-<div class="tree-entry gen-4">Melissa Babbitt  b: Private</div>
-<div class="tree-entry gen-4">Christina Babbitt  b: Private</div>
-<div class="tree-entry gen-4">Kevyn Babbitt  b: Private</div>
-<div class="tree-entry gen-3">Helen Fotos  b: Private</div>
-<div class="tree-entry gen-3 note">4 Kalliope 'Cleo' Fotos b: November 19, 1925  d: 
-August 11, 1987</div>
-<div class="tree-entry gen-3 note">+Constantine T. 'Gus' Zoutis b: 1885  d: June 
-08, 1985</div>
-<div class="tree-entry gen-4">Theodore C. Zoutis  b: Private</div>
-<div class="tree-entry gen-4 spouse">+ Gloria A. Ramirez  b: Private</div>
-<div class="tree-entry gen-4 note">5 Elaine C. Zoutis b: November 09, 1949  d: 
-November 05, 2008</div>
-<div class="tree-entry gen-4 spouse">+ Joseph L. Poynter  b: Private</div>
-<div class="tree-entry gen-4">Nicholas C. Zoutis  b: Private</div>
-<div class="tree-entry gen-4 note">+Janice L. Kurtz b: December 02, 1955  
-d: May 22, 2002</div>
-<div class="tree-entry gen-4">Alexander C. Zoutis  b: Private</div>
-<div class="tree-entry gen-4 spouse">+ Debora K. Smith  b: Private</div>
-<div class="tree-entry gen-4 note">*2nd Wife of Alexander C. Zoutis:</div>
-<div class="tree-entry gen-4 spouse">+ Julie A. Johnston  b: Private</div>
-<div class="tree-entry gen-3">Anthony Fotos  b: Private</div>
-<div class="tree-entry gen-3">Vasiliki 'Bessie' A. Fotos  b: Private</div>
-<div class="tree-entry gen-3 note">+Dimitrios 'Jimmy' (Kalfastamatis) Kalfas b: Oct 10, 1899 in 
-Tenedos d: Apr 1969</div>
-<div class="tree-entry gen-3 note">*2nd Husband of Vasiliki 'Bessie' A. Fotos:</div>
-<div class="tree-entry gen-3 spouse">+ Billy Ray Prather  b: Private</div>
-<div class="tree-entry gen-4">Billy Ray Prather II  b: Private</div>
-<div class="tree-entry gen-3">Angelia Fotos  b: Private</div>
-<div class="tree-entry gen-3 note">+Andreas Y. 'Andy' Savva b: March 25, 1930 d: 
-November 22, 1988</div>
-<div class="tree-entry gen-4">Kathryn Marie 'Kathy' Savva  b: Private</div>
-<div class="tree-entry gen-4 spouse">+ James Eugene Stewart  b: Private</div>
-<div class="tree-entry gen-4 note">4 Baby Boy Fotos b: November 09, 1943 d: November 09, 
-1943</div>
-
+  <div class="page-content tree-page">
+    <div class="tree-outer">
+      <div class="tree-legend">
+        <div class="legend-item"><div class="ls navy"></div> Ancestor</div>
+        <div class="legend-item"><div class="ls white"></div> Descendant</div>
+        <div class="legend-item"><div class="ls blue"></div> Spouse (married-in)</div>
+        <div class="legend-item"><div class="ls gray"></div> Living (private)</div>
+        <div class="legend-item" style="color:var(--color-gold,#c9a227);font-weight:700;font-size:1rem">&times;</div>&thinsp;Married
+        <div class="legend-item" style="font-size:.75rem;color:#999">Click a descendant card to collapse/expand</div>
+      </div>
+      <div class="tree-forest" id="forest"></div>
     </div>
   </div>
 </main>
@@ -317,11 +140,101 @@ November 22, 1988</div>
       <a href="contact.html">Contact</a>
       <a href="not-recovered.html">Not Archived</a>
     </nav>
-    <p class="footer-copy">
-      Original content &copy; Tenedian Brotherhood. Website restored and modernized from archived materials.
-    </p>
+    <p class="footer-copy">Original content &copy; Tenedian Brotherhood.
+      Website restored and modernized from archived materials.</p>
   </div>
 </footer>
 
+<script>
+var TREES = [{"id":"p1","name":"Constantine Fotos","m":[{"sp":{"id":"p2","name":"Panagiota","birth":"Unknown","death":"in Tenedos, Greece"},"kids":[{"id":"p3","name":"Christos Fotos","m":[],"birth":"Abt. 1845"},{"id":"p4","name":"Paleologos Fotos","m":[],"birth":"Abt. 1848"},{"id":"p5","name":"Dimitrios Fotos","m":[],"birth":"Abt. 1850"},{"id":"p6","name":"Athanasios Fotos","m":[{"sp":{"id":"p7","name":"Marigo Komninos","birth":"Unknown"},"kids":[{"id":"p8","name":"Constantine A. 'Gus' Fotos","m":[{"sp":{"id":"p9","name":"Bertha Stover","birth":"June 07, 1899","death":"August 14, 1990"},"kids":[{"id":"p10","name":"John Earl Ward Fotos","m":[{"sp":{"id":"p11","name":"Chloe Hazel Miller","birth":"October 25, 1923","death":"August 10, 2010"},"kids":[{"id":"p12","name":"Kyra Earl Fotos","m":[{"sp":{"id":"p13","name":"Jorn Otte","birth":"December 02, 1950","death":"December 1989"},"kids":[{"id":"p14","name":"Jorn Earl Otte","m":[{"sp":{"id":"p15","name":"Kimberly","priv":true},"kids":[]}],"priv":true},{"id":"p16","name":"Hazel Kirstine Otte","m":[{"sp":{"id":"p17","name":"Bob Lewingdon","priv":true},"kids":[]}],"priv":true},{"id":"p18","name":"Konrad Ward Otte","m":[],"birth":"November 06, 1979","death":"March 1990"}]},{"sp":{"id":"p19","name":"Samuel Holbrook","priv":true},"kids":[],"label":"2nd marriage"}],"priv":true}]}],"birth":"January 04, 1920","death":"February 12, 2006"},{"id":"p20","name":"Chris Fotos","m":[{"sp":{"id":"p21","name":"Zola Loretta Privett","birth":"August 07, 1929","death":"May 1985"},"kids":[{"id":"p22","name":"Carissa Jean Fotos","m":[{"sp":{"id":"p23","name":"James F. Ferguson","priv":true},"kids":[]}],"priv":true},{"id":"p24","name":"Carrie Leigh Fotos","m":[{"sp":{"id":"p25","name":"John Michael Ross","priv":true},"kids":[{"id":"p26","name":"Chris Ross","m":[],"priv":true},{"id":"p27","name":"Natalie Marie Ross","m":[],"priv":true},{"id":"p28","name":"Courtney Kathryn Ross","m":[],"priv":true}]}],"priv":true}]}],"birth":"June 10, 1921","death":"July 16, 2000"},{"id":"p29","name":"Mary Fotos","m":[{"sp":{"id":"p30","name":"Robert Glenn Anglin","birth":"February 19, 1922","death":"October 20, 1983"},"kids":[{"id":"p31","name":"Melvin 'Glenn' Anglin","m":[{"sp":{"id":"p32","name":"Paula Fay Nestor","priv":true},"kids":[]}],"priv":true},{"id":"p33","name":"Larry Wayne Anglin, Sr.","m":[{"sp":{"id":"p34","name":"Janet Marie McMillion","priv":true},"kids":[{"id":"p35","name":"Larry Wayne Anglin, Jr.","m":[],"priv":true}]}],"priv":true}]}],"priv":true},{"id":"p36","name":"Tressie Mae Fotos","m":[{"sp":{"id":"p37","name":"George Ferrell Cook","priv":true},"kids":[{"id":"p38","name":"David Ferrell Cook","m":[{"sp":{"id":"p39","name":"Donna Arlene Lester","priv":true},"kids":[{"id":"p40","name":"Laura Ann Cook","m":[],"priv":true},{"id":"p41","name":"David Daniel Cook","m":[],"priv":true}]}],"priv":true},{"id":"p42","name":"George Duane Cook","m":[{"sp":{"id":"p43","name":"Katherine Lynn ''Kathy' Cernuto","priv":true},"kids":[]}],"priv":true}]}],"priv":true},{"id":"p44","name":"Martha W. 'Tootsie' Fotos","m":[{"sp":{"id":"p45","name":"Earl Dinkler","priv":true},"kids":[{"id":"p46","name":"Robert Earl Dinkler","m":[],"priv":true},{"id":"p47","name":"Ricky Ellis Dinkler","m":[{"sp":{"id":"p48","name":"Melissa Jones","priv":true},"kids":[]}],"priv":true}]}],"priv":true}]}],"birth":"April 17, 1889","death":"March 23, 1988"},{"id":"p49","name":"Nicholas A. 'Nick' Fotos","m":[{"sp":{"id":"p50","name":"Sophia Arvanitis","birth":"March 15, 1907","death":"November 26, 1994"},"kids":[{"id":"p51","name":"Augustus 'Gus' Nicholas Fotos, Dr.","m":[{"sp":{"id":"p52","name":"Katherine M. Angelas","priv":true},"kids":[{"id":"p53","name":"Nicole Penelope Fotos","m":[{"sp":{"id":"p54","name":"Lee C. Creuzer","priv":true},"kids":[{"id":"p55","name":"Alexander Nicholas Creuzer","m":[],"priv":true}]}],"priv":true},{"id":"p56","name":"Marcie Sophia Fotos","m":[{"sp":{"id":"p57","name":"Travis Prescott","priv":true},"kids":[]}],"priv":true}]}],"priv":true},{"id":"p58","name":"Nicholas Fotos","m":[{"sp":{"id":"p59","name":"Judith 'Judy' Lee Hager","birth":"November 11, 1939","death":"October 1985"},"kids":[{"id":"p60","name":"April Fotos","m":[{"sp":{"id":"p61","name":"Landon S. Waugh","priv":true},"kids":[]}],"priv":true}]}],"birth":"December 07, 1935","death":"January 03, 1996"}]}],"birth":"Feb. 22, 1894","death":"August 08, 1962"},{"id":"p62","name":"Michael A. Fotos","m":[{"sp":{"id":"p63","name":"Marguerite Boggs","birth":"March 17, 1905","death":"October 16, 1989"},"kids":[{"id":"p64","name":"Mary Kathryn Fotos","m":[{"sp":{"id":"p65","name":"Paul Bobick","birth":"1918"},"kids":[{"id":"p66","name":"P. Frederick Bobick","m":[],"priv":true},{"id":"p67","name":"Margaret Bobick","m":[{"sp":{"id":"p68","name":"David Schranck","priv":true},"kids":[]}],"priv":true}]}],"priv":true},{"id":"p69","name":"Lois Geraldine Fotos","m":[{"sp":{"id":"p70","name":"John Paul Foxworthy, Dr.","priv":true},"kids":[{"id":"p71","name":"Linda D. Foxworthy","m":[{"sp":{"id":"p72","name":"Alan Brown","priv":true},"kids":[{"id":"p73","name":"Unknown Son","m":[],"priv":true},{"id":"p74","name":"Unknown Son","m":[],"priv":true}]}],"death":"Foxworthy b: Private","priv":true},{"id":"p75","name":"Donald Foxworthy","m":[],"priv":true}]}],"priv":true},{"id":"p76","name":"Romona S. Fotos","m":[{"sp":{"id":"p77","name":"Thomas Edward Curry, Sr.","birth":"November 19, 1928","death":"Dec. 05, 2002"},"kids":[{"id":"p78","name":"Thomas Edward Curry, Jr. Dr.","m":[{"sp":{"id":"p79","name":"Robin Gay Wehrle","priv":true},"kids":[{"id":"p80","name":"Unknown Son","m":[],"priv":true},{"id":"p81","name":"Jordan Michael Curry","m":[],"priv":true}]}],"priv":true},{"id":"p82","name":"Catherine Curry","m":[{"sp":{"id":"p83","name":"Phillip Mueller","priv":true},"kids":[]}],"priv":true}]}],"birth":"October 15, 1928","death":"March 06, 2005"},{"id":"p84","name":"Michael A. Fotos, Jr.","m":[{"sp":{"id":"p85","name":"Barbara 'Jane' Chapman","priv":true},"kids":[{"id":"p86","name":"Margo Fotos","m":[],"priv":true},{"id":"p87","name":"Michael A. Fotos III","m":[{"sp":{"id":"p88","name":"Claudia Lindsey","priv":true},"kids":[]}],"priv":true}]}],"priv":true}]}],"birth":"September 15, 1895","death":"September 29, 1988"}]}],"birth":"Abt. 1852"},{"id":"p89","name":"George Fotos","m":[{"sp":{"id":"p90","name":"Matroni Papadopoulos","birth":"Abt. 1860","death":"1952"},"kids":[{"id":"p91","name":"Vasiliki Fotos","m":[{"sp":{"id":"p92","name":"Alexander Kazakos","birth":"Unknown"},"kids":[{"id":"p93","name":"John Kazakos","m":[{"sp":{"id":"p94","name":"Garnet Laura Vickers","birth":"December 02, 1902","death":"June 20, 1931"},"kids":[{"id":"p95","name":"Darlene Kazakos","m":[],"priv":true}]}],"birth":"January 01, 1898","death":"January 19, 1942"}]}],"birth":"Abt. 1880"},{"id":"p96","name":"Steliani Fotos","m":[{"sp":{"id":"p97","name":"Nicholas Issaias","priv":true},"kids":[{"id":"p98","name":"George N. Issaias","m":[{"sp":{"id":"p99","name":"Niki Mannassi","birth":"1916"},"kids":[{"id":"p100","name":"Paris Issaias","m":[{"sp":{"id":"p101","name":"Danae","priv":true},"kids":[{"id":"p102","name":"Iolie Issaias","m":[],"priv":true},{"id":"p103","name":"George P. Issaias","m":[],"priv":true},{"id":"p104","name":"Arianna Issaias","m":[],"priv":true}]}],"priv":true},{"id":"p105","name":"Eleni 'Lena' Issaias","m":[{"sp":{"id":"p106","name":"Unknown Husband","priv":true},"kids":[{"id":"p107","name":"Christian","m":[],"priv":true}]}],"priv":true},{"id":"p108","name":"Steliani Issaias d: Aft. 1960","m":[{"sp":{"id":"p109","name":"Kyriakoe Ethirithis","priv":true},"kids":[{"id":"p110","name":"Maria Ethirithis","m":[],"priv":true},{"id":"p111","name":"Helen Ethirithis","m":[],"priv":true},{"id":"p112","name":"Niki Ethirithis","m":[],"priv":true}]}],"death":"Aft. 1960"}]}],"birth":"Unknown","death":"September 1977"}]}],"birth":"Abt. 1883","death":"Aft. 1960"},{"id":"p113","name":"Hithemene Fotos","m":[{"sp":{"id":"p114","name":"Unknown Dagris","birth":"Unknown","death":"1922 in Tenedos, Greece"},"kids":[{"id":"p115","name":"Anastasios Dagris","m":[{"sp":{"id":"p116","name":"Unknown Wife","birth":"Unknown"},"kids":[{"id":"p117","name":"Nicholas Dagris","m":[]}]}],"birth":"Abt. 1917"}]}],"birth":"Abt. 1885","death":"1922 in Tenedos"},{"id":"p118","name":"Afradite Fotos","m":[{"sp":{"id":"p119","name":"Nicholas Vakirtzoglou","priv":true},"kids":[{"id":"p120","name":"Marika Vakirtzoglou","m":[{"sp":{"id":"p121","name":"Andreas Daktylidis","birth":"Unknown","death":"1940 - 1945"},"kids":[{"id":"p122","name":"Franchesca Daktylidis","m":[{"sp":{"id":"p123","name":"Dr. Bazoglou","birth":"Unknown","death":"Abt. 1976"},"kids":[{"id":"p124","name":"Unknown Daughter","m":[],"priv":true},{"id":"p125","name":"Unknown Daughter","m":[],"priv":true}]},{"sp":{"id":"p126","name":"Peter Nikolopoulou, Dr.","priv":true},"kids":[],"label":"2nd marriage"}],"priv":true}]}],"priv":true},{"id":"p127","name":"Haralambos Vakirtzoglou","m":[],"priv":true},{"id":"p128","name":"Anastasios Vakirtzoglou","m":[],"priv":true},{"id":"p129","name":"Unknown Daughter","m":[],"priv":true}]}],"birth":"Abt. 1887"},{"id":"p130","name":"Peter George Fotos","m":[{"sp":{"id":"p131","name":"Harikleia 'Carrie' (Gabrieloude) Lewis","birth":"Aug 02, 1899","death":"Jan 27, 1986"},"kids":[{"id":"p132","name":"Effie Fotos","m":[{"sp":{"id":"p133","name":"Lester Louis Vlahos","priv":true},"kids":[{"id":"p134","name":"Louis Lester Vlahos","m":[{"sp":{"id":"p135","name":"Suzanna Maria Savino","priv":true},"kids":[{"id":"p136","name":"Jonathan Vlahos","m":[],"priv":true},{"id":"p137","name":"Christian Vlahos","m":[],"birth":"April 25, 1980","death":"November 06, 1981"},{"id":"p138","name":"Christopher Vlahos","m":[],"priv":true},{"id":"p139","name":"Matthew Vlahos","m":[],"priv":true}]}],"priv":true}]}],"birth":"February 27, 1924","death":"November 1994"},{"id":"p140","name":"George Peter Fotos","m":[{"sp":{"id":"p141","name":"Vasilia 'Bess' Nicholas","priv":true},"kids":[{"id":"p142","name":"Peter G. Fotos","m":[{"sp":{"id":"p143","name":"Angelica Petrides","priv":true},"kids":[{"id":"p144","name":"Stephanie Irene Fotos","m":[],"priv":true}]}],"priv":true},{"id":"p145","name":"Alexander G. Fotos","m":[{"sp":{"id":"p146","name":"Suzanne Gail Penland","priv":true},"kids":[]}],"priv":true},{"id":"p147","name":"Stratius G. Fotos","m":[{"sp":{"id":"p148","name":"Donna Livingston","priv":true},"kids":[{"id":"p149","name":"Rebecca Carol Fotos","m":[],"priv":true}]}],"priv":true}]}],"priv":true},{"id":"p150","name":"Mary Koula Fotos","m":[{"sp":{"id":"p151","name":"Theodore J. 'Ted' Athanasakes","priv":true},"kids":[{"id":"p152","name":"Demetrius T. Athanasakes","m":[],"birth":"April 17, 1962","death":"July 14, 1980"}]}],"priv":true}]}],"birth":"February 16, 1889","death":"September 04, 1961"},{"id":"p153","name":"Anthony G. 'Tony' Fotos","m":[{"sp":{"id":"p154","name":"Aspasia 'Anna' Makras","birth":"February 02, 1902","death":"Nov 09, 1943"},"kids":[{"id":"p155","name":"Louis Fotos","m":[],"birth":"1920","death":"1920"},{"id":"p156","name":"Mary Fotos","m":[{"sp":{"id":"p157","name":"Christos Pelopedias Makris","birth":"1903","death":"January 14, 1957"},"kids":[{"id":"p158","name":"Steve Pelopedias Makris","m":[{"sp":{"id":"p159","name":"Patricia Sue 'Pat' Short","priv":true},"kids":[{"id":"p160","name":"Christy Jean Makris","m":[{"sp":{"id":"p161","name":"Donald Garry 'Scrib' Scribner","priv":true},"kids":[{"id":"p162","name":"Zachary Lance Scribner","m":[],"priv":true}]}],"priv":true},{"id":"p163","name":"Stefanie Suzanne Makris","m":[],"priv":true}]}],"priv":true},{"id":"p164","name":"Aspasia 'Ann' Makris","m":[],"priv":true},{"id":"p165","name":"Garifalia 'Carolyn' Makris","m":[],"priv":true},{"id":"p166","name":"Antoni 'Toni' Makris","m":[],"priv":true}]},{"sp":{"id":"p167","name":"Clarion James 'Jimmy' Hicks","birth":"March 22, 1914","death":"July 04, 1976"},"kids":[{"id":"p168","name":"Elaine 'Cathy' Hicks","m":[{"sp":{"id":"p169","name":"Anthony 'Tony' Erb","priv":true},"kids":[{"id":"p170","name":"Lauren Gail Erb","m":[],"priv":true},{"id":"p171","name":"Anthony James Erb","m":[],"priv":true}]}],"priv":true},{"id":"p172","name":"Jimmy Davis Hicks","m":[{"sp":{"id":"p173","name":"Sandra Jean Piper","priv":true},"kids":[]}],"priv":true}],"label":"2nd marriage"}],"priv":true},{"id":"p174","name":"George Anthony Fotos","m":[{"sp":{"id":"p175","name":"Stella Eliadou","birth":"June 13, 1922","death":"November 24, 2009"},"kids":[{"id":"p176","name":"Angelia Cassandra 'Sandy' Fotos","m":[{"sp":{"id":"p177","name":"Ioannis M. 'Johnny' Belivanakis","priv":true},"kids":[{"id":"p178","name":"Michael F. Belivanakis","m":[{"sp":{"id":"p179","name":"Judith L. Mowrer","priv":true},"kids":[]}],"priv":true},{"id":"p180","name":"George J. Belivanakis","m":[{"sp":{"id":"p181","name":"Molly A. Warner","priv":true},"kids":[]}],"priv":true}]}],"priv":true},{"id":"p182","name":"Aspasia 'Pia' Fotos","m":[{"sp":{"id":"p183","name":"J. M. Harding","priv":true},"kids":[{"id":"p184","name":"George Anthony Harding","m":[],"priv":true}]}],"priv":true},{"id":"p185","name":"Antionette 'Toni' Fotos","m":[{"sp":{"id":"p186","name":"Kevin R. Babbitt","priv":true},"kids":[{"id":"p187","name":"Melissa Babbitt","m":[],"priv":true},{"id":"p188","name":"Christina Babbitt","m":[],"priv":true},{"id":"p189","name":"Kevyn Babbitt","m":[],"priv":true}]}],"priv":true}]}],"birth":"May 13, 1923","death":"June 28, 2003"},{"id":"p190","name":"Helen Fotos","m":[],"priv":true},{"id":"p191","name":"Kalliope 'Cleo' Fotos","m":[{"sp":{"id":"p192","name":"Constantine T. 'Gus' Zoutis","birth":"1885","death":"June 08, 1985"},"kids":[{"id":"p193","name":"Theodore C. Zoutis","m":[{"sp":{"id":"p194","name":"Gloria A. Ramirez","priv":true},"kids":[]}],"priv":true},{"id":"p195","name":"Elaine C. Zoutis","m":[{"sp":{"id":"p196","name":"Joseph L. Poynter","priv":true},"kids":[]}],"birth":"November 09, 1949","death":"November 05, 2008"},{"id":"p197","name":"Nicholas C. Zoutis","m":[{"sp":{"id":"p198","name":"Janice L. Kurtz","birth":"December 02, 1955","death":"May 22, 2002"},"kids":[]}],"priv":true},{"id":"p199","name":"Alexander C. Zoutis","m":[{"sp":{"id":"p200","name":"Debora K. Smith","priv":true},"kids":[]},{"sp":{"id":"p201","name":"Julie A. Johnston","priv":true},"kids":[],"label":"2nd marriage"}],"priv":true}]}],"birth":"November 19, 1925","death":"August 11, 1987"},{"id":"p202","name":"Anthony Fotos","m":[],"priv":true},{"id":"p203","name":"Vasiliki 'Bessie' A. Fotos","m":[{"sp":{"id":"p204","name":"Dimitrios 'Jimmy' (Kalfastamatis) Kalfas","birth":"Oct 10, 1899","death":"Apr 1969"},"kids":[]},{"sp":{"id":"p205","name":"Billy Ray Prather","priv":true},"kids":[{"id":"p206","name":"Billy Ray Prather II","m":[],"priv":true}],"label":"2nd marriage"}],"priv":true},{"id":"p207","name":"Angelia Fotos","m":[{"sp":{"id":"p208","name":"Andreas Y. 'Andy' Savva","birth":"March 25, 1930","death":"November 22, 1988"},"kids":[{"id":"p209","name":"Kathryn Marie 'Kathy' Savva","m":[{"sp":{"id":"p210","name":"James Eugene Stewart","priv":true},"kids":[]}],"priv":true}]}],"priv":true},{"id":"p211","name":"Baby Boy Fotos","m":[],"birth":"November 09, 1943","death":"November 09, 1943"}]}],"birth":"August 17, 1892","death":"October 03, 1970"}]}],"birth":"Abt. 1855","death":"1912 in Tenedos, Greece"}]}],"birth":"Abt. 1820","death":"in Tenedos, Greece"}];
+var TREE_TITLES = ["Fotos Family"];
+function makeCard(p, cls) {
+  var div = document.createElement('div');
+  div.className = 'card ' + (cls || '');
+  var n = document.createElement('span'); n.className = 'n';
+  n.textContent = p.name; div.appendChild(n);
+  var parts = [];
+  if (p.birth) parts.push('b. ' + p.birth);
+  if (p.death) parts.push('d. ' + p.death);
+  if (p.priv && !p.birth && !p.death) parts.push('Living');
+  if (parts.length) {
+    var d = document.createElement('span'); d.className = 'd';
+    d.textContent = parts.join('  ·  '); div.appendChild(d);
+  }
+  return div;
+}
+
+function renderNode(p, gen) {
+  var wrapper = document.createElement('div'); wrapper.className = 'tree-node';
+  var body = document.createElement('div'); body.className = 'node-body';
+  var marriages = p.m || [];
+  var allKids = [];
+  for (var i = 0; i < marriages.length; i++) {
+    var ks = marriages[i].kids || [];
+    for (var j = 0; j < ks.length; j++) allKids.push(ks[j]);
+  }
+  var cls = gen === 0 ? 'root' : (p.priv ? 'priv' : '');
+  if (allKids.length) cls += (cls ? ' ' : '') + 'collapsible';
+  var mc = makeCard(p, cls);
+  if (marriages.length > 0) {
+    var row = document.createElement('div'); row.className = 'couple-row';
+    row.appendChild(mc);
+    if (marriages[0].sp) {
+      var dot = document.createElement('span'); dot.className = 'cx';
+      dot.textContent = '×'; row.appendChild(dot);
+      var spCls = 'spouse' + (marriages[0].sp.priv ? ' priv' : '');
+      row.appendChild(makeCard(marriages[0].sp, spCls));
+    }
+    body.appendChild(row);
+    for (var mi = 1; mi < marriages.length; mi++) {
+      var mg = marriages[mi];
+      if (mg.label) {
+        var lbl = document.createElement('div'); lbl.className = 'remarriage-lbl';
+        lbl.textContent = mg.label + ':'; body.appendChild(lbl);
+      }
+      if (mg.sp) {
+        var r2 = document.createElement('div'); r2.className = 'couple-row';
+        var ph = document.createElement('div'); ph.style.cssText = 'width:148px;flex-shrink:0;';
+        r2.appendChild(ph);
+        var d2 = document.createElement('span'); d2.className = 'cx';
+        d2.textContent = '×'; r2.appendChild(d2);
+        var sp2Cls = 'spouse' + (mg.sp.priv ? ' priv' : '');
+        r2.appendChild(makeCard(mg.sp, sp2Cls)); body.appendChild(r2);
+      }
+    }
+  } else {
+    var soloRow = document.createElement('div'); soloRow.className = 'couple-row';
+    soloRow.appendChild(mc); body.appendChild(soloRow);
+  }
+  wrapper.appendChild(body);
+  if (allKids.length) {
+    wrapper.classList.add('has-ch');
+    var cr = document.createElement('div'); cr.className = 'tree-children';
+    for (var ki = 0; ki < allKids.length; ki++) cr.appendChild(renderNode(allKids[ki], gen + 1));
+    wrapper.appendChild(cr);
+    mc.addEventListener('click', (function(nd) {
+      return function(e) { e.stopPropagation(); nd.classList.toggle('closed'); };
+    }(wrapper)));
+  }
+  return wrapper;
+}
+
+function buildSection(title, data, showTitle) {
+  var sec = document.createElement('div'); sec.className = 'tree-section';
+  if (showTitle) {
+    var h = document.createElement('h2'); h.className = 'tree-section-heading';
+    h.textContent = title; sec.appendChild(h);
+  }
+  var root = document.createElement('div'); root.className = 'tree-root';
+  root.appendChild(renderNode(data, 0)); sec.appendChild(root);
+  return sec;
+}
+
+var forest = document.getElementById('forest');
+var multiTree = TREES.length > 1;
+for (var ti = 0; ti < TREES.length; ti++) {
+  forest.appendChild(buildSection(TREE_TITLES[ti], TREES[ti], multiTree));
+}
+</script>
 </body>
 </html>

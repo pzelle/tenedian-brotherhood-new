@@ -5,6 +5,86 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Vardianos Family — Tenedian Brotherhood</title>
   <link rel="stylesheet" href="css/style.css">
+  <style>
+    .tree-page { padding: 0; }
+    .tree-outer { overflow-x: auto; padding: 2.5rem 1.5rem 3rem;
+                  background: var(--color-off-white, #f8f5f0); }
+    .tree-forest { display: flex; flex-direction: column; gap: 3.5rem; }
+    .tree-section-heading {
+      font-family: var(--font-heading, 'Playfair Display', serif);
+      color: var(--color-navy, #0a1628); font-size: 1.2rem;
+      margin: 0 0 1.25rem; padding-bottom: 0.4rem;
+      border-bottom: 2px solid var(--color-gold, #c9a227); }
+    .tree-legend { display: flex; gap: 1.2rem; flex-wrap: wrap;
+                   margin-bottom: 2rem; font-size: 0.8rem; color: #555;
+                   align-items: center; }
+    .legend-item { display: flex; align-items: center; gap: 5px; }
+    .ls { width: 20px; height: 13px; border-radius: 3px;
+          border: 2px solid var(--color-gold, #c9a227);
+          display: inline-block; flex-shrink: 0; }
+    .ls.navy  { background: var(--color-navy, #0a1628); }
+    .ls.white { background: #fff; }
+    .ls.blue  { background: #dce8ff; border-color: #6888cc; }
+    .ls.gray  { background: #eee; border-color: #bbb; }
+    /* Tree layout */
+    .tree-section { overflow-x: auto; padding-bottom: 0.5rem; }
+    .tree-root { display: inline-flex; flex-direction: column;
+                 align-items: center; padding: 0.5rem 1rem; }
+    .tree-node { display: flex; flex-direction: column; align-items: center;
+                 position: relative; }
+    .node-body { display: flex; flex-direction: column; align-items: center;
+                 gap: 3px; position: relative; }
+    .couple-row { display: flex; align-items: center; gap: 5px; }
+    .cx { color: var(--color-gold, #c9a227); font-weight: 700; font-size: 1rem;
+          padding: 0 2px; flex-shrink: 0; }
+    .remarriage-lbl { font-size: 0.65rem; color: #999; font-style: italic;
+                      text-align: center; margin-top: 5px; }
+    /* Cards */
+    .card { background: #fff; border: 2px solid var(--color-gold, #c9a227);
+            border-radius: 6px; padding: 7px 10px; width: 148px;
+            text-align: center; font-size: 0.74rem; line-height: 1.35;
+            position: relative; }
+    .card .n { font-weight: 700; color: var(--color-navy, #0a1628);
+               display: block; font-size: 0.78rem; }
+    .card .d { color: #888; font-size: 0.67rem; display: block; margin-top: 2px; }
+    .card.root { background: var(--color-navy, #0a1628);
+                 border-color: var(--color-gold, #c9a227); }
+    .card.root .n { color: var(--color-gold, #c9a227); }
+    .card.root .d { color: #99aabb; }
+    .card.spouse { background: #dce8ff; border-color: #6888cc; }
+    .card.spouse .n { color: #1a3a80; }
+    .card.priv  { background: #eee; border-color: #bbb; }
+    .card.priv .n { color: #666; }
+    .card.priv .d { color: #aaa; }
+    .card.collapsible { cursor: pointer; }
+    .card.collapsible::after { content: '\25BE'; position: absolute;
+      bottom: 3px; right: 5px; font-size: 0.6rem;
+      color: var(--color-gold, #c9a227); }
+    .tree-node.closed > .node-body .card.collapsible::after { content: '\25B8'; }
+    /* Connector lines (CSS pseudo-elements) */
+    :root { --gap: 44px; }
+    .tree-node.has-ch > .node-body::after {
+      content: ''; position: absolute; left: 50%; transform: translateX(-50%);
+      top: 100%; width: 2px; height: var(--gap);
+      background: var(--color-gold, #c9a227); }
+    .tree-children { display: flex; flex-direction: row; gap: 14px;
+                     align-items: flex-start; justify-content: center;
+                     margin-top: var(--gap); }
+    .tree-node.closed > .node-body::after  { display: none !important; }
+    .tree-node.closed > .tree-children     { display: none !important; }
+    .tree-children > .tree-node { position: relative; }
+    .tree-children > .tree-node::before {
+      content: ''; position: absolute; left: 50%; transform: translateX(-50%);
+      top: calc(-1 * var(--gap)); width: 2px; height: var(--gap);
+      background: var(--color-gold, #c9a227); }
+    .tree-children > .tree-node::after {
+      content: ''; position: absolute; top: calc(-1 * var(--gap));
+      left: 0; right: 0; height: 2px;
+      background: var(--color-gold, #c9a227); }
+    .tree-children > .tree-node:first-child::after  { left: 50%; }
+    .tree-children > .tree-node:last-child::after   { right: 50%; }
+    .tree-children > .tree-node:first-child:last-child::after { display: none; }
+  </style>
 </head>
 <body>
 
@@ -30,116 +110,21 @@
   <header class="page-header">
     <div class="page-header-inner">
       <h1 class="page-title">Vardianos Family</h1>
-      <p class="page-subtitle"><a href="family-trees.html" style="color:rgba(255,255,255,.6); font-size:.85rem;">&larr; Back to Family Trees</a></p>
+      <p class="page-subtitle"><a href="family-trees.html" style="color:rgba(255,255,255,.65);font-size:.85rem;">&larr; Back to Family Trees</a></p>
     </div>
   </header>
 
-  <div class="page-content">
-    <div class="privacy-notice">
-      <strong>Privacy notice:</strong> Per the original website policy, birth dates are not
-      disclosed for individuals born after 1920 unless they are deceased.
-    </div>
-
-    <div class="family-tree-content">
-<div class="tree-entry gen-0 note">Vardianos Family</div>
-<div class="tree-entry gen-0">Odysseus Vardianos b: Unknown in Tenedos, Greece</div>
-<div class="tree-entry gen-0 spouse">+ Stylliani Houlles b: Unknown in Tenedos, Greece</div>
-<div class="tree-entry gen-0 note">2 Stavros O. Vardianos b: 1880 in Tenedos, 
-Greece</div>
-<div class="tree-entry gen-0 note">+Katerina Paleo Fotou b: in Tenedos, 
-Greece</div>
-<div class="tree-entry gen-2">Paleologos S. Vardianos b: Private</div>
-<div class="tree-entry gen-2 note">2 Sophia O. Vardianos b: Abt. 1882 in Tenedos, 
-Greece d: 1950</div>
-<div class="tree-entry gen-2 note">+Dinitrios G. Kalaitzis b: 1875 in 
-Tenedos, Greece d: 1911</div>
-<div class="tree-entry gen-2 note">3 Kirgiakitsa D. Kalaitzis b: 1910 in 
-Tenedos, Greece d: 1977</div>
-<div class="tree-entry gen-2 note">+Achimidies Arvanitis b: 1898 in 
-Tenedos, Greece d: 1961</div>
-<div class="tree-entry gen-2 note">4 Emmanuel A. 'Manoli' 
-Arvanitis b: 1927 in Tenedos, Greece</div>
-<div class="tree-entry gen-2 note">+Christina N. Kapetanos b: 
-in Nea Tenedos, Chalkidiki, Greece</div>
-<div class="tree-entry gen-2 note">5 Archimidies Arvanitis 
-b: Private in Nea Tenedos, Chalkidiki, Greece</div>
-<div class="tree-entry gen-2 note">+Katerina b: Private 
-in Nea Tenedos, Chalkidiki, Greece</div>
-<div class="tree-entry gen-2 note">6 Christina A. 
-Arvanitis b: Private</div>
-<div class="tree-entry gen-2 note">6 Vasiliki A. 
-Arvanitis b: Private</div>
-<div class="tree-entry gen-2 note">6 Kirgiakitsa A. 
-Arvanitis b: Private</div>
-<div class="tree-entry gen-2 note">5 Nicolas Arvanitis b: 
-Private in Nea Tenedos, Chalkidiki, Greece</div>
-<div class="tree-entry gen-2 note">+Margarita b: 
-Private in Nea Tenedos, Chalkidiki, Greece</div>
-<div class="tree-entry gen-2 note">6 Emmanuel N. 
-Arvanitis b: Private</div>
-<div class="tree-entry gen-2 note">6 Maria N. 
-Arvanitis b: Private</div>
-<div class="tree-entry gen-2 note">4 Joulia A. Arvanitis b: 
-Private in Nea Tenedos, Chalkidiki, Greece</div>
-<div class="tree-entry gen-2 note">4 Dimitrios A. Arvanitis b: 
-Private in Nea Tenedos, Chalkidiki, Greece</div>
-<div class="tree-entry gen-2 note">+Christina Papageorgiou b: 
-Private</div>
-<div class="tree-entry gen-2 note">5 Sophia Arvanitis b: 
-Private</div>
-<div class="tree-entry gen-2 note">+Anthony 'Tony' 
-Kasiaras b: Private</div>
-<div class="tree-entry gen-2 note">6 Michael Angelo 
-Kasiaras b: Private</div>
-<div class="tree-entry gen-2 note">5 Archimedies Arvanitis 
-b: Private</div>
-<div class="tree-entry gen-2 note">+Rosa Anello b: 
-Private</div>
-<div class="tree-entry gen-2 note">6 James 
-Arvanitis b: Private</div>
-<div class="tree-entry gen-2 note">5 George Arvanitis b: 
-Private</div>
-<div class="tree-entry gen-2 note">+Mo Li Huang b: 
-Private</div>
-<div class="tree-entry gen-2 note">4 Anestis A. Arvanitis b: 
-Private</div>
-<div class="tree-entry gen-2 note">+Anita Vasques Barilas b: 
-Private</div>
-<div class="tree-entry gen-2 note">*2nd Wife of Anestis A. 
-Arvanitis:</div>
-<div class="tree-entry gen-2 spouse">+ Panagiota b: Private</div>
-<div class="tree-entry gen-2 note">5 Archimidies A. 
-Arvanitis b: Private</div>
-<div class="tree-entry gen-2 note">5 Anthony A. Arvanitis 
-b: Private</div>
-<div class="tree-entry gen-2 note">3 Joulia Kalage b: 1910 in Tenedos, 
-Greece d: 1931</div>
-<div class="tree-entry gen-2 note">+Nicholas Psathas b: Unknown in 
-Tenedos, Greece</div>
-<div class="tree-entry gen-2 note">2 Paraskevi O. Vardianos b: 1882 in Tenedos, 
-Greece d: 1964</div>
-<div class="tree-entry gen-2 note">+Yianni Athanasios Hatziouannou b: in 
-Tenedos, Greece</div>
-<div class="tree-entry gen-2 note">3 Odysseus Y. Hatziouannou b: June 02, 
-1920</div>
-<div class="tree-entry gen-2 spouse">+ Katerina Diavasakis b: Private</div>
-<div class="tree-entry gen-2 note">4 Yianni O. Hatziouannou b: 
-Private</div>
-<div class="tree-entry gen-2 spouse">+ Amalia  b: Private</div>
-<div class="tree-entry gen-1">Eleni O. Vardianos  b: Private</div>
-<div class="tree-entry gen-1 spouse">+ Nikolas Zellilis  b: Private</div>
-<div class="tree-entry gen-2">George N. Zellilis b: Private</div>
-<div class="tree-entry gen-2 spouse">+ Despina N. Kapetano b: Private</div>
-<div class="tree-entry gen-3">Eleni G. Zellilis b: Private</div>
-<div class="tree-entry gen-3 spouse">+ Prodomo b: Private</div>
-<div class="tree-entry gen-3 note">2 Anesti 'Ernest' O. Vardianos b: June 16, 
-1891 in Tenedos, Greece d: September 28, 1952</div>
-<div class="tree-entry gen-3 note">+Eleni 'Helen' Evdemon b: 1901 in Tenedos, 
-Greece d: March 29, 1945</div>
-<div class="tree-entry gen-3 note">*2nd Wife of Anesti 'Ernest' O. Vardianos:</div>
-<div class="tree-entry gen-3 note">+Maria Triantafilou b: 1901 in Tenedos, 
-Greece d: June 13, 1975</div>
-
+  <div class="page-content tree-page">
+    <div class="tree-outer">
+      <div class="tree-legend">
+        <div class="legend-item"><div class="ls navy"></div> Ancestor</div>
+        <div class="legend-item"><div class="ls white"></div> Descendant</div>
+        <div class="legend-item"><div class="ls blue"></div> Spouse (married-in)</div>
+        <div class="legend-item"><div class="ls gray"></div> Living (private)</div>
+        <div class="legend-item" style="color:var(--color-gold,#c9a227);font-weight:700;font-size:1rem">&times;</div>&thinsp;Married
+        <div class="legend-item" style="font-size:.75rem;color:#999">Click a descendant card to collapse/expand</div>
+      </div>
+      <div class="tree-forest" id="forest"></div>
     </div>
   </div>
 </main>
@@ -155,11 +140,101 @@ Greece d: June 13, 1975</div>
       <a href="contact.html">Contact</a>
       <a href="not-recovered.html">Not Archived</a>
     </nav>
-    <p class="footer-copy">
-      Original content &copy; Tenedian Brotherhood. Website restored and modernized from archived materials.
-    </p>
+    <p class="footer-copy">Original content &copy; Tenedian Brotherhood.
+      Website restored and modernized from archived materials.</p>
   </div>
 </footer>
 
+<script>
+var TREES = [{"id":"p1","name":"Odysseus Vardianos","m":[{"sp":{"id":"p2","name":"Stylliani Houlles","birth":"Unknown"},"kids":[{"id":"p3","name":"Stavros O. Vardianos","m":[{"sp":{"id":"p4","name":"Katerina Paleo Fotou","birth":"in Tenedos, Greece"},"kids":[{"id":"p5","name":"Paleologos S. Vardianos","m":[],"priv":true}]}],"birth":"1880"},{"id":"p6","name":"Sophia O. Vardianos","m":[{"sp":{"id":"p7","name":"Dinitrios G. Kalaitzis","birth":"1875","death":"1911"},"kids":[{"id":"p8","name":"Kirgiakitsa D. Kalaitzis","m":[{"sp":{"id":"p9","name":"Achimidies Arvanitis","birth":"1898","death":"1961"},"kids":[{"id":"p10","name":"Emmanuel A. 'Manoli' Arvanitis","m":[{"sp":{"id":"p11","name":"Christina N. Kapetanos","birth":"in Nea Tenedos, Chalkidiki, Greece"},"kids":[{"id":"p12","name":"Archimidies Arvanitis","m":[{"sp":{"id":"p13","name":"Katerina","priv":true},"kids":[{"id":"p14","name":"Christina A. Arvanitis","m":[],"priv":true},{"id":"p15","name":"Vasiliki A. Arvanitis","m":[],"priv":true},{"id":"p16","name":"Kirgiakitsa A. Arvanitis","m":[],"priv":true}]}],"priv":true},{"id":"p17","name":"Nicolas Arvanitis","m":[{"sp":{"id":"p18","name":"Margarita","priv":true},"kids":[{"id":"p19","name":"Emmanuel N. Arvanitis","m":[],"priv":true},{"id":"p20","name":"Maria N. Arvanitis","m":[],"priv":true}]}],"priv":true}]}],"birth":"1927","priv":true},{"id":"p21","name":"Joulia A. Arvanitis","m":[],"priv":true},{"id":"p22","name":"Dimitrios A. Arvanitis","m":[{"sp":{"id":"p23","name":"Christina Papageorgiou","priv":true},"kids":[{"id":"p24","name":"Sophia Arvanitis","m":[{"sp":{"id":"p25","name":"Anthony 'Tony' Kasiaras","priv":true},"kids":[{"id":"p26","name":"Michael Angelo Kasiaras","m":[],"priv":true}]}],"priv":true},{"id":"p27","name":"Archimedies Arvanitis","m":[{"sp":{"id":"p28","name":"Rosa Anello","priv":true},"kids":[{"id":"p29","name":"James Arvanitis","m":[],"priv":true}]}],"priv":true},{"id":"p30","name":"George Arvanitis","m":[{"sp":{"id":"p31","name":"Mo Li Huang","priv":true},"kids":[]}],"priv":true}]}],"priv":true},{"id":"p32","name":"Anestis A. Arvanitis","m":[{"sp":{"id":"p33","name":"Anita Vasques Barilas","priv":true},"kids":[]},{"sp":{"id":"p34","name":"Panagiota","priv":true},"kids":[{"id":"p35","name":"Archimidies A. Arvanitis","m":[],"priv":true},{"id":"p36","name":"Anthony A. Arvanitis","m":[],"priv":true}],"label":"2nd marriage"}],"priv":true}]}],"birth":"1910","death":"Kalaitzis b: 1910 in Tenedos, Greece d: 1977"},{"id":"p37","name":"Joulia Kalage","m":[{"sp":{"id":"p38","name":"Nicholas Psathas","birth":"Unknown"},"kids":[]}],"birth":"1910","death":"1931"}]}],"birth":"Abt. 1882","death":"1950"},{"id":"p39","name":"Paraskevi O. Vardianos","m":[{"sp":{"id":"p40","name":"Yianni Athanasios Hatziouannou","birth":"in Tenedos, Greece"},"kids":[{"id":"p41","name":"Odysseus Y. Hatziouannou","m":[{"sp":{"id":"p42","name":"Katerina Diavasakis","priv":true},"kids":[{"id":"p43","name":"Yianni O. Hatziouannou","m":[{"sp":{"id":"p44","name":"Amalia","priv":true},"kids":[]}],"priv":true}]}],"birth":"June 02, 1920","priv":true}]}],"birth":"1882","death":"1964"},{"id":"p45","name":"Eleni O. Vardianos","m":[{"sp":{"id":"p46","name":"Nikolas Zellilis","priv":true},"kids":[{"id":"p47","name":"George N. Zellilis","m":[{"sp":{"id":"p48","name":"Despina N. Kapetano","priv":true},"kids":[{"id":"p49","name":"Eleni G. Zellilis","m":[{"sp":{"id":"p50","name":"Prodomo","priv":true},"kids":[]}],"priv":true}]}],"priv":true}]}],"priv":true},{"id":"p51","name":"Anesti 'Ernest' O. Vardianos","m":[{"sp":{"id":"p52","name":"Eleni 'Helen' Evdemon","birth":"1901","death":"March 29, 1945"},"kids":[]},{"sp":{"id":"p53","name":"Maria Triantafilou","birth":"1901","death":"June 13, 1975"},"kids":[],"label":"2nd marriage"}],"birth":"June 16, 1891","death":"September 28, 1952"}]}],"birth":"Unknown"}];
+var TREE_TITLES = ["Vardianos Family"];
+function makeCard(p, cls) {
+  var div = document.createElement('div');
+  div.className = 'card ' + (cls || '');
+  var n = document.createElement('span'); n.className = 'n';
+  n.textContent = p.name; div.appendChild(n);
+  var parts = [];
+  if (p.birth) parts.push('b. ' + p.birth);
+  if (p.death) parts.push('d. ' + p.death);
+  if (p.priv && !p.birth && !p.death) parts.push('Living');
+  if (parts.length) {
+    var d = document.createElement('span'); d.className = 'd';
+    d.textContent = parts.join('  ·  '); div.appendChild(d);
+  }
+  return div;
+}
+
+function renderNode(p, gen) {
+  var wrapper = document.createElement('div'); wrapper.className = 'tree-node';
+  var body = document.createElement('div'); body.className = 'node-body';
+  var marriages = p.m || [];
+  var allKids = [];
+  for (var i = 0; i < marriages.length; i++) {
+    var ks = marriages[i].kids || [];
+    for (var j = 0; j < ks.length; j++) allKids.push(ks[j]);
+  }
+  var cls = gen === 0 ? 'root' : (p.priv ? 'priv' : '');
+  if (allKids.length) cls += (cls ? ' ' : '') + 'collapsible';
+  var mc = makeCard(p, cls);
+  if (marriages.length > 0) {
+    var row = document.createElement('div'); row.className = 'couple-row';
+    row.appendChild(mc);
+    if (marriages[0].sp) {
+      var dot = document.createElement('span'); dot.className = 'cx';
+      dot.textContent = '×'; row.appendChild(dot);
+      var spCls = 'spouse' + (marriages[0].sp.priv ? ' priv' : '');
+      row.appendChild(makeCard(marriages[0].sp, spCls));
+    }
+    body.appendChild(row);
+    for (var mi = 1; mi < marriages.length; mi++) {
+      var mg = marriages[mi];
+      if (mg.label) {
+        var lbl = document.createElement('div'); lbl.className = 'remarriage-lbl';
+        lbl.textContent = mg.label + ':'; body.appendChild(lbl);
+      }
+      if (mg.sp) {
+        var r2 = document.createElement('div'); r2.className = 'couple-row';
+        var ph = document.createElement('div'); ph.style.cssText = 'width:148px;flex-shrink:0;';
+        r2.appendChild(ph);
+        var d2 = document.createElement('span'); d2.className = 'cx';
+        d2.textContent = '×'; r2.appendChild(d2);
+        var sp2Cls = 'spouse' + (mg.sp.priv ? ' priv' : '');
+        r2.appendChild(makeCard(mg.sp, sp2Cls)); body.appendChild(r2);
+      }
+    }
+  } else {
+    var soloRow = document.createElement('div'); soloRow.className = 'couple-row';
+    soloRow.appendChild(mc); body.appendChild(soloRow);
+  }
+  wrapper.appendChild(body);
+  if (allKids.length) {
+    wrapper.classList.add('has-ch');
+    var cr = document.createElement('div'); cr.className = 'tree-children';
+    for (var ki = 0; ki < allKids.length; ki++) cr.appendChild(renderNode(allKids[ki], gen + 1));
+    wrapper.appendChild(cr);
+    mc.addEventListener('click', (function(nd) {
+      return function(e) { e.stopPropagation(); nd.classList.toggle('closed'); };
+    }(wrapper)));
+  }
+  return wrapper;
+}
+
+function buildSection(title, data, showTitle) {
+  var sec = document.createElement('div'); sec.className = 'tree-section';
+  if (showTitle) {
+    var h = document.createElement('h2'); h.className = 'tree-section-heading';
+    h.textContent = title; sec.appendChild(h);
+  }
+  var root = document.createElement('div'); root.className = 'tree-root';
+  root.appendChild(renderNode(data, 0)); sec.appendChild(root);
+  return sec;
+}
+
+var forest = document.getElementById('forest');
+var multiTree = TREES.length > 1;
+for (var ti = 0; ti < TREES.length; ti++) {
+  forest.appendChild(buildSection(TREE_TITLES[ti], TREES[ti], multiTree));
+}
+</script>
 </body>
 </html>

@@ -5,6 +5,86 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Sinapiades Family — Tenedian Brotherhood</title>
   <link rel="stylesheet" href="css/style.css">
+  <style>
+    .tree-page { padding: 0; }
+    .tree-outer { overflow-x: auto; padding: 2.5rem 1.5rem 3rem;
+                  background: var(--color-off-white, #f8f5f0); }
+    .tree-forest { display: flex; flex-direction: column; gap: 3.5rem; }
+    .tree-section-heading {
+      font-family: var(--font-heading, 'Playfair Display', serif);
+      color: var(--color-navy, #0a1628); font-size: 1.2rem;
+      margin: 0 0 1.25rem; padding-bottom: 0.4rem;
+      border-bottom: 2px solid var(--color-gold, #c9a227); }
+    .tree-legend { display: flex; gap: 1.2rem; flex-wrap: wrap;
+                   margin-bottom: 2rem; font-size: 0.8rem; color: #555;
+                   align-items: center; }
+    .legend-item { display: flex; align-items: center; gap: 5px; }
+    .ls { width: 20px; height: 13px; border-radius: 3px;
+          border: 2px solid var(--color-gold, #c9a227);
+          display: inline-block; flex-shrink: 0; }
+    .ls.navy  { background: var(--color-navy, #0a1628); }
+    .ls.white { background: #fff; }
+    .ls.blue  { background: #dce8ff; border-color: #6888cc; }
+    .ls.gray  { background: #eee; border-color: #bbb; }
+    /* Tree layout */
+    .tree-section { overflow-x: auto; padding-bottom: 0.5rem; }
+    .tree-root { display: inline-flex; flex-direction: column;
+                 align-items: center; padding: 0.5rem 1rem; }
+    .tree-node { display: flex; flex-direction: column; align-items: center;
+                 position: relative; }
+    .node-body { display: flex; flex-direction: column; align-items: center;
+                 gap: 3px; position: relative; }
+    .couple-row { display: flex; align-items: center; gap: 5px; }
+    .cx { color: var(--color-gold, #c9a227); font-weight: 700; font-size: 1rem;
+          padding: 0 2px; flex-shrink: 0; }
+    .remarriage-lbl { font-size: 0.65rem; color: #999; font-style: italic;
+                      text-align: center; margin-top: 5px; }
+    /* Cards */
+    .card { background: #fff; border: 2px solid var(--color-gold, #c9a227);
+            border-radius: 6px; padding: 7px 10px; width: 148px;
+            text-align: center; font-size: 0.74rem; line-height: 1.35;
+            position: relative; }
+    .card .n { font-weight: 700; color: var(--color-navy, #0a1628);
+               display: block; font-size: 0.78rem; }
+    .card .d { color: #888; font-size: 0.67rem; display: block; margin-top: 2px; }
+    .card.root { background: var(--color-navy, #0a1628);
+                 border-color: var(--color-gold, #c9a227); }
+    .card.root .n { color: var(--color-gold, #c9a227); }
+    .card.root .d { color: #99aabb; }
+    .card.spouse { background: #dce8ff; border-color: #6888cc; }
+    .card.spouse .n { color: #1a3a80; }
+    .card.priv  { background: #eee; border-color: #bbb; }
+    .card.priv .n { color: #666; }
+    .card.priv .d { color: #aaa; }
+    .card.collapsible { cursor: pointer; }
+    .card.collapsible::after { content: '\25BE'; position: absolute;
+      bottom: 3px; right: 5px; font-size: 0.6rem;
+      color: var(--color-gold, #c9a227); }
+    .tree-node.closed > .node-body .card.collapsible::after { content: '\25B8'; }
+    /* Connector lines (CSS pseudo-elements) */
+    :root { --gap: 44px; }
+    .tree-node.has-ch > .node-body::after {
+      content: ''; position: absolute; left: 50%; transform: translateX(-50%);
+      top: 100%; width: 2px; height: var(--gap);
+      background: var(--color-gold, #c9a227); }
+    .tree-children { display: flex; flex-direction: row; gap: 14px;
+                     align-items: flex-start; justify-content: center;
+                     margin-top: var(--gap); }
+    .tree-node.closed > .node-body::after  { display: none !important; }
+    .tree-node.closed > .tree-children     { display: none !important; }
+    .tree-children > .tree-node { position: relative; }
+    .tree-children > .tree-node::before {
+      content: ''; position: absolute; left: 50%; transform: translateX(-50%);
+      top: calc(-1 * var(--gap)); width: 2px; height: var(--gap);
+      background: var(--color-gold, #c9a227); }
+    .tree-children > .tree-node::after {
+      content: ''; position: absolute; top: calc(-1 * var(--gap));
+      left: 0; right: 0; height: 2px;
+      background: var(--color-gold, #c9a227); }
+    .tree-children > .tree-node:first-child::after  { left: 50%; }
+    .tree-children > .tree-node:last-child::after   { right: 50%; }
+    .tree-children > .tree-node:first-child:last-child::after { display: none; }
+  </style>
 </head>
 <body>
 
@@ -30,244 +110,21 @@
   <header class="page-header">
     <div class="page-header-inner">
       <h1 class="page-title">Sinapiades Family</h1>
-      <p class="page-subtitle"><a href="family-trees.html" style="color:rgba(255,255,255,.6); font-size:.85rem;">&larr; Back to Family Trees</a></p>
+      <p class="page-subtitle"><a href="family-trees.html" style="color:rgba(255,255,255,.65);font-size:.85rem;">&larr; Back to Family Trees</a></p>
     </div>
   </header>
 
-  <div class="page-content">
-    <div class="privacy-notice">
-      <strong>Privacy notice:</strong> Per the original website policy, birth dates are not
-      disclosed for individuals born after 1920 unless they are deceased.
-    </div>
-
-    <div class="family-tree-content">
-<div class="tree-entry gen-0 note">Sinapiades Family</div>
-<div class="tree-entry gen-0">Sophia Sinapiades b: Unknown  d: Aft. 1928</div>
-<div class="tree-entry gen-0 note">+Dimitrios Vasilios Arvanitis b: Abt. 1850 d: Bef. 1916 in Tenedos, 
-Greece</div>
-<div class="tree-entry gen-1">Theodora Arvanitis b: Abt. 1871 in Tenedos,Greece d: Abt. 1975</div>
-<div class="tree-entry gen-1 note">2 Spiros Dimitrios Arvanitis b: January 05, 1873 in Tenedos, Greece 
-d: 1955 - 1959</div>
-<div class="tree-entry gen-1 spouse">+ Evangelia (Kalfastamatis) Kalfas b: Unknown d: 1926 in Tenedos</div>
-<div class="tree-entry gen-2">Kirgiakitsa Arvanitis b: October 11, 1916 in Tenedos, Greece</div>
-<div class="tree-entry gen-2 spouse">+ Fotis Fotiou b: Unknown in Tenedos, Greece</div>
-<div class="tree-entry gen-3">Spiros F. Fotiou  b: Private</div>
-<div class="tree-entry gen-3">Evangelia Fotiou  b: Private</div>
-<div class="tree-entry gen-2">Gabrieza Arvanitis b: December 17, 1917 in Tenedos, Greece</div>
-<div class="tree-entry gen-2 spouse">+ Andonis Zervoudakis  b: Private</div>
-<div class="tree-entry gen-3">Dimitrios A. Zervoudakis  b: Private</div>
-<div class="tree-entry gen-3 note">3 Dimitrios S. Arvanitis b: August 23, 1923 in Tenedos, Greece 
-d: 2001</div>
-<div class="tree-entry gen-3 spouse">+ Irene Stergiou / Sterger  b: Private</div>
-<div class="tree-entry gen-1">Venetia Arvanitis b: Abt. 1874 in Tenedos, Greece d: Aft. 1966</div>
-<div class="tree-entry gen-1 spouse">+ Spyros Lambiris b: Abt. 1880 in Tenedos, Greece</div>
-<div class="tree-entry gen-1 note">3 Chrysavera Lambiris b: August 08, 1909 in Tenedos  d: 
-June 21, 1997</div>
-<div class="tree-entry gen-1 spouse">+ Georgios Panos b: Unknown d: 1950 in Greece</div>
-<div class="tree-entry gen-3">Asimina 'Mina' Panos  b: Private</div>
-<div class="tree-entry gen-3 note">+Thomas Roussis b: August 25, 1930 d: October 12, 
-1988</div>
-<div class="tree-entry gen-4">Vasili 'Bill' Roussis  b: Private</div>
-<div class="tree-entry gen-3">Nicholas Panos  b: Private</div>
-<div class="tree-entry gen-3 spouse">+ Nitsa  b: Private</div>
-<div class="tree-entry gen-4">Venetia Panos  b: Private</div>
-<div class="tree-entry gen-4">George Panos  b: Private</div>
-<div class="tree-entry gen-4">Dimitrios Panos b: Abt. 1962</div>
-<div class="tree-entry gen-4">Katherine Panos   b: Private</div>
-<div class="tree-entry gen-3">Venetia 'Vetta' Panos  b: Private</div>
-<div class="tree-entry gen-3 spouse">+ John Papadimas  b: Private</div>
-<div class="tree-entry gen-4">George John Papadimas  b: Private</div>
-<div class="tree-entry gen-3">Andonis Panos  b: Private</div>
-<div class="tree-entry gen-3 spouse">+ Soula  b: Private</div>
-<div class="tree-entry gen-4">Maria Panos  b: Private</div>
-<div class="tree-entry gen-4">Stacy Panos  b: Private</div>
-<div class="tree-entry gen-4">Toni Panos  b: Private</div>
-<div class="tree-entry gen-1">Constantine D. 'Costas' Arvanitis b: 1876 in Tenedos, Greece</div>
-<div class="tree-entry gen-1 spouse">+ Paraskevi Tsollakis b: 1880 - 1890</div>
-<div class="tree-entry gen-1 note">3 Dimitrios C. 'James' Arvanitis b: February 03, 1906 in 
-Tenedos  d: Abt. 1972</div>
-<div class="tree-entry gen-1 spouse">+ Wife - Unknown b: Unknown</div>
-<div class="tree-entry gen-3">Costa Arvanitis  b: Private</div>
-<div class="tree-entry gen-3">Eduardo Arvanitis  b: Private</div>
-<div class="tree-entry gen-3">Female Arvanitis  b: Private</div>
-<div class="tree-entry gen-3">Female Arvanitis  b: Private</div>
-<div class="tree-entry gen-3 note">3 Sophia Arvanitis b: March 15, 1907 in Tenedos  d: 
-November 26, 1994</div>
-<div class="tree-entry gen-3 note">+Nicholas A. 'Nick' Fotos b: Feb. 22, 1894 in Tenedos d: 
-August 08, 1962</div>
-<div class="tree-entry gen-3">Augustus 'Gus' Nicholas Fotos, Dr.  b: Private</div>
-<div class="tree-entry gen-3 spouse">+ Katherine M. Angelas  b: Private</div>
-<div class="tree-entry gen-4">Nicole Penelope Fotos  b: Private</div>
-<div class="tree-entry gen-4 spouse">+ Lee C. Creuzer  b: Private</div>
-<div class="tree-entry gen-4 note">6 Alexander Nicholas Creuzer  b: 
-Private</div>
-<div class="tree-entry gen-4">Marcie Sophia Fotos  b: Private</div>
-<div class="tree-entry gen-4 spouse">+ Travis Prescott  b: Private</div>
-<div class="tree-entry gen-4 note">4 Nicholas Fotos b: December 07, 1935  d: January 
-03, 1996</div>
-<div class="tree-entry gen-4 note">+Judith 'Judy' Lee Hager b: November 11, 1939  
-d: October 1985</div>
-<div class="tree-entry gen-4">April Fotos  b: Private</div>
-<div class="tree-entry gen-4 spouse">+ Landon S. Waugh  b: Private</div>
-<div class="tree-entry gen-4 note">3 Despina Arvanitis b: April 21, 1913 in Tenedos, Greece d: 
-January 24, 2005</div>
-<div class="tree-entry gen-4 note">+Nicholas K. Valavanis b: December 06, 1904  d: July 
-31, 1966</div>
-<div class="tree-entry gen-4 note">4 Mary Valavanis  b: April 3, 1934   d: 
-October 16, 2011</div>
-<div class="tree-entry gen-4 spouse">+ Kurt Theurer  b: Private</div>
-<div class="tree-entry gen-4">Christopher Theurer  b: Private</div>
-<div class="tree-entry gen-4 spouse">+ Kim Barbour  b: Private</div>
-<div class="tree-entry gen-3">Freda Valavanis  b: Private</div>
-<div class="tree-entry gen-3">Artemis Irene Valavanis  b: Private</div>
-<div class="tree-entry gen-3 spouse">+ James McKinney Wilhour  b: Private</div>
-<div class="tree-entry gen-4">Sylvia Lee Harding  b: Private</div>
-<div class="tree-entry gen-3">Christine Constance Valavanis  b: Private</div>
-<div class="tree-entry gen-3 note">2 Georgios D. 'George' Arvanitis b: Dec. 26, 1882 in Tenedos  d: 
-Jan. 23, 1963</div>
-<div class="tree-entry gen-3 note">+Anthepe Mingos b: August 15, 1885 in Tenedos  d: January 
-26, 1968</div>
-<div class="tree-entry gen-3 note">3 Dimitrios 'James' G. Arvanitis b: Nov  01, 1907 in 
-Tenedos  d: Dec 27, 1993</div>
-<div class="tree-entry gen-3 note">+Mary Francis Yonts b: January 31, 1928  d: September 
-20, 2000</div>
-<div class="tree-entry gen-3 note">4 Baby Boy Arvanitis b: June 02, 1950  d: June 02, 
-1950</div>
-<div class="tree-entry gen-3">James Arvanitis, Jr.  b: Private</div>
-<div class="tree-entry gen-3 spouse">+ Sandra Anne Klein  b: Private</div>
-<div class="tree-entry gen-4">Alexander James Arvanitis  b: Private</div>
-<div class="tree-entry gen-3">Venetia 'Tia' Arvanitis  b: Private</div>
-<div class="tree-entry gen-3 spouse">+ Gerald Max Meyer, Sr.  b: Private</div>
-<div class="tree-entry gen-4">James 'Jimi' Lee Meyer  b: Private</div>
-<div class="tree-entry gen-3">Georgina 'Gina' Arvanitis  b: Private</div>
-<div class="tree-entry gen-3 spouse">+ James George Morris, Sr.  b: Private</div>
-<div class="tree-entry gen-4">James George Morris, Jr.  b: Private</div>
-<div class="tree-entry gen-4 spouse">+ Ashly Brooke Webb  b: Private</div>
-<div class="tree-entry gen-4">Jackson Webb Morris b: Private</div>
-<div class="tree-entry gen-4">Nicholas James Morris  b: Private</div>
-<div class="tree-entry gen-4 spouse">+ Kristin Ann Hansen  b: Private</div>
-<div class="tree-entry gen-4 note">*2nd Husband of Georgina 'Gina' Arvanitis:</div>
-<div class="tree-entry gen-4 spouse">+ John 'Jack' Garwood  b: Private</div>
-<div class="tree-entry gen-3">George Arvanitis, Sr.  b: Private</div>
-<div class="tree-entry gen-3 spouse">+ Patricia Kay Nissen  b: Private</div>
-<div class="tree-entry gen-4">George Arvanitis, Jr.  b: Private</div>
-<div class="tree-entry gen-4">Katie Lynn Arvanitis  b: Private</div>
-<div class="tree-entry gen-4 spouse">+ Andrew James Oberley  b: Private</div>
-<div class="tree-entry gen-4">Ethan James Oberley  b: Private</div>
-<div class="tree-entry gen-4 note">*2nd Wife of George Arvanitis, Sr.:</div>
-<div class="tree-entry gen-4 spouse">+ Lisa Renee Vinson  b: Private</div>
-<div class="tree-entry gen-4">Venetia Catherine Arvanitis  b: Private</div>
-<div class="tree-entry gen-4">Rachel Marianne Arvanitis  b: Private</div>
-<div class="tree-entry gen-4 note">3 Panagiotis 'Peter' G. Arvanitis b: Nov  30, 1911 in 
-Tenedos d: May 10, 2000</div>
-<div class="tree-entry gen-4 spouse">+ Maria Tzanakis b: July 23, 1921  d: July 26, 1988</div>
-<div class="tree-entry gen-4 note">4 George Peter Arvanitis b: August 01, 1939  d: 
-June 19, 1945</div>
-<div class="tree-entry gen-3">Anthony Peter 'Tony' Arvanitis, Sr.  b: Private</div>
-<div class="tree-entry gen-3 spouse">+ Sally Diane Merickle  b: Private</div>
-<div class="tree-entry gen-3 note">5 Anthony 'Tony' James Arvanitis  b: 
-Private</div>
-<div class="tree-entry gen-3 spouse">+ Cynthia Louise Banas b: Private</div>
-<div class="tree-entry gen-3 note">6 Nicholas James Arvanitis  b: 
-Private</div>
-<div class="tree-entry gen-4">Aaron Anthony Arvanitis  b: Private</div>
-<div class="tree-entry gen-4">Peter George Arvanitis  b: Private</div>
-<div class="tree-entry gen-4 spouse">+ Michael Joseph Cammisa  b: Private</div>
-<div class="tree-entry gen-4">John Nicholas Arvanitis, Sr.  b: Private</div>
-<div class="tree-entry gen-4 spouse">+ Amy Lynn Schroyer  b: Private</div>
-<div class="tree-entry gen-4 note">6 John Nicholas Arvanitis, Jr.  b: 
-Private</div>
-<div class="tree-entry gen-4 note">6 Jordan Michael Arvanitis  b: 
-Private</div>
-<div class="tree-entry gen-4 note">*2nd Wife of John Nicholas Arvanitis, Sr.:</div>
-<div class="tree-entry gen-4 spouse">+ Susan Marie McGuire  b: Private</div>
-<div class="tree-entry gen-4">Nicole Marie Arvanitis b: Private</div>
-<div class="tree-entry gen-4">Natalie Jo Arvanitis  b: Private</div>
-<div class="tree-entry gen-4 note">*2nd Wife of Anthony Peter 'Tony' Arvanitis, Sr.:</div>
-<div class="tree-entry gen-4 spouse">+ Angela K. 'Angie' Koralewski  b: Private</div>
-<div class="tree-entry gen-4">Christopher Paul Arvanitis  b: Private</div>
-<div class="tree-entry gen-3">Georgette Athena 'Becky' Arvanitis  b: Private</div>
-<div class="tree-entry gen-3 spouse">+ Yanni 'John' Skiadas  b: Private</div>
-<div class="tree-entry gen-4">Maria Athena Skiadas  b: Private</div>
-<div class="tree-entry gen-4 spouse">+ Daniel Lee Decker  b: Private</div>
-<div class="tree-entry gen-4">Alexander Arthur Decker  b: Private</div>
-<div class="tree-entry gen-4">Danielle Maria Decker  b: Private</div>
-<div class="tree-entry gen-4 note">*2nd Husband of Maria Athena Skiadas:</div>
-<div class="tree-entry gen-4 spouse">+ Giorgos Makropoulos  b: Private</div>
-<div class="tree-entry gen-4">Giorgina Joanna Skiadas  b: Private</div>
-<div class="tree-entry gen-4 spouse">+ Erich Karl Deason  b: Private</div>
-<div class="tree-entry gen-4">Scott John Deason  b: Private</div>
-<div class="tree-entry gen-4 note">6 
-Demetria Athena Deason b: 
-Private</div>
-<div class="tree-entry gen-4">Andrew John Skiadas  b: Private</div>
-<div class="tree-entry gen-4 spouse">+ Emily Marie Edinger  b: Private</div>
-<div class="tree-entry gen-4 note">3 Yanni 'John' G. Arvantis b: Dec. 16, 1912 in Tenedos  
-d: May 05, 1996</div>
-<div class="tree-entry gen-4 note">+Yanula 'Joanne' Pappas b: January 17, 1918  d: June 
-07, 1948</div>
-<div class="tree-entry gen-3">Anthepe Joanne 'Ann' Arvantis  b: Private</div>
-<div class="tree-entry gen-3 note">+George Joseph Jakubowski b: March 31, 1940  
-d: July 30, 2009</div>
-<div class="tree-entry gen-4">Joanne Jakubowski  b: Private</div>
-<div class="tree-entry gen-4 spouse">+ Lee Richard McCormick  b: Private</div>
-<div class="tree-entry gen-4">Cameron Davis McCormick  b: Private</div>
-<div class="tree-entry gen-4">Kelsey Nicole McCormick  b: Private</div>
-<div class="tree-entry gen-4">David George Jakubowski  b: Private</div>
-<div class="tree-entry gen-4 spouse">+ Zenith Adolphe Rausch Justice  b: Private</div>
-<div class="tree-entry gen-4 note">*2nd Wife of Yanni 'John' George Arvantis:</div>
-<div class="tree-entry gen-4 spouse">+ Louisa James Philipon  b: Private</div>
-<div class="tree-entry gen-3">Philip George Arvantis  b: Private</div>
-<div class="tree-entry gen-3 spouse">+ Margaret Louise Lohmeyer  b: Private</div>
-<div class="tree-entry gen-3 note">5 Jeffery Lawrence Lohmeyer  b: Private 
-(Adopted)</div>
-<div class="tree-entry gen-4">Alexis A. Arvantis  b: Private</div>
-<div class="tree-entry gen-4">Zoe Louise Arvantis  b: Private</div>
-<div class="tree-entry gen-4 note">3 Vasiliki 'Virginia' George Arvanitis b: January 01, 1920 in 
-Tenedos</div>
-<div class="tree-entry gen-4 note">+George G. Grevis b: September 07, 1918  d: July 19, 
-2005</div>
-<div class="tree-entry gen-3">Dena Grevis  b: Private</div>
-<div class="tree-entry gen-3">Christine Elaine Grevis  b: Private</div>
-<div class="tree-entry gen-3 spouse">+ Thomas F. Korvas  b: Private</div>
-<div class="tree-entry gen-1">Aspasia Arvanitis b: Abt. 1884 in Greece d: Aft. 1963</div>
-<div class="tree-entry gen-1 spouse">+ Unknown Manou b: Unknown</div>
-<div class="tree-entry gen-2">Vasiliki 'Kiki' Manou  b: Private</div>
-<div class="tree-entry gen-2 note">2 Mihalis Dimitrios 'Mike' Arvanitis b: Dec. 17, 1888 in Tenedos  
-d: Dec  06, 1980</div>
-<div class="tree-entry gen-2 note">+Eleni 'Helen' Kalage b: December 06, 1902 in Tenedos d: Nov. 28, 
-1989</div>
-<div class="tree-entry gen-2">James Arvanitis b: June 08, 1928  d: June 21, 1928</div>
-<div class="tree-entry gen-2">Sophia Arvanitis b: June 09, 1929</div>
-<div class="tree-entry gen-2 spouse">+ Unknown McCallister b: Private</div>
-<div class="tree-entry gen-3">Helen Kathryn McCallister  b: Private</div>
-<div class="tree-entry gen-3 spouse">+ Unknown Fennell  b: Private</div>
-<div class="tree-entry gen-4">David Fennell  b: Private</div>
-<div class="tree-entry gen-4 note">*2nd Husband of Sophia Arvanitis:</div>
-<div class="tree-entry gen-4 note">+William B. Morton b: May 13, 1914   d: June 27, 
-1981</div>
-<div class="tree-entry gen-3">Margaret Lynn Morton  b: Private</div>
-<div class="tree-entry gen-3">Marnie Morton b: January 11, 1966 d: May 17, 2000</div>
-<div class="tree-entry gen-3 spouse">+ Unknown Shilakes  b: Private</div>
-<div class="tree-entry gen-4">Molly Sofia Shilakes  b: Private</div>
-<div class="tree-entry gen-3">Barbara Morton   b: Private</div>
-<div class="tree-entry gen-3 spouse">+ Chris Andrew  b: Private</div>
-<div class="tree-entry gen-4">Stephanie Ruth Andrew  b: Private</div>
-<div class="tree-entry gen-3">Michael William Morton   b: Private</div>
-<div class="tree-entry gen-2">Kathryn 'Katie' Arvanitis  b: Private</div>
-<div class="tree-entry gen-2 note">+Robert E. 'Bob' Martin  b: March 17, 1928   
-d: February 28, 2012</div>
-<div class="tree-entry gen-2">Theodore M. 'Ted' Arvanitis  b: Private</div>
-<div class="tree-entry gen-2 spouse">+ Joanne Louise Charney  b: Private</div>
-<div class="tree-entry gen-3">Michael James Arvanitis  b: Private</div>
-<div class="tree-entry gen-3 spouse">+ Cheryl Lynn Railing  b: Private</div>
-<div class="tree-entry gen-3">Demetra 'Jami' Jo Arvanitis  b: Private</div>
-<div class="tree-entry gen-3 note">3 James M. Arvanitis b: January 30, 1940  d: August 20, 
-1952</div>
-<div class="tree-entry gen-2">Mary Niki Arvanitis  b: Private</div>
-<div class="tree-entry gen-2 note">+Salvatore 'Sam' M. Provenzano b: April 07, 1920  d: 
-June 21, 2007</div>
-
+  <div class="page-content tree-page">
+    <div class="tree-outer">
+      <div class="tree-legend">
+        <div class="legend-item"><div class="ls navy"></div> Ancestor</div>
+        <div class="legend-item"><div class="ls white"></div> Descendant</div>
+        <div class="legend-item"><div class="ls blue"></div> Spouse (married-in)</div>
+        <div class="legend-item"><div class="ls gray"></div> Living (private)</div>
+        <div class="legend-item" style="color:var(--color-gold,#c9a227);font-weight:700;font-size:1rem">&times;</div>&thinsp;Married
+        <div class="legend-item" style="font-size:.75rem;color:#999">Click a descendant card to collapse/expand</div>
+      </div>
+      <div class="tree-forest" id="forest"></div>
     </div>
   </div>
 </main>
@@ -283,11 +140,101 @@ June 21, 2007</div>
       <a href="contact.html">Contact</a>
       <a href="not-recovered.html">Not Archived</a>
     </nav>
-    <p class="footer-copy">
-      Original content &copy; Tenedian Brotherhood. Website restored and modernized from archived materials.
-    </p>
+    <p class="footer-copy">Original content &copy; Tenedian Brotherhood.
+      Website restored and modernized from archived materials.</p>
   </div>
 </footer>
 
+<script>
+var TREES = [{"id":"p1","name":"Sophia Sinapiades","m":[{"sp":{"id":"p2","name":"Dimitrios Vasilios Arvanitis","birth":"Abt. 1850","death":"Bef. 1916 in Tenedos, Greece"},"kids":[{"id":"p3","name":"Theodora Arvanitis","m":[],"birth":"Abt. 1871","death":"Abt. 1975"},{"id":"p4","name":"Spiros Dimitrios Arvanitis","m":[{"sp":{"id":"p5","name":"Evangelia (Kalfastamatis) Kalfas","birth":"Unknown","death":"1926 in Tenedos"},"kids":[{"id":"p6","name":"Kirgiakitsa Arvanitis","m":[{"sp":{"id":"p7","name":"Fotis Fotiou","birth":"Unknown"},"kids":[{"id":"p8","name":"Spiros F. Fotiou","m":[],"priv":true},{"id":"p9","name":"Evangelia Fotiou","m":[],"priv":true}]}],"birth":"October 11, 1916"},{"id":"p10","name":"Gabrieza Arvanitis","m":[{"sp":{"id":"p11","name":"Andonis Zervoudakis","priv":true},"kids":[{"id":"p12","name":"Dimitrios A. Zervoudakis","m":[],"priv":true}]}],"birth":"December 17, 1917"},{"id":"p13","name":"Dimitrios S. Arvanitis","m":[{"sp":{"id":"p14","name":"Irene Stergiou / Sterger","priv":true},"kids":[]}],"birth":"August 23, 1923","death":"2001"}]}],"birth":"January 05, 1873","death":"1955 - 1959"},{"id":"p15","name":"Venetia Arvanitis","m":[{"sp":{"id":"p16","name":"Spyros Lambiris","birth":"Abt. 1880"},"kids":[{"id":"p17","name":"Chrysavera Lambiris","m":[{"sp":{"id":"p18","name":"Georgios Panos","birth":"Unknown","death":"1950 in Greece"},"kids":[{"id":"p19","name":"Asimina 'Mina' Panos","m":[{"sp":{"id":"p20","name":"Thomas Roussis","birth":"August 25, 1930","death":"October 12, 1988"},"kids":[{"id":"p21","name":"Vasili 'Bill' Roussis","m":[],"priv":true}]}],"priv":true},{"id":"p22","name":"Nicholas Panos","m":[{"sp":{"id":"p23","name":"Nitsa","priv":true},"kids":[{"id":"p24","name":"Venetia Panos","m":[],"priv":true},{"id":"p25","name":"George Panos","m":[],"priv":true},{"id":"p26","name":"Dimitrios Panos","m":[],"birth":"Abt. 1962","priv":true},{"id":"p27","name":"Katherine Panos","m":[],"priv":true}]}],"priv":true},{"id":"p28","name":"Venetia 'Vetta' Panos","m":[{"sp":{"id":"p29","name":"John Papadimas","priv":true},"kids":[{"id":"p30","name":"George John Papadimas","m":[],"priv":true}]}],"priv":true},{"id":"p31","name":"Andonis Panos","m":[{"sp":{"id":"p32","name":"Soula","priv":true},"kids":[{"id":"p33","name":"Maria Panos","m":[],"priv":true},{"id":"p34","name":"Stacy Panos","m":[],"priv":true},{"id":"p35","name":"Toni Panos","m":[],"priv":true}]}],"priv":true}]}],"birth":"August 08, 1909","death":"June 21, 1997"}]}],"birth":"Abt. 1874","death":"Aft. 1966"},{"id":"p36","name":"Constantine D. 'Costas' Arvanitis","m":[{"sp":{"id":"p37","name":"Paraskevi Tsollakis","birth":"1880 - 1890"},"kids":[{"id":"p38","name":"Dimitrios C. 'James' Arvanitis","m":[{"sp":{"id":"p39","name":"Wife - Unknown","birth":"Unknown"},"kids":[{"id":"p40","name":"Costa Arvanitis","m":[],"priv":true},{"id":"p41","name":"Eduardo Arvanitis","m":[],"priv":true},{"id":"p42","name":"Female Arvanitis","m":[],"priv":true},{"id":"p43","name":"Female Arvanitis","m":[],"priv":true}]}],"birth":"February 03, 1906","death":"Abt. 1972"},{"id":"p44","name":"Sophia Arvanitis","m":[{"sp":{"id":"p45","name":"Nicholas A. 'Nick' Fotos","birth":"Feb. 22, 1894","death":"August 08, 1962"},"kids":[{"id":"p46","name":"Augustus 'Gus' Nicholas Fotos, Dr.","m":[{"sp":{"id":"p47","name":"Katherine M. Angelas","priv":true},"kids":[{"id":"p48","name":"Nicole Penelope Fotos","m":[{"sp":{"id":"p49","name":"Lee C. Creuzer","priv":true},"kids":[{"id":"p50","name":"Alexander Nicholas Creuzer","m":[],"priv":true}]}],"priv":true},{"id":"p51","name":"Marcie Sophia Fotos","m":[{"sp":{"id":"p52","name":"Travis Prescott","priv":true},"kids":[]}],"priv":true}]}],"priv":true},{"id":"p53","name":"Nicholas Fotos","m":[{"sp":{"id":"p54","name":"Judith 'Judy' Lee Hager","birth":"November 11, 1939","death":"October 1985"},"kids":[{"id":"p55","name":"April Fotos","m":[{"sp":{"id":"p56","name":"Landon S. Waugh","priv":true},"kids":[]}],"priv":true}]}],"birth":"December 07, 1935","death":"January 03, 1996"}]}],"birth":"March 15, 1907","death":"November 26, 1994"},{"id":"p57","name":"Despina Arvanitis","m":[{"sp":{"id":"p58","name":"Nicholas K. Valavanis","birth":"December 06, 1904","death":"July 31, 1966"},"kids":[{"id":"p59","name":"Mary Valavanis","m":[{"sp":{"id":"p60","name":"Kurt Theurer","priv":true},"kids":[{"id":"p61","name":"Christopher Theurer","m":[{"sp":{"id":"p62","name":"Kim Barbour","priv":true},"kids":[]}],"priv":true}]}],"birth":"April 3, 1934","death":"October 16, 2011"},{"id":"p63","name":"Freda Valavanis","m":[],"priv":true},{"id":"p64","name":"Artemis Irene Valavanis","m":[{"sp":{"id":"p65","name":"James McKinney Wilhour","priv":true},"kids":[{"id":"p66","name":"Sylvia Lee Harding","m":[],"priv":true}]}],"priv":true},{"id":"p67","name":"Christine Constance Valavanis","m":[],"priv":true}]}],"birth":"April 21, 1913","death":"January 24, 2005"}]}],"birth":"1876","death":"'Costas' Arvanitis b: 1876 in Tenedos, Greece"},{"id":"p68","name":"Georgios D. 'George' Arvanitis","m":[{"sp":{"id":"p69","name":"Anthepe Mingos","birth":"August 15, 1885","death":"January 26, 1968"},"kids":[{"id":"p70","name":"Dimitrios 'James' G. Arvanitis","m":[{"sp":{"id":"p71","name":"Mary Francis Yonts","birth":"January 31, 1928","death":"September 20, 2000"},"kids":[{"id":"p72","name":"Baby Boy Arvanitis","m":[],"birth":"June 02, 1950","death":"June 02, 1950"},{"id":"p73","name":"James Arvanitis, Jr.","m":[{"sp":{"id":"p74","name":"Sandra Anne Klein","priv":true},"kids":[{"id":"p75","name":"Alexander James Arvanitis","m":[],"priv":true}]}],"priv":true},{"id":"p76","name":"Venetia 'Tia' Arvanitis","m":[{"sp":{"id":"p77","name":"Gerald Max Meyer, Sr.","priv":true},"kids":[{"id":"p78","name":"James 'Jimi' Lee Meyer","m":[],"priv":true}]}],"priv":true},{"id":"p79","name":"Georgina 'Gina' Arvanitis","m":[{"sp":{"id":"p80","name":"James George Morris, Sr.","priv":true},"kids":[{"id":"p81","name":"James George Morris, Jr.","m":[{"sp":{"id":"p82","name":"Ashly Brooke Webb","priv":true},"kids":[{"id":"p83","name":"Jackson Webb Morris","m":[],"priv":true}]}],"priv":true},{"id":"p84","name":"Nicholas James Morris","m":[{"sp":{"id":"p85","name":"Kristin Ann Hansen","priv":true},"kids":[]}],"priv":true}]},{"sp":{"id":"p86","name":"John 'Jack' Garwood","priv":true},"kids":[],"label":"2nd marriage"}],"priv":true},{"id":"p87","name":"George Arvanitis, Sr.","m":[{"sp":{"id":"p88","name":"Patricia Kay Nissen","priv":true},"kids":[{"id":"p89","name":"George Arvanitis, Jr.","m":[],"priv":true},{"id":"p90","name":"Katie Lynn Arvanitis","m":[{"sp":{"id":"p91","name":"Andrew James Oberley","priv":true},"kids":[{"id":"p92","name":"Ethan James Oberley","m":[],"priv":true}]}],"priv":true}]},{"sp":{"id":"p93","name":"Lisa Renee Vinson","priv":true},"kids":[{"id":"p94","name":"Venetia Catherine Arvanitis","m":[],"priv":true},{"id":"p95","name":"Rachel Marianne Arvanitis","m":[],"priv":true}],"label":"2nd marriage"}],"priv":true}]}],"birth":"Nov 01, 1907","death":"Dec 27, 1993"},{"id":"p96","name":"Panagiotis 'Peter' G. Arvanitis","m":[{"sp":{"id":"p97","name":"Maria Tzanakis","birth":"July 23, 1921","death":"July 26, 1988"},"kids":[{"id":"p98","name":"George Peter Arvanitis","m":[],"birth":"August 01, 1939","death":"June 19, 1945"},{"id":"p99","name":"Anthony Peter 'Tony' Arvanitis, Sr.","m":[{"sp":{"id":"p100","name":"Sally Diane Merickle","priv":true},"kids":[{"id":"p101","name":"Anthony 'Tony' James Arvanitis","m":[{"sp":{"id":"p102","name":"Cynthia Louise Banas","priv":true},"kids":[{"id":"p103","name":"Nicholas James Arvanitis","m":[],"priv":true},{"id":"p104","name":"Aaron Anthony Arvanitis","m":[],"priv":true}]}],"priv":true},{"id":"p105","name":"Peter George Arvanitis","m":[{"sp":{"id":"p106","name":"Michael Joseph Cammisa","priv":true},"kids":[]}],"priv":true},{"id":"p107","name":"John Nicholas Arvanitis, Sr.","m":[{"sp":{"id":"p108","name":"Amy Lynn Schroyer","priv":true},"kids":[{"id":"p109","name":"John Nicholas Arvanitis, Jr.","m":[],"priv":true},{"id":"p110","name":"Jordan Michael Arvanitis","m":[],"priv":true}]},{"sp":{"id":"p111","name":"Susan Marie McGuire","priv":true},"kids":[{"id":"p112","name":"Nicole Marie Arvanitis","m":[],"priv":true},{"id":"p113","name":"Natalie Jo Arvanitis","m":[],"priv":true}],"label":"2nd marriage"}],"priv":true}]},{"sp":{"id":"p114","name":"Angela K. 'Angie' Koralewski","priv":true},"kids":[{"id":"p115","name":"Christopher Paul Arvanitis","m":[],"priv":true}],"label":"2nd marriage"}],"priv":true},{"id":"p116","name":"Georgette Athena 'Becky' Arvanitis","m":[{"sp":{"id":"p117","name":"Yanni 'John' Skiadas","priv":true},"kids":[{"id":"p118","name":"Maria Athena Skiadas","m":[{"sp":{"id":"p119","name":"Daniel Lee Decker","priv":true},"kids":[{"id":"p120","name":"Alexander Arthur Decker","m":[],"priv":true},{"id":"p121","name":"Danielle Maria Decker","m":[],"priv":true}]},{"sp":{"id":"p122","name":"Giorgos Makropoulos","priv":true},"kids":[],"label":"2nd marriage"}],"priv":true},{"id":"p123","name":"Giorgina Joanna Skiadas","m":[{"sp":{"id":"p124","name":"Erich Karl Deason","priv":true},"kids":[{"id":"p125","name":"Scott John Deason","m":[],"priv":true},{"id":"p126","name":"Demetria Athena Deason","m":[],"priv":true}]}],"priv":true},{"id":"p127","name":"Andrew John Skiadas","m":[{"sp":{"id":"p128","name":"Emily Marie Edinger","priv":true},"kids":[]}],"priv":true}]}],"priv":true}]}],"birth":"Nov 30, 1911","death":"May 10, 2000"},{"id":"p129","name":"Yanni 'John' G. Arvantis","m":[{"sp":{"id":"p130","name":"Yanula 'Joanne' Pappas","birth":"January 17, 1918","death":"June 07, 1948"},"kids":[{"id":"p131","name":"Anthepe Joanne 'Ann' Arvantis","m":[{"sp":{"id":"p132","name":"George Joseph Jakubowski","birth":"March 31, 1940","death":"July 30, 2009"},"kids":[{"id":"p133","name":"Joanne Jakubowski","m":[{"sp":{"id":"p134","name":"Lee Richard McCormick","priv":true},"kids":[{"id":"p135","name":"Cameron Davis McCormick","m":[],"priv":true},{"id":"p136","name":"Kelsey Nicole McCormick","m":[],"priv":true}]}],"priv":true},{"id":"p137","name":"David George Jakubowski","m":[{"sp":{"id":"p138","name":"Zenith Adolphe Rausch Justice","priv":true},"kids":[]}],"priv":true}]}],"priv":true}]},{"sp":{"id":"p139","name":"Louisa James Philipon","priv":true},"kids":[{"id":"p140","name":"Philip George Arvantis","m":[{"sp":{"id":"p141","name":"Margaret Louise Lohmeyer","priv":true},"kids":[{"id":"p142","name":"Jeffery Lawrence Lohmeyer","m":[],"birth":"Private (Adopted)"},{"id":"p143","name":"Alexis A. Arvantis","m":[],"priv":true},{"id":"p144","name":"Zoe Louise Arvantis","m":[],"priv":true}]}],"priv":true}],"label":"2nd marriage"}],"birth":"Dec. 16, 1912","death":"May 05, 1996"},{"id":"p145","name":"Vasiliki 'Virginia' George Arvanitis","m":[{"sp":{"id":"p146","name":"George G. Grevis","birth":"September 07, 1918","death":"July 19, 2005"},"kids":[{"id":"p147","name":"Dena Grevis","m":[],"priv":true},{"id":"p148","name":"Christine Elaine Grevis","m":[{"sp":{"id":"p149","name":"Thomas F. Korvas","priv":true},"kids":[]}],"priv":true}]}],"birth":"January 01, 1920","priv":true}]}],"birth":"Dec. 26, 1882","death":"'George' Arvanitis b: Dec. 26, 1882 in Tenedos d: Jan. 23, 1963"},{"id":"p150","name":"Aspasia Arvanitis","m":[{"sp":{"id":"p151","name":"Unknown Manou","birth":"Unknown"},"kids":[{"id":"p152","name":"Vasiliki 'Kiki' Manou","m":[],"priv":true}]}],"birth":"Abt. 1884","death":"Aft. 1963"},{"id":"p153","name":"Mihalis Dimitrios 'Mike' Arvanitis","m":[{"sp":{"id":"p154","name":"Eleni 'Helen' Kalage","birth":"December 06, 1902","death":"Nov. 28, 1989"},"kids":[{"id":"p155","name":"James Arvanitis","m":[],"birth":"June 08, 1928","death":"June 21, 1928"},{"id":"p156","name":"Sophia Arvanitis","m":[{"sp":{"id":"p157","name":"Unknown McCallister","priv":true},"kids":[{"id":"p158","name":"Helen Kathryn McCallister","m":[{"sp":{"id":"p159","name":"Unknown Fennell","priv":true},"kids":[{"id":"p160","name":"David Fennell","m":[],"priv":true}]}],"priv":true}]},{"sp":{"id":"p161","name":"William","birth":"Morton b: May 13, 1914","death":"June 27, 1981"},"kids":[{"id":"p162","name":"Margaret Lynn Morton","m":[],"priv":true},{"id":"p163","name":"Marnie Morton","m":[{"sp":{"id":"p164","name":"Unknown Shilakes","priv":true},"kids":[{"id":"p165","name":"Molly Sofia Shilakes","m":[],"priv":true}]}],"birth":"January 11, 1966","death":"May 17, 2000"},{"id":"p166","name":"Barbara Morton","m":[{"sp":{"id":"p167","name":"Chris Andrew","priv":true},"kids":[{"id":"p168","name":"Stephanie Ruth Andrew","m":[],"priv":true}]}],"priv":true},{"id":"p169","name":"Michael William Morton","m":[],"priv":true}],"label":"2nd marriage"}],"birth":"June 09, 1929","priv":true},{"id":"p170","name":"Kathryn 'Katie' Arvanitis","m":[{"sp":{"id":"p171","name":"Robert E. 'Bob' Martin","birth":"March 17, 1928","death":"February 28, 2012"},"kids":[]}],"priv":true},{"id":"p172","name":"Theodore M. 'Ted' Arvanitis","m":[{"sp":{"id":"p173","name":"Joanne Louise Charney","priv":true},"kids":[{"id":"p174","name":"Michael James Arvanitis","m":[{"sp":{"id":"p175","name":"Cheryl Lynn Railing","priv":true},"kids":[]}],"priv":true},{"id":"p176","name":"Demetra 'Jami' Jo Arvanitis","m":[],"priv":true}]}],"priv":true},{"id":"p177","name":"James M. Arvanitis","m":[],"birth":"January 30, 1940","death":"August 20, 1952"},{"id":"p178","name":"Mary Niki Arvanitis","m":[{"sp":{"id":"p179","name":"Salvatore 'Sam' M. Provenzano","birth":"April 07, 1920","death":"June 21, 2007"},"kids":[]}],"priv":true}]}],"birth":"Dec. 17, 1888","death":"Dec 06, 1980"}]}],"birth":"Unknown","death":"Aft. 1928"}];
+var TREE_TITLES = ["Sinapiades Family"];
+function makeCard(p, cls) {
+  var div = document.createElement('div');
+  div.className = 'card ' + (cls || '');
+  var n = document.createElement('span'); n.className = 'n';
+  n.textContent = p.name; div.appendChild(n);
+  var parts = [];
+  if (p.birth) parts.push('b. ' + p.birth);
+  if (p.death) parts.push('d. ' + p.death);
+  if (p.priv && !p.birth && !p.death) parts.push('Living');
+  if (parts.length) {
+    var d = document.createElement('span'); d.className = 'd';
+    d.textContent = parts.join('  ·  '); div.appendChild(d);
+  }
+  return div;
+}
+
+function renderNode(p, gen) {
+  var wrapper = document.createElement('div'); wrapper.className = 'tree-node';
+  var body = document.createElement('div'); body.className = 'node-body';
+  var marriages = p.m || [];
+  var allKids = [];
+  for (var i = 0; i < marriages.length; i++) {
+    var ks = marriages[i].kids || [];
+    for (var j = 0; j < ks.length; j++) allKids.push(ks[j]);
+  }
+  var cls = gen === 0 ? 'root' : (p.priv ? 'priv' : '');
+  if (allKids.length) cls += (cls ? ' ' : '') + 'collapsible';
+  var mc = makeCard(p, cls);
+  if (marriages.length > 0) {
+    var row = document.createElement('div'); row.className = 'couple-row';
+    row.appendChild(mc);
+    if (marriages[0].sp) {
+      var dot = document.createElement('span'); dot.className = 'cx';
+      dot.textContent = '×'; row.appendChild(dot);
+      var spCls = 'spouse' + (marriages[0].sp.priv ? ' priv' : '');
+      row.appendChild(makeCard(marriages[0].sp, spCls));
+    }
+    body.appendChild(row);
+    for (var mi = 1; mi < marriages.length; mi++) {
+      var mg = marriages[mi];
+      if (mg.label) {
+        var lbl = document.createElement('div'); lbl.className = 'remarriage-lbl';
+        lbl.textContent = mg.label + ':'; body.appendChild(lbl);
+      }
+      if (mg.sp) {
+        var r2 = document.createElement('div'); r2.className = 'couple-row';
+        var ph = document.createElement('div'); ph.style.cssText = 'width:148px;flex-shrink:0;';
+        r2.appendChild(ph);
+        var d2 = document.createElement('span'); d2.className = 'cx';
+        d2.textContent = '×'; r2.appendChild(d2);
+        var sp2Cls = 'spouse' + (mg.sp.priv ? ' priv' : '');
+        r2.appendChild(makeCard(mg.sp, sp2Cls)); body.appendChild(r2);
+      }
+    }
+  } else {
+    var soloRow = document.createElement('div'); soloRow.className = 'couple-row';
+    soloRow.appendChild(mc); body.appendChild(soloRow);
+  }
+  wrapper.appendChild(body);
+  if (allKids.length) {
+    wrapper.classList.add('has-ch');
+    var cr = document.createElement('div'); cr.className = 'tree-children';
+    for (var ki = 0; ki < allKids.length; ki++) cr.appendChild(renderNode(allKids[ki], gen + 1));
+    wrapper.appendChild(cr);
+    mc.addEventListener('click', (function(nd) {
+      return function(e) { e.stopPropagation(); nd.classList.toggle('closed'); };
+    }(wrapper)));
+  }
+  return wrapper;
+}
+
+function buildSection(title, data, showTitle) {
+  var sec = document.createElement('div'); sec.className = 'tree-section';
+  if (showTitle) {
+    var h = document.createElement('h2'); h.className = 'tree-section-heading';
+    h.textContent = title; sec.appendChild(h);
+  }
+  var root = document.createElement('div'); root.className = 'tree-root';
+  root.appendChild(renderNode(data, 0)); sec.appendChild(root);
+  return sec;
+}
+
+var forest = document.getElementById('forest');
+var multiTree = TREES.length > 1;
+for (var ti = 0; ti < TREES.length; ti++) {
+  forest.appendChild(buildSection(TREE_TITLES[ti], TREES[ti], multiTree));
+}
+</script>
 </body>
 </html>

@@ -3,8 +3,88 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Saltos Family Tree — Tenedian Brotherhood</title>
+  <title>Saltos Family — Tenedian Brotherhood</title>
   <link rel="stylesheet" href="css/style.css">
+  <style>
+    .tree-page { padding: 0; }
+    .tree-outer { overflow-x: auto; padding: 2.5rem 1.5rem 3rem;
+                  background: var(--color-off-white, #f8f5f0); }
+    .tree-forest { display: flex; flex-direction: column; gap: 3.5rem; }
+    .tree-section-heading {
+      font-family: var(--font-heading, 'Playfair Display', serif);
+      color: var(--color-navy, #0a1628); font-size: 1.2rem;
+      margin: 0 0 1.25rem; padding-bottom: 0.4rem;
+      border-bottom: 2px solid var(--color-gold, #c9a227); }
+    .tree-legend { display: flex; gap: 1.2rem; flex-wrap: wrap;
+                   margin-bottom: 2rem; font-size: 0.8rem; color: #555;
+                   align-items: center; }
+    .legend-item { display: flex; align-items: center; gap: 5px; }
+    .ls { width: 20px; height: 13px; border-radius: 3px;
+          border: 2px solid var(--color-gold, #c9a227);
+          display: inline-block; flex-shrink: 0; }
+    .ls.navy  { background: var(--color-navy, #0a1628); }
+    .ls.white { background: #fff; }
+    .ls.blue  { background: #dce8ff; border-color: #6888cc; }
+    .ls.gray  { background: #eee; border-color: #bbb; }
+    /* Tree layout */
+    .tree-section { overflow-x: auto; padding-bottom: 0.5rem; }
+    .tree-root { display: inline-flex; flex-direction: column;
+                 align-items: center; padding: 0.5rem 1rem; }
+    .tree-node { display: flex; flex-direction: column; align-items: center;
+                 position: relative; }
+    .node-body { display: flex; flex-direction: column; align-items: center;
+                 gap: 3px; position: relative; }
+    .couple-row { display: flex; align-items: center; gap: 5px; }
+    .cx { color: var(--color-gold, #c9a227); font-weight: 700; font-size: 1rem;
+          padding: 0 2px; flex-shrink: 0; }
+    .remarriage-lbl { font-size: 0.65rem; color: #999; font-style: italic;
+                      text-align: center; margin-top: 5px; }
+    /* Cards */
+    .card { background: #fff; border: 2px solid var(--color-gold, #c9a227);
+            border-radius: 6px; padding: 7px 10px; width: 148px;
+            text-align: center; font-size: 0.74rem; line-height: 1.35;
+            position: relative; }
+    .card .n { font-weight: 700; color: var(--color-navy, #0a1628);
+               display: block; font-size: 0.78rem; }
+    .card .d { color: #888; font-size: 0.67rem; display: block; margin-top: 2px; }
+    .card.root { background: var(--color-navy, #0a1628);
+                 border-color: var(--color-gold, #c9a227); }
+    .card.root .n { color: var(--color-gold, #c9a227); }
+    .card.root .d { color: #99aabb; }
+    .card.spouse { background: #dce8ff; border-color: #6888cc; }
+    .card.spouse .n { color: #1a3a80; }
+    .card.priv  { background: #eee; border-color: #bbb; }
+    .card.priv .n { color: #666; }
+    .card.priv .d { color: #aaa; }
+    .card.collapsible { cursor: pointer; }
+    .card.collapsible::after { content: '\25BE'; position: absolute;
+      bottom: 3px; right: 5px; font-size: 0.6rem;
+      color: var(--color-gold, #c9a227); }
+    .tree-node.closed > .node-body .card.collapsible::after { content: '\25B8'; }
+    /* Connector lines (CSS pseudo-elements) */
+    :root { --gap: 44px; }
+    .tree-node.has-ch > .node-body::after {
+      content: ''; position: absolute; left: 50%; transform: translateX(-50%);
+      top: 100%; width: 2px; height: var(--gap);
+      background: var(--color-gold, #c9a227); }
+    .tree-children { display: flex; flex-direction: row; gap: 14px;
+                     align-items: flex-start; justify-content: center;
+                     margin-top: var(--gap); }
+    .tree-node.closed > .node-body::after  { display: none !important; }
+    .tree-node.closed > .tree-children     { display: none !important; }
+    .tree-children > .tree-node { position: relative; }
+    .tree-children > .tree-node::before {
+      content: ''; position: absolute; left: 50%; transform: translateX(-50%);
+      top: calc(-1 * var(--gap)); width: 2px; height: var(--gap);
+      background: var(--color-gold, #c9a227); }
+    .tree-children > .tree-node::after {
+      content: ''; position: absolute; top: calc(-1 * var(--gap));
+      left: 0; right: 0; height: 2px;
+      background: var(--color-gold, #c9a227); }
+    .tree-children > .tree-node:first-child::after  { left: 50%; }
+    .tree-children > .tree-node:last-child::after   { right: 50%; }
+    .tree-children > .tree-node:first-child:last-child::after { display: none; }
+  </style>
 </head>
 <body>
 
@@ -29,286 +109,22 @@
 <main>
   <header class="page-header">
     <div class="page-header-inner">
-      <h1 class="page-title">Saltos Family Tree</h1>
-      <p class="page-subtitle"><a href="family-trees.html" style="color:rgba(255,255,255,.6); font-size:.85rem;">&larr; Back to Family Trees</a></p>
+      <h1 class="page-title">Saltos Family</h1>
+      <p class="page-subtitle"><a href="family-trees.html" style="color:rgba(255,255,255,.65);font-size:.85rem;">&larr; Back to Family Trees</a></p>
     </div>
   </header>
 
-  <div class="page-content">
-    <div class="privacy-notice">
-      <strong>Privacy notice:</strong> Per the original website policy, birth dates are not
-      disclosed for individuals born after 1920 unless they are deceased.
-    </div>
-
-    <div class="family-tree-content">
-<div class="tree-entry gen-0 note">Saltos Family</div>
-<div class="tree-entry gen-0">Unknown Saltos b: Unknown</div>
-<div class="tree-entry gen-0 spouse">+ Unknown Wife b: Unknown</div>
-<div class="tree-entry gen-1">Georgios Saltos b: Unknown in Tenedos, Greece</div>
-<div class="tree-entry gen-1 spouse">+ Unknown Wife b: Unknown in Tenedos, Greece</div>
-<div class="tree-entry gen-2">Dimitrios G. Saltos b: Abt. 1880 in Tenedos, Greece</div>
-<div class="tree-entry gen-2 spouse">+ Marigo Apornia b: Unknown</div>
-<div class="tree-entry gen-3">Panagiotis D. Saltos b: Unknown in Tenedos, Greece</div>
-<div class="tree-entry gen-3 spouse">+ Susanna Kirkines b: Unknown in Tenedos, Greece</div>
-<div class="tree-entry gen-3 note">5 Aspasia Saltos b: Unknown in Tenedos, 
-Greece</div>
-<div class="tree-entry gen-3 spouse">+ Kostandinos Houvardas b: Unknown</div>
-<div class="tree-entry gen-4">Katerina Houvardas b: Unknown</div>
-<div class="tree-entry gen-4 note">6 Nikolas K. Houvardas  b: 
-Unknown</div>
-<div class="tree-entry gen-4 note">6 Crystalena Houvardas  b: 
-Unknown</div>
-<div class="tree-entry gen-4">Maria Saltos b: Unknown in Tenedos, Greece</div>
-<div class="tree-entry gen-4 note">+Evangelo Marangos  b: Unknown in 
-Tenedos, Greece</div>
-<div class="tree-entry gen-4 note">5 Dimitrios P. Saltos  b: Unknown in 
-Tenedos, Greece</div>
-<div class="tree-entry gen-4 spouse">+ Despina b: Unknown</div>
-<div class="tree-entry gen-4 note">5 Evangelia Saltos b: 1927 in Tenedos, Turkey 
-d: 1966</div>
-<div class="tree-entry gen-4 note">+Lazaris Kolosenta b: Unknown in Tenedos, 
-Greece</div>
-<div class="tree-entry gen-4">Nikos L. Kolosenta b: Private</div>
-<div class="tree-entry gen-4">Susanna Kolosenta  b: Private</div>
-<div class="tree-entry gen-4">Athena Saltos b: Private in Tenedos, Greece</div>
-<div class="tree-entry gen-4 spouse">+ Ektor P. Gerinakis b: Private</div>
-<div class="tree-entry gen-4 note">6 Triantafilia Gerinakis  b: 
-Private</div>
-<div class="tree-entry gen-4 note">*2nd Husband of Athena Saltos:</div>
-<div class="tree-entry gen-4 spouse">+ Stavros G. Gogos  b: Private</div>
-<div class="tree-entry gen-4">Sophia Saltos  b: Private</div>
-<div class="tree-entry gen-4 note">+Efstratios G. Kanavoutsos b: in Tenedos, 
-Greece</div>
-<div class="tree-entry gen-4 note">6 Nikolas E. Kanavoutsos  b: 
-Private</div>
-<div class="tree-entry gen-4 note">+Elizabeth E. Kalfa  b: 
-Private</div>
-<div class="tree-entry gen-4">Katerina Saltos  b: Private</div>
-<div class="tree-entry gen-4 spouse">+ Dimitrios G. Tsiknas  b: Private</div>
-<div class="tree-entry gen-4">Eleni Saltos  b: Private</div>
-<div class="tree-entry gen-4 spouse">+ Stratos Kondos  b: Private</div>
-<div class="tree-entry gen-4">Annoula 'Joanna'Kondos  b: Private</div>
-<div class="tree-entry gen-4 spouse">+ Jeffrey Scott Warren b: Private</div>
-<div class="tree-entry gen-4">Alexander Daniel Warren b: Unknown</div>
-<div class="tree-entry gen-4 note">4 Georgios D. Saltos  b: Unknown in Tenedos, 
-Greece</div>
-<div class="tree-entry gen-4 note">+Katerini Moukatas  b: Unknown in Tenedos, 
-Greece</div>
-<div class="tree-entry gen-4 note">5 Simeon G. Saltos  b: Unknown in 
-Tenedos, Greece</div>
-<div class="tree-entry gen-4 note">5 Demosthenes G. Saltos  b: Unknown in 
-Tenedos, Greece</div>
-<div class="tree-entry gen-4 note">5 Dimitrios G. Saltos  b: Unknown in 
-Tenedos, Greece</div>
-<div class="tree-entry gen-4 note">5 Christos G. Saltos  b: Unknown in 
-Tenedos, Greece</div>
-<div class="tree-entry gen-4 note">4 Simeon D. Saltos  b: Unknown in Tenedos, 
-Greece</div>
-<div class="tree-entry gen-4 note">+Kirgiakoula Manolidis b: Abt. 1920 in Tenedos, 
-Greece</div>
-<div class="tree-entry gen-4 note">5 Zouboulia Saltos  b: Unknown in 
-Tenedos, Greece</div>
-<div class="tree-entry gen-4 note">+Theologos V. Arvanitis b: 1936 in 
-Tenedos, Turkey d: Abt. 2005</div>
-<div class="tree-entry gen-4 note">6 Kirgiakoula T. Arvanitis  b: 
-Private</div>
-<div class="tree-entry gen-4 note">6 Ismarada T. Arvanitis  b: 
-Private</div>
-<div class="tree-entry gen-4 note">5 Georgios S. Saltos  b: Unknown in 
-Tenedos, Greece</div>
-<div class="tree-entry gen-4 note">+Katerina  b: Unknown in Tenedos, 
-Greece</div>
-<div class="tree-entry gen-4 note">5 Kostandinos S. Saltos  b: Unknown in 
-Tenedos, Greece</div>
-<div class="tree-entry gen-2">Vasilios G. Saltos b: Abt. 1881 in Tenedos, Greece</div>
-<div class="tree-entry gen-2 spouse">+ Artemesia b: Unknown in Tenedos, Greece</div>
-<div class="tree-entry gen-3">Panagiota Saltos b: Abt. 1910 in Tenedos, Greece</div>
-<div class="tree-entry gen-3 note">+Panagiotis G. Kontogianakoudis b: Abt. 1900 in 
-Tenedos, Greece</div>
-<div class="tree-entry gen-4">Triantafilia Kontogianakoudis b: Private</div>
-<div class="tree-entry gen-4 spouse">+ Nikos Pothitos b: Private</div>
-<div class="tree-entry gen-4">Panagiota Pothitos  b: Private</div>
-<div class="tree-entry gen-4 note">6 Dimitrios N. Pothitos  b: 
-Private</div>
-<div class="tree-entry gen-4 note">5 Yiannis P. Kontogianakoudis  b: 
-Private</div>
-<div class="tree-entry gen-4 spouse">+ Maria Cafiso  b: Private</div>
-<div class="tree-entry gen-4 note">6 Ross Peter Kontogianakoudis  b: 
-Private</div>
-<div class="tree-entry gen-4 note">6 Adrian John Kontogianakoudis  
-b: Private</div>
-<div class="tree-entry gen-4 note">+Shanette Rojewski  b: 
-Private</div>
-<div class="tree-entry gen-4 note">7 Zane Kontogianakoudis  
-b: Private</div>
-<div class="tree-entry gen-4 note">7 Tynan Kontogianakoudis  
-b: Private</div>
-<div class="tree-entry gen-4 note">5 Kirgiakoula Kontogianakoudis b: Unknown d: 
-Unknown</div>
-<div class="tree-entry gen-4">Sofoulis Kontogianakoudis b: Private</div>
-<div class="tree-entry gen-4 spouse">+ Unknown Karoulis b: Unknown</div>
-<div class="tree-entry gen-4 note">*2nd Husband of Sofoulis Kontogianakoudis:</div>
-<div class="tree-entry gen-4 spouse">+ Yiannis A. Antonellis  b: Private</div>
-<div class="tree-entry gen-4 note">6 Angelo Y. Antonellis  b: 
-Private</div>
-<div class="tree-entry gen-4">Stella Antonellis  b: Private</div>
-<div class="tree-entry gen-4 note">6 Pareskevas Antonellis  b: 
-Private</div>
-<div class="tree-entry gen-4 note">6 Unknown Son Antonellis  b: 
-Private</div>
-<div class="tree-entry gen-4">George P. Kontogianakoudis  b: Private</div>
-<div class="tree-entry gen-4 spouse">+ Eleni Anagnostou  b: Private</div>
-<div class="tree-entry gen-4 note">4 Nikolas V. Saltos b: in Tenedos, Greece  d: 
-Unknown</div>
-<div class="tree-entry gen-4 spouse">+ Elisabeth b: Unknown</div>
-<div class="tree-entry gen-4">Vasilios N. Saltos  b: Unknown</div>
-<div class="tree-entry gen-4 spouse">+ Unknown Karayiannis b: Unknown</div>
-<div class="tree-entry gen-4">Elsa Saltos  b: Private</div>
-<div class="tree-entry gen-4">Nikos V. Saltos  b: Private</div>
-<div class="tree-entry gen-4">Artemesia Saltos b: Unknown</div>
-<div class="tree-entry gen-3">George V. Saltos b: in Tenedos, Greece d: Unknown</div>
-<div class="tree-entry gen-3 note">+Vasiliki Ximinis b: Unknown in Tenedos, Greece 
-d: February 1983</div>
-<div class="tree-entry gen-4">Vasilios G. Saltos  b: Private</div>
-<div class="tree-entry gen-4 spouse">+ Antonia Karagianis b: Private</div>
-<div class="tree-entry gen-4">Vasiliki Saltos  b: Private</div>
-<div class="tree-entry gen-4">Evanthia Saltos  b: Private</div>
-<div class="tree-entry gen-4">Athanasios G. Saltos  b: Private</div>
-<div class="tree-entry gen-4 spouse">+ Konstantina Hristodoulou  b: Private</div>
-<div class="tree-entry gen-4">Aspasia Saltos  b: Private</div>
-<div class="tree-entry gen-4">Georgia Saltos  b: Private</div>
-<div class="tree-entry gen-4">Stella Saltos  b: Private</div>
-<div class="tree-entry gen-4 note">+Kiparisis Ikonomou b: 1933  d: July 
-27, 2001</div>
-<div class="tree-entry gen-4">Panagiota Ikonomou  b: Private</div>
-<div class="tree-entry gen-4 note">+Yianni Karagianakis  b: 
-Private</div>
-<div class="tree-entry gen-4 note">7 Stathis Karagianakis  
-b: Private</div>
-<div class="tree-entry gen-4 note">7 Stella Karagianakis  b: 
-Private</div>
-<div class="tree-entry gen-4">Kiriaki Ikonomou  b: Private</div>
-<div class="tree-entry gen-4 spouse">+ Niko Karasimo  b: Private</div>
-<div class="tree-entry gen-4 note">7 Stella Karasimo  b: 
-Private</div>
-<div class="tree-entry gen-4 note">7 Nasos Karasimo  b: 
-Private</div>
-<div class="tree-entry gen-4">Efstratios G. Saltos  b: Private</div>
-<div class="tree-entry gen-4 spouse">+ Filio  b: Private</div>
-<div class="tree-entry gen-4">George E. Saltos  b: Private</div>
-<div class="tree-entry gen-4 spouse">+ Antonia Gianaka  b: Private</div>
-<div class="tree-entry gen-4">Baby Saltos  b: Private</div>
-<div class="tree-entry gen-4">Tasoula Saltos  b: Private</div>
-<div class="tree-entry gen-4 note">+Dimitrios Tsitsikas  b: 
-Private</div>
-<div class="tree-entry gen-4 note">7 Filios Tsitsikas  b: 
-Private</div>
-<div class="tree-entry gen-4 note">7 Alexandros D. Tsitsikas  
-b: Private</div>
-<div class="tree-entry gen-3">Katerina Saltos b: in Tenedos, Greece</div>
-<div class="tree-entry gen-3 spouse">+ George Koutsakis  b: Unknown</div>
-<div class="tree-entry gen-2">Rigas G. Saltos b: Unknown in Tenedos, Greece d: Abt. 1976</div>
-<div class="tree-entry gen-2 spouse">+ Persa Gerassimos  b: Unknown</div>
-<div class="tree-entry gen-2 note">4 Kalliope Saltos b: May 15, 1913 in Tenedos, Greece 
-d: August 02, 2001</div>
-<div class="tree-entry gen-2 note">+Nikolaos A. Kangas b: Sept. 18, 1910 in Tenedos 
-d: December 05, 2006</div>
-<div class="tree-entry gen-2 note">5 Persenya Kangas b: Unknown in Tenedos, 
-Greece</div>
-<div class="tree-entry gen-2 note">+Nikolas Gerinakis / Yiarinakis  b: 
-Private</div>
-<div class="tree-entry gen-2 note">6 George N. Yiarinakis  b: 
-Private</div>
-<div class="tree-entry gen-2 spouse">+ Alexandria  b: Private</div>
-<div class="tree-entry gen-2 note">7 Nikolas G. Yiarinakis  
-b: Private</div>
-<div class="tree-entry gen-4">Erieta Yiarinakis  b: Private</div>
-<div class="tree-entry gen-4 spouse">+ Basil Sepsekos  b: Private</div>
-<div class="tree-entry gen-4 note">7 Rebecca Sepsekos  b: 
-Private</div>
-<div class="tree-entry gen-4 note">7 Madaline Sepsekos  b: 
-Private</div>
-<div class="tree-entry gen-4 note">*2nd Husband of Persenya Kangas:</div>
-<div class="tree-entry gen-4 spouse">+ Unknown  b: Unknown</div>
-<div class="tree-entry gen-4">Athanasios N. Kangas b: Unknown</div>
-<div class="tree-entry gen-3">Athanasios R. Saltos b: Unknown in Tenedos, Greece</div>
-<div class="tree-entry gen-3 spouse">+ Stavroula Zantaltzis b: 1918 in Tenedos, Greece</div>
-<div class="tree-entry gen-4">Maria Saltos b: Private</div>
-<div class="tree-entry gen-4 note">+Dimitrios Stergiou b: Unknown in Tenedos, 
-Turkey d: Unknown</div>
-<div class="tree-entry gen-4">Parsenya Saltos b: Private</div>
-<div class="tree-entry gen-4 spouse">+ Athanasios C. Patiniotis  b: Private</div>
-<div class="tree-entry gen-4">Anna Patiniotis  b: Private</div>
-<div class="tree-entry gen-4 spouse">+ Colin Biviano  b: Private</div>
-<div class="tree-entry gen-4 note">7 Patrick Biviano  b: 
-Private</div>
-<div class="tree-entry gen-4 note">6 Christos A. Patiniotis  b: 
-Private</div>
-<div class="tree-entry gen-4 spouse">+ Annette  b: Private</div>
-<div class="tree-entry gen-4 note">7 Zara Patiniotis  b: 
-Private</div>
-<div class="tree-entry gen-4 note">4 Nikos R. Saltos b: 1921 in Tenedos, Greece d: Abt. 
-2005</div>
-<div class="tree-entry gen-4 note">+Marika 'Maria' V. Arvanitis  b: Private in 
-Tenedos, Turkey</div>
-<div class="tree-entry gen-4">Katerina N. Saltos  b: Private</div>
-<div class="tree-entry gen-4 spouse">+ Apostolos Kargos  b: Private</div>
-<div class="tree-entry gen-4">Maria A. Kargos  b: Private</div>
-<div class="tree-entry gen-4 spouse">+ Chris Pain  b: Private</div>
-<div class="tree-entry gen-4 note">7 Nicholas Pain  b: 
-Private</div>
-<div class="tree-entry gen-4 note">7 Chloe Isabelle Pain  b: 
-Private</div>
-<div class="tree-entry gen-4 note">6 Costandinos A. Kargos  b: 
-Private</div>
-<div class="tree-entry gen-4">Mercina A. Kargos  b: Private</div>
-<div class="tree-entry gen-4 note">5 Rigas N. Saltos  b: Unknown  in 
-Tenedos, Turkey d: 1976</div>
-<div class="tree-entry gen-4">Vasilis N. Saltos  b: Private</div>
-<div class="tree-entry gen-4">Athanasia N. Saltos  b: Private</div>
-<div class="tree-entry gen-4 spouse">+ Stellios Kambanis  b: Private</div>
-<div class="tree-entry gen-4">Christos N. Saltos  b: Private</div>
-<div class="tree-entry gen-4 note">*2nd Wife of Rigas G. Saltos:</div>
-<div class="tree-entry gen-4 spouse">+ Hariklia b: Unknown</div>
-<div class="tree-entry gen-4 note">4 Persenya Saltos b: March 28, 1928 in Tenedos, 
-Turkey d: 1989</div>
-<div class="tree-entry gen-4 note">+Christos Avgerinos b: Dec. 21, 1918 in Tenedos, 
-Greece d: Oct. 03, 1993</div>
-<div class="tree-entry gen-4 note">5 Fotini Avgerinos  b: Private in 
-Tenedos, Turkey</div>
-<div class="tree-entry gen-4 note">+Christos Pantoudis  b: Private in 
-Tenedos, Turkey</div>
-<div class="tree-entry gen-4">Georgia Avgerinos b: Private</div>
-<div class="tree-entry gen-4 note">*3rd Wife of Rigas G. Saltos:</div>
-<div class="tree-entry gen-4 spouse">+ Maria Kirkines b: Abt. 1901 in Tenedos, Greece d: 1994</div>
-<div class="tree-entry gen-1">Christos Saltos  b: Unknown in Tenedos, Greece</div>
-<div class="tree-entry gen-1 spouse">+ Unknown Wife b: Unknown</div>
-<div class="tree-entry gen-1 note">3 Michael C. Saltos b: December 25, 1884 in Tenedos, Greece 
-d: July 07, 1961</div>
-<div class="tree-entry gen-1 note">+Helen Christodoulos b: January 29, 1893 in Tenedos, 
-Greece d: June 09, 1976</div>
-<div class="tree-entry gen-3">Katherine Michael Saltos  b: Private</div>
-<div class="tree-entry gen-3 note">+Christ T. Kopan, Dr. b: December 11, 1916  
-d: December 15, 2000</div>
-<div class="tree-entry gen-4">Thomas Kopan  b: Private</div>
-<div class="tree-entry gen-4 spouse">+ Ellen Kappos b: Private</div>
-<div class="tree-entry gen-4 note">6 Nikki 
-Angelica Kopan  b: Private</div>
-<div class="tree-entry gen-4 note">6 Lexi Kristina Kopan  
-b: Private</div>
-<div class="tree-entry gen-4 note">6 Christopher Thomas Kopan  
-b: Private</div>
-<div class="tree-entry gen-4">Michael Kopan  b: Private</div>
-<div class="tree-entry gen-4 spouse">+ Phyllis Ristas  b: Private</div>
-<div class="tree-entry gen-4">Christos M. Kopan  b: Private</div>
-<div class="tree-entry gen-4">Gregory Kopan  b: Private</div>
-<div class="tree-entry gen-4 spouse">+ Juanita Miller b: Private</div>
-<div class="tree-entry gen-4">Dean Kopan, Dr.  b: Private</div>
-<div class="tree-entry gen-4 spouse">+ Maria Valassiades  b: Private</div>
-<div class="tree-entry gen-4">Katherine Zoe Kopan  b: Private</div>
-<div class="tree-entry gen-4">John C. Kopan  b: Private</div>
-<div class="tree-entry gen-4">Grant Kopan  b: Private</div>
-
+  <div class="page-content tree-page">
+    <div class="tree-outer">
+      <div class="tree-legend">
+        <div class="legend-item"><div class="ls navy"></div> Ancestor</div>
+        <div class="legend-item"><div class="ls white"></div> Descendant</div>
+        <div class="legend-item"><div class="ls blue"></div> Spouse (married-in)</div>
+        <div class="legend-item"><div class="ls gray"></div> Living (private)</div>
+        <div class="legend-item" style="color:var(--color-gold,#c9a227);font-weight:700;font-size:1rem">&times;</div>&thinsp;Married
+        <div class="legend-item" style="font-size:.75rem;color:#999">Click a descendant card to collapse/expand</div>
+      </div>
+      <div class="tree-forest" id="forest"></div>
     </div>
   </div>
 </main>
@@ -324,11 +140,101 @@ b: Private</div>
       <a href="contact.html">Contact</a>
       <a href="not-recovered.html">Not Archived</a>
     </nav>
-    <p class="footer-copy">
-      Original content &copy; Tenedian Brotherhood. Website restored and modernized from archived materials.
-    </p>
+    <p class="footer-copy">Original content &copy; Tenedian Brotherhood.
+      Website restored and modernized from archived materials.</p>
   </div>
 </footer>
 
+<script>
+var TREES = [{"id":"p1","name":"Unknown Saltos","m":[{"sp":{"id":"p2","name":"Unknown Wife","birth":"Unknown"},"kids":[{"id":"p3","name":"Georgios Saltos","m":[{"sp":{"id":"p4","name":"Unknown Wife","birth":"Unknown"},"kids":[{"id":"p5","name":"Dimitrios G. Saltos","m":[{"sp":{"id":"p6","name":"Marigo Apornia","birth":"Unknown"},"kids":[{"id":"p7","name":"Panagiotis D. Saltos","m":[{"sp":{"id":"p8","name":"Susanna Kirkines","birth":"Unknown"},"kids":[{"id":"p9","name":"Aspasia Saltos","m":[{"sp":{"id":"p10","name":"Kostandinos Houvardas","birth":"Unknown"},"kids":[{"id":"p11","name":"Katerina Houvardas","m":[],"birth":"Unknown"},{"id":"p12","name":"Nikolas K. Houvardas","m":[],"birth":"Unknown"},{"id":"p13","name":"Crystalena Houvardas","m":[],"birth":"Unknown"}]}],"birth":"Unknown"},{"id":"p14","name":"Maria Saltos","m":[{"sp":{"id":"p15","name":"Evangelo Marangos","birth":"Unknown"},"kids":[]}],"birth":"Unknown"},{"id":"p16","name":"Dimitrios P. Saltos","m":[{"sp":{"id":"p17","name":"Despina","birth":"Unknown"},"kids":[]}],"birth":"Unknown"},{"id":"p18","name":"Evangelia Saltos","m":[{"sp":{"id":"p19","name":"Lazaris Kolosenta","birth":"Unknown"},"kids":[{"id":"p20","name":"Nikos L. Kolosenta","m":[],"priv":true},{"id":"p21","name":"Susanna Kolosenta","m":[],"priv":true}]}],"birth":"1927","death":"1966"},{"id":"p22","name":"Athena Saltos","m":[{"sp":{"id":"p23","name":"Ektor P. Gerinakis","priv":true},"kids":[{"id":"p24","name":"Triantafilia Gerinakis","m":[],"priv":true}]},{"sp":{"id":"p25","name":"Stavros G. Gogos","priv":true},"kids":[],"label":"2nd marriage"}],"priv":true},{"id":"p26","name":"Sophia Saltos","m":[{"sp":{"id":"p27","name":"Efstratios G. Kanavoutsos","birth":"in Tenedos, Greece"},"kids":[{"id":"p28","name":"Nikolas E. Kanavoutsos","m":[{"sp":{"id":"p29","name":"Elizabeth E. Kalfa","priv":true},"kids":[]}],"priv":true}]}],"priv":true},{"id":"p30","name":"Katerina Saltos","m":[{"sp":{"id":"p31","name":"Dimitrios G. Tsiknas","priv":true},"kids":[]}],"priv":true},{"id":"p32","name":"Eleni Saltos","m":[{"sp":{"id":"p33","name":"Stratos Kondos","priv":true},"kids":[{"id":"p34","name":"Annoula 'Joanna'Kondos","m":[{"sp":{"id":"p35","name":"Jeffrey Scott Warren","priv":true},"kids":[{"id":"p36","name":"Alexander Daniel Warren","m":[],"birth":"Unknown"}]}],"priv":true}]}],"priv":true}]}],"birth":"Unknown","death":"Saltos b: Unknown in Tenedos, Greece"},{"id":"p37","name":"Georgios D. Saltos","m":[{"sp":{"id":"p38","name":"Katerini Moukatas","birth":"Unknown"},"kids":[{"id":"p39","name":"Simeon G. Saltos","m":[],"birth":"Unknown"},{"id":"p40","name":"Demosthenes G. Saltos","m":[],"birth":"Unknown"},{"id":"p41","name":"Dimitrios G. Saltos","m":[],"birth":"Unknown"},{"id":"p42","name":"Christos G. Saltos","m":[],"birth":"Unknown"}]}],"birth":"Unknown","death":"Saltos b: Unknown in Tenedos, Greece"},{"id":"p43","name":"Simeon D. Saltos","m":[{"sp":{"id":"p44","name":"Kirgiakoula Manolidis","birth":"Abt. 1920","priv":true},"kids":[{"id":"p45","name":"Zouboulia Saltos","m":[{"sp":{"id":"p46","name":"Theologos V. Arvanitis","birth":"1936","death":"Abt. 2005"},"kids":[{"id":"p47","name":"Kirgiakoula T. Arvanitis","m":[],"priv":true},{"id":"p48","name":"Ismarada T. Arvanitis","m":[],"priv":true}]}],"birth":"Unknown"},{"id":"p49","name":"Georgios S. Saltos","m":[{"sp":{"id":"p50","name":"Katerina","birth":"Unknown"},"kids":[]}],"birth":"Unknown"},{"id":"p51","name":"Kostandinos S. Saltos","m":[],"birth":"Unknown"}]}],"birth":"Unknown","death":"Saltos b: Unknown in Tenedos, Greece"}]}],"birth":"Abt. 1880"},{"id":"p52","name":"Vasilios G. Saltos","m":[{"sp":{"id":"p53","name":"Artemesia","birth":"Unknown"},"kids":[{"id":"p54","name":"Panagiota Saltos","m":[{"sp":{"id":"p55","name":"Panagiotis G. Kontogianakoudis","birth":"Abt. 1900"},"kids":[{"id":"p56","name":"Triantafilia Kontogianakoudis","m":[{"sp":{"id":"p57","name":"Nikos Pothitos","priv":true},"kids":[{"id":"p58","name":"Panagiota Pothitos","m":[],"priv":true},{"id":"p59","name":"Dimitrios N. Pothitos","m":[],"priv":true}]}],"priv":true},{"id":"p60","name":"Yiannis P. Kontogianakoudis","m":[{"sp":{"id":"p61","name":"Maria Cafiso","priv":true},"kids":[{"id":"p62","name":"Ross Peter Kontogianakoudis","m":[],"priv":true},{"id":"p63","name":"Adrian John Kontogianakoudis","m":[{"sp":{"id":"p64","name":"Shanette Rojewski","priv":true},"kids":[{"id":"p65","name":"Zane Kontogianakoudis","m":[],"priv":true},{"id":"p66","name":"Tynan Kontogianakoudis","m":[],"priv":true}]}],"priv":true}]}],"priv":true},{"id":"p67","name":"Kirgiakoula Kontogianakoudis","m":[],"birth":"Unknown","death":"Unknown"},{"id":"p68","name":"Sofoulis Kontogianakoudis","m":[{"sp":{"id":"p69","name":"Unknown Karoulis","birth":"Unknown"},"kids":[]},{"sp":{"id":"p70","name":"Yiannis A. Antonellis","priv":true},"kids":[{"id":"p71","name":"Angelo Y. Antonellis","m":[],"priv":true},{"id":"p72","name":"Stella Antonellis","m":[],"priv":true},{"id":"p73","name":"Pareskevas Antonellis","m":[],"priv":true},{"id":"p74","name":"Unknown Son Antonellis","m":[],"priv":true}],"label":"2nd marriage"}],"priv":true},{"id":"p75","name":"George P. Kontogianakoudis","m":[{"sp":{"id":"p76","name":"Eleni Anagnostou","priv":true},"kids":[]}],"priv":true}]}],"birth":"Abt. 1910"},{"id":"p77","name":"Nikolas V. Saltos","m":[{"sp":{"id":"p78","name":"Elisabeth","birth":"Unknown"},"kids":[{"id":"p79","name":"Vasilios N. Saltos","m":[{"sp":{"id":"p80","name":"Unknown Karayiannis","birth":"Unknown"},"kids":[{"id":"p81","name":"Elsa Saltos","m":[],"priv":true},{"id":"p82","name":"Nikos V. Saltos","m":[],"priv":true}]}],"birth":"Unknown"},{"id":"p83","name":"Artemesia Saltos","m":[],"birth":"Unknown"}]}],"birth":"in Tenedos, Greece","death":"Unknown"},{"id":"p84","name":"George V. Saltos","m":[{"sp":{"id":"p85","name":"Vasiliki Ximinis","birth":"Unknown","death":"February 1983"},"kids":[{"id":"p86","name":"Vasilios G. Saltos","m":[{"sp":{"id":"p87","name":"Antonia Karagianis","priv":true},"kids":[{"id":"p88","name":"Vasiliki Saltos","m":[],"priv":true},{"id":"p89","name":"Evanthia Saltos","m":[],"priv":true}]}],"priv":true},{"id":"p90","name":"Athanasios G. Saltos","m":[{"sp":{"id":"p91","name":"Konstantina Hristodoulou","priv":true},"kids":[{"id":"p92","name":"Aspasia Saltos","m":[],"priv":true},{"id":"p93","name":"Georgia Saltos","m":[],"priv":true}]}],"priv":true},{"id":"p94","name":"Stella Saltos","m":[{"sp":{"id":"p95","name":"Kiparisis Ikonomou","birth":"1933","death":"July 27, 2001"},"kids":[{"id":"p96","name":"Panagiota Ikonomou","m":[{"sp":{"id":"p97","name":"Yianni Karagianakis","priv":true},"kids":[{"id":"p98","name":"Stathis Karagianakis","m":[],"priv":true},{"id":"p99","name":"Stella Karagianakis","m":[],"priv":true}]}],"priv":true},{"id":"p100","name":"Kiriaki Ikonomou","m":[{"sp":{"id":"p101","name":"Niko Karasimo","priv":true},"kids":[{"id":"p102","name":"Stella Karasimo","m":[],"priv":true},{"id":"p103","name":"Nasos Karasimo","m":[],"priv":true}]}],"priv":true}]}],"priv":true},{"id":"p104","name":"Efstratios G. Saltos","m":[{"sp":{"id":"p105","name":"Filio","priv":true},"kids":[{"id":"p106","name":"George E. Saltos","m":[{"sp":{"id":"p107","name":"Antonia Gianaka","priv":true},"kids":[{"id":"p108","name":"Baby Saltos","m":[],"priv":true}]}],"priv":true},{"id":"p109","name":"Tasoula Saltos","m":[{"sp":{"id":"p110","name":"Dimitrios Tsitsikas","priv":true},"kids":[{"id":"p111","name":"Filios Tsitsikas","m":[],"priv":true},{"id":"p112","name":"Alexandros D. Tsitsikas","m":[],"death":"Tsitsikas b: Private","priv":true}]}],"priv":true}]}],"priv":true}]}],"birth":"in Tenedos, Greece","death":"Unknown"},{"id":"p113","name":"Katerina Saltos","m":[{"sp":{"id":"p114","name":"George Koutsakis","birth":"Unknown"},"kids":[]}],"birth":"in Tenedos, Greece"}]}],"birth":"Abt. 1881"},{"id":"p115","name":"Rigas G. Saltos","m":[{"sp":{"id":"p116","name":"Persa Gerassimos","birth":"Unknown"},"kids":[{"id":"p117","name":"Kalliope Saltos","m":[{"sp":{"id":"p118","name":"Nikolaos A. Kangas","birth":"Sept. 18, 1910","death":"December 05, 2006"},"kids":[{"id":"p119","name":"Persenya Kangas","m":[{"sp":{"id":"p120","name":"Nikolas Gerinakis / Yiarinakis","priv":true},"kids":[{"id":"p121","name":"George N. Yiarinakis","m":[{"sp":{"id":"p122","name":"Alexandria","priv":true},"kids":[{"id":"p123","name":"Nikolas G. Yiarinakis","m":[],"priv":true}]}],"priv":true},{"id":"p124","name":"Erieta Yiarinakis","m":[{"sp":{"id":"p125","name":"Basil Sepsekos","priv":true},"kids":[{"id":"p126","name":"Rebecca Sepsekos","m":[],"priv":true},{"id":"p127","name":"Madaline Sepsekos","m":[],"priv":true}]}],"priv":true}]},{"sp":{"id":"p128","name":"Unknown","birth":"Unknown"},"kids":[],"label":"2nd marriage"}],"birth":"Unknown"},{"id":"p129","name":"Athanasios N. Kangas","m":[],"birth":"Unknown"}]}],"birth":"May 15, 1913","death":"August 02, 2001"},{"id":"p130","name":"Athanasios R. Saltos","m":[{"sp":{"id":"p131","name":"Stavroula Zantaltzis","birth":"1918"},"kids":[{"id":"p132","name":"Maria Saltos","m":[{"sp":{"id":"p133","name":"Dimitrios Stergiou","birth":"Unknown","death":"Unknown"},"kids":[]}],"priv":true},{"id":"p134","name":"Parsenya Saltos","m":[{"sp":{"id":"p135","name":"Athanasios C. Patiniotis","priv":true},"kids":[{"id":"p136","name":"Anna Patiniotis","m":[{"sp":{"id":"p137","name":"Colin Biviano","priv":true},"kids":[{"id":"p138","name":"Patrick Biviano","m":[],"priv":true}]}],"priv":true},{"id":"p139","name":"Christos A. Patiniotis","m":[{"sp":{"id":"p140","name":"Annette","priv":true},"kids":[{"id":"p141","name":"Zara Patiniotis","m":[],"priv":true}]}],"priv":true}]}],"priv":true}]}],"birth":"Unknown"},{"id":"p142","name":"Nikos R. Saltos","m":[{"sp":{"id":"p143","name":"Marika 'Maria' V. Arvanitis","priv":true},"kids":[{"id":"p144","name":"Katerina N. Saltos","m":[{"sp":{"id":"p145","name":"Apostolos Kargos","priv":true},"kids":[{"id":"p146","name":"Maria A. Kargos","m":[{"sp":{"id":"p147","name":"Chris Pain","priv":true},"kids":[{"id":"p148","name":"Nicholas Pain","m":[],"priv":true},{"id":"p149","name":"Chloe Isabelle Pain","m":[],"priv":true}]}],"priv":true},{"id":"p150","name":"Costandinos A. Kargos","m":[],"priv":true},{"id":"p151","name":"Mercina A. Kargos","m":[],"priv":true}]}],"priv":true},{"id":"p152","name":"Rigas N. Saltos","m":[],"birth":"Unknown","death":"1976"},{"id":"p153","name":"Vasilis N. Saltos","m":[],"priv":true},{"id":"p154","name":"Athanasia N. Saltos","m":[{"sp":{"id":"p155","name":"Stellios Kambanis","priv":true},"kids":[]}],"priv":true},{"id":"p156","name":"Christos N. Saltos","m":[],"priv":true}]}],"birth":"1921","death":"Abt. 2005"}]},{"sp":{"id":"p157","name":"Hariklia","birth":"Unknown"},"kids":[{"id":"p158","name":"Persenya Saltos","m":[{"sp":{"id":"p159","name":"Christos Avgerinos","birth":"Dec. 21, 1918","death":"Oct. 03, 1993"},"kids":[{"id":"p160","name":"Fotini Avgerinos","m":[{"sp":{"id":"p161","name":"Christos Pantoudis","priv":true},"kids":[]}],"priv":true},{"id":"p162","name":"Georgia Avgerinos","m":[],"priv":true}]}],"birth":"March 28, 1928","death":"1989"}],"label":"2nd marriage"},{"sp":{"id":"p163","name":"Maria Kirkines","birth":"Abt. 1901","death":"1994"},"kids":[],"label":"3rd marriage"}],"birth":"Unknown","death":"Abt. 1976"}]}],"birth":"Unknown"},{"id":"p164","name":"Christos Saltos","m":[{"sp":{"id":"p165","name":"Unknown Wife","birth":"Unknown"},"kids":[{"id":"p166","name":"Michael C. Saltos","m":[{"sp":{"id":"p167","name":"Helen Christodoulos","birth":"January 29, 1893","death":"June 09, 1976"},"kids":[{"id":"p168","name":"Katherine Michael Saltos","m":[{"sp":{"id":"p169","name":"Christ T. Kopan, Dr.","birth":"December 11, 1916","death":"December 15, 2000"},"kids":[{"id":"p170","name":"Thomas Kopan","m":[{"sp":{"id":"p171","name":"Ellen Kappos","priv":true},"kids":[{"id":"p172","name":"Nikki Angelica Kopan","m":[],"priv":true},{"id":"p173","name":"Lexi Kristina Kopan","m":[],"priv":true},{"id":"p174","name":"Christopher Thomas Kopan","m":[],"priv":true}]}],"priv":true},{"id":"p175","name":"Michael Kopan","m":[{"sp":{"id":"p176","name":"Phyllis Ristas","priv":true},"kids":[{"id":"p177","name":"Christos M. Kopan","m":[],"priv":true}]}],"priv":true},{"id":"p178","name":"Gregory Kopan","m":[{"sp":{"id":"p179","name":"Juanita Miller","priv":true},"kids":[]}],"priv":true},{"id":"p180","name":"Dean Kopan, Dr.","m":[{"sp":{"id":"p181","name":"Maria Valassiades","priv":true},"kids":[{"id":"p182","name":"Katherine Zoe Kopan","m":[],"priv":true},{"id":"p183","name":"John C. Kopan","m":[],"priv":true},{"id":"p184","name":"Grant Kopan","m":[],"priv":true}]}],"priv":true}]}],"priv":true}]}],"birth":"December 25, 1884","death":"July 07, 1961"}]}],"birth":"Unknown"}]}],"birth":"Unknown"}];
+var TREE_TITLES = ["Saltos Family"];
+function makeCard(p, cls) {
+  var div = document.createElement('div');
+  div.className = 'card ' + (cls || '');
+  var n = document.createElement('span'); n.className = 'n';
+  n.textContent = p.name; div.appendChild(n);
+  var parts = [];
+  if (p.birth) parts.push('b. ' + p.birth);
+  if (p.death) parts.push('d. ' + p.death);
+  if (p.priv && !p.birth && !p.death) parts.push('Living');
+  if (parts.length) {
+    var d = document.createElement('span'); d.className = 'd';
+    d.textContent = parts.join('  ·  '); div.appendChild(d);
+  }
+  return div;
+}
+
+function renderNode(p, gen) {
+  var wrapper = document.createElement('div'); wrapper.className = 'tree-node';
+  var body = document.createElement('div'); body.className = 'node-body';
+  var marriages = p.m || [];
+  var allKids = [];
+  for (var i = 0; i < marriages.length; i++) {
+    var ks = marriages[i].kids || [];
+    for (var j = 0; j < ks.length; j++) allKids.push(ks[j]);
+  }
+  var cls = gen === 0 ? 'root' : (p.priv ? 'priv' : '');
+  if (allKids.length) cls += (cls ? ' ' : '') + 'collapsible';
+  var mc = makeCard(p, cls);
+  if (marriages.length > 0) {
+    var row = document.createElement('div'); row.className = 'couple-row';
+    row.appendChild(mc);
+    if (marriages[0].sp) {
+      var dot = document.createElement('span'); dot.className = 'cx';
+      dot.textContent = '×'; row.appendChild(dot);
+      var spCls = 'spouse' + (marriages[0].sp.priv ? ' priv' : '');
+      row.appendChild(makeCard(marriages[0].sp, spCls));
+    }
+    body.appendChild(row);
+    for (var mi = 1; mi < marriages.length; mi++) {
+      var mg = marriages[mi];
+      if (mg.label) {
+        var lbl = document.createElement('div'); lbl.className = 'remarriage-lbl';
+        lbl.textContent = mg.label + ':'; body.appendChild(lbl);
+      }
+      if (mg.sp) {
+        var r2 = document.createElement('div'); r2.className = 'couple-row';
+        var ph = document.createElement('div'); ph.style.cssText = 'width:148px;flex-shrink:0;';
+        r2.appendChild(ph);
+        var d2 = document.createElement('span'); d2.className = 'cx';
+        d2.textContent = '×'; r2.appendChild(d2);
+        var sp2Cls = 'spouse' + (mg.sp.priv ? ' priv' : '');
+        r2.appendChild(makeCard(mg.sp, sp2Cls)); body.appendChild(r2);
+      }
+    }
+  } else {
+    var soloRow = document.createElement('div'); soloRow.className = 'couple-row';
+    soloRow.appendChild(mc); body.appendChild(soloRow);
+  }
+  wrapper.appendChild(body);
+  if (allKids.length) {
+    wrapper.classList.add('has-ch');
+    var cr = document.createElement('div'); cr.className = 'tree-children';
+    for (var ki = 0; ki < allKids.length; ki++) cr.appendChild(renderNode(allKids[ki], gen + 1));
+    wrapper.appendChild(cr);
+    mc.addEventListener('click', (function(nd) {
+      return function(e) { e.stopPropagation(); nd.classList.toggle('closed'); };
+    }(wrapper)));
+  }
+  return wrapper;
+}
+
+function buildSection(title, data, showTitle) {
+  var sec = document.createElement('div'); sec.className = 'tree-section';
+  if (showTitle) {
+    var h = document.createElement('h2'); h.className = 'tree-section-heading';
+    h.textContent = title; sec.appendChild(h);
+  }
+  var root = document.createElement('div'); root.className = 'tree-root';
+  root.appendChild(renderNode(data, 0)); sec.appendChild(root);
+  return sec;
+}
+
+var forest = document.getElementById('forest');
+var multiTree = TREES.length > 1;
+for (var ti = 0; ti < TREES.length; ti++) {
+  forest.appendChild(buildSection(TREE_TITLES[ti], TREES[ti], multiTree));
+}
+</script>
 </body>
 </html>

@@ -5,6 +5,86 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Beneta Family — Tenedian Brotherhood</title>
   <link rel="stylesheet" href="css/style.css">
+  <style>
+    .tree-page { padding: 0; }
+    .tree-outer { overflow-x: auto; padding: 2.5rem 1.5rem 3rem;
+                  background: var(--color-off-white, #f8f5f0); }
+    .tree-forest { display: flex; flex-direction: column; gap: 3.5rem; }
+    .tree-section-heading {
+      font-family: var(--font-heading, 'Playfair Display', serif);
+      color: var(--color-navy, #0a1628); font-size: 1.2rem;
+      margin: 0 0 1.25rem; padding-bottom: 0.4rem;
+      border-bottom: 2px solid var(--color-gold, #c9a227); }
+    .tree-legend { display: flex; gap: 1.2rem; flex-wrap: wrap;
+                   margin-bottom: 2rem; font-size: 0.8rem; color: #555;
+                   align-items: center; }
+    .legend-item { display: flex; align-items: center; gap: 5px; }
+    .ls { width: 20px; height: 13px; border-radius: 3px;
+          border: 2px solid var(--color-gold, #c9a227);
+          display: inline-block; flex-shrink: 0; }
+    .ls.navy  { background: var(--color-navy, #0a1628); }
+    .ls.white { background: #fff; }
+    .ls.blue  { background: #dce8ff; border-color: #6888cc; }
+    .ls.gray  { background: #eee; border-color: #bbb; }
+    /* Tree layout */
+    .tree-section { overflow-x: auto; padding-bottom: 0.5rem; }
+    .tree-root { display: inline-flex; flex-direction: column;
+                 align-items: center; padding: 0.5rem 1rem; }
+    .tree-node { display: flex; flex-direction: column; align-items: center;
+                 position: relative; }
+    .node-body { display: flex; flex-direction: column; align-items: center;
+                 gap: 3px; position: relative; }
+    .couple-row { display: flex; align-items: center; gap: 5px; }
+    .cx { color: var(--color-gold, #c9a227); font-weight: 700; font-size: 1rem;
+          padding: 0 2px; flex-shrink: 0; }
+    .remarriage-lbl { font-size: 0.65rem; color: #999; font-style: italic;
+                      text-align: center; margin-top: 5px; }
+    /* Cards */
+    .card { background: #fff; border: 2px solid var(--color-gold, #c9a227);
+            border-radius: 6px; padding: 7px 10px; width: 148px;
+            text-align: center; font-size: 0.74rem; line-height: 1.35;
+            position: relative; }
+    .card .n { font-weight: 700; color: var(--color-navy, #0a1628);
+               display: block; font-size: 0.78rem; }
+    .card .d { color: #888; font-size: 0.67rem; display: block; margin-top: 2px; }
+    .card.root { background: var(--color-navy, #0a1628);
+                 border-color: var(--color-gold, #c9a227); }
+    .card.root .n { color: var(--color-gold, #c9a227); }
+    .card.root .d { color: #99aabb; }
+    .card.spouse { background: #dce8ff; border-color: #6888cc; }
+    .card.spouse .n { color: #1a3a80; }
+    .card.priv  { background: #eee; border-color: #bbb; }
+    .card.priv .n { color: #666; }
+    .card.priv .d { color: #aaa; }
+    .card.collapsible { cursor: pointer; }
+    .card.collapsible::after { content: '\25BE'; position: absolute;
+      bottom: 3px; right: 5px; font-size: 0.6rem;
+      color: var(--color-gold, #c9a227); }
+    .tree-node.closed > .node-body .card.collapsible::after { content: '\25B8'; }
+    /* Connector lines (CSS pseudo-elements) */
+    :root { --gap: 44px; }
+    .tree-node.has-ch > .node-body::after {
+      content: ''; position: absolute; left: 50%; transform: translateX(-50%);
+      top: 100%; width: 2px; height: var(--gap);
+      background: var(--color-gold, #c9a227); }
+    .tree-children { display: flex; flex-direction: row; gap: 14px;
+                     align-items: flex-start; justify-content: center;
+                     margin-top: var(--gap); }
+    .tree-node.closed > .node-body::after  { display: none !important; }
+    .tree-node.closed > .tree-children     { display: none !important; }
+    .tree-children > .tree-node { position: relative; }
+    .tree-children > .tree-node::before {
+      content: ''; position: absolute; left: 50%; transform: translateX(-50%);
+      top: calc(-1 * var(--gap)); width: 2px; height: var(--gap);
+      background: var(--color-gold, #c9a227); }
+    .tree-children > .tree-node::after {
+      content: ''; position: absolute; top: calc(-1 * var(--gap));
+      left: 0; right: 0; height: 2px;
+      background: var(--color-gold, #c9a227); }
+    .tree-children > .tree-node:first-child::after  { left: 50%; }
+    .tree-children > .tree-node:last-child::after   { right: 50%; }
+    .tree-children > .tree-node:first-child:last-child::after { display: none; }
+  </style>
 </head>
 <body>
 
@@ -30,94 +110,21 @@
   <header class="page-header">
     <div class="page-header-inner">
       <h1 class="page-title">Beneta Family</h1>
-      <p class="page-subtitle"><a href="family-trees.html" style="color:rgba(255,255,255,.6); font-size:.85rem;">&larr; Back to Family Trees</a></p>
+      <p class="page-subtitle"><a href="family-trees.html" style="color:rgba(255,255,255,.65);font-size:.85rem;">&larr; Back to Family Trees</a></p>
     </div>
   </header>
 
-  <div class="page-content">
-    <div class="privacy-notice">
-      <strong>Privacy notice:</strong> Per the original website policy, birth dates are not
-      disclosed for individuals born after 1920 unless they are deceased.
-    </div>
-
-    <div class="family-tree-content">
-<div class="tree-entry gen-0">George Beneta b: Unknown</div>
-<div class="tree-entry gen-0 note">+Eleni 
-Nikoliaidis b: Unknown</div>
-<div class="tree-entry gen-1">Nicholas Beneta b: August 14, 1888 in Tenedos, Greece d: September 1964</div>
-<div class="tree-entry gen-1 spouse">+ Helen 'Elaine' Houles b: June 07, 1902 d: July 27, 1991</div>
-<div class="tree-entry gen-1">Chrisi Beneta b: August 05, 1895 d: February 18, 1972</div>
-<div class="tree-entry gen-1 spouse">+ Theodore Pero b: Private</div>
-<div class="tree-entry gen-1 note">*2nd Husband of Chrisi Beneta:</div>
-<div class="tree-entry gen-1 spouse">+ Panagioti Thanos b: Private</div>
-<div class="tree-entry gen-2">Annette Thanos b: Private</div>
-<div class="tree-entry gen-2">Helen Thanos b: April 30, 1929 d: September 18, 1999</div>
-<div class="tree-entry gen-2 spouse">+ Gust J. Tarzan  b: June 24, 1922  d: December 19, 2008</div>
-<div class="tree-entry gen-3">John G. Tarzan, Dr. b: Private</div>
-<div class="tree-entry gen-3 note">+Patricia Ann Treat  b: September 28, 1948  d: 
-October 06, 1987</div>
-<div class="tree-entry gen-4">Kareem L. Tarzan b: Private</div>
-<div class="tree-entry gen-4">Alexander Tarzan  b: Private</div>
-<div class="tree-entry gen-4 note">*2nd Wife of John G. Tarzan, Dr.:</div>
-<div class="tree-entry gen-4 spouse">+ Sheila L. b: Private</div>
-<div class="tree-entry gen-4">Michelle S. Tarzan   b: Private</div>
-<div class="tree-entry gen-3">Peter G. Tarzan b: 1959  d: August 29, 1973</div>
-<div class="tree-entry gen-2">Thomas P. Thanos b: May 22, 1930 d: March 07, 1979</div>
-<div class="tree-entry gen-1">Katina Beneta b: 1898 d: September 03, 1955</div>
-<div class="tree-entry gen-1 spouse">+ Anastasios 'Tom' Manos b: Private</div>
-<div class="tree-entry gen-2">Mary Manos b: Private</div>
-<div class="tree-entry gen-2 spouse">+ Constantinos Stelios 'Gus' Stamatinos  b: Private</div>
-<div class="tree-entry gen-3">Stephen G. 'Steve' Stamatinos  b: Private</div>
-<div class="tree-entry gen-3 spouse">+ Deborah Ann 'Debbie' Stripling  b: Private</div>
-<div class="tree-entry gen-4">Costa Stephen Stamatinos  b: Private</div>
-<div class="tree-entry gen-4 spouse">+ Susan Tobin  b: Private</div>
-<div class="tree-entry gen-4 note">4 Katherine Irene Stamatinos b: November 13, 1953  
-d: Dec. 23, 2008</div>
-<div class="tree-entry gen-4 spouse">+ Michael Geyer  b: Private</div>
-<div class="tree-entry gen-4">Alex Geyer  b: Private</div>
-<div class="tree-entry gen-3">Tom G. Stamatinos  b: Private</div>
-<div class="tree-entry gen-3 spouse">+ Lucille J 'Lucy' Adkisson  b: Private</div>
-<div class="tree-entry gen-3">Beth Stamatinos  b: Private</div>
-<div class="tree-entry gen-3 spouse">+ Michael R. Blanton  b: Private</div>
-<div class="tree-entry gen-4">Curtis Blanton  b: Private</div>
-<div class="tree-entry gen-4">David Blanton  b: Private</div>
-<div class="tree-entry gen-4">Katy Blanton  b: Private</div>
-<div class="tree-entry gen-4 note">3 John T. Manos b: September 01, 1923  d: September 02, 
-2002</div>
-<div class="tree-entry gen-4 spouse">+ Ann P Oderwald b: Private</div>
-<div class="tree-entry gen-2">Eleni 'Helen' Manos  b: Private</div>
-<div class="tree-entry gen-2 note">+Norman Kittrell Donahoe b: Jan. 23, 1927  d: 
-December 14, 1984</div>
-<div class="tree-entry gen-1">Marika 'Mary' J. Beneta b: March 19, 1899 in Tenedos, d: Jan 29, 1979</div>
-<div class="tree-entry gen-1 spouse">+ John Andreas Fanoudas / Fenady b: 1899 in Tenedos, d: Feb 19, 1955</div>
-<div class="tree-entry gen-2">Andrew 'Andy' Fenady b: Private</div>
-<div class="tree-entry gen-2 spouse">+ Mary Francis Dolan b: Private</div>
-<div class="tree-entry gen-3">Mary Eugenia Fenady b: Private</div>
-<div class="tree-entry gen-3 spouse">+ Patrick Ryan b: Private</div>
-<div class="tree-entry gen-4">Jonathan Ryan b: Private</div>
-<div class="tree-entry gen-4">James Ryan b: Private</div>
-<div class="tree-entry gen-4">Megan Ryan b: Private</div>
-<div class="tree-entry gen-3">John Andrew 'Duke' Fenady b: Private</div>
-<div class="tree-entry gen-3 spouse">+ Di Sweeney b: Private</div>
-<div class="tree-entry gen-3">Nicholas Sean Fenady b: Private</div>
-<div class="tree-entry gen-3 spouse">+ Leslie b: Private</div>
-<div class="tree-entry gen-4">Jack Fenady b: Private</div>
-<div class="tree-entry gen-3">Francis Shannon Fenady b: Dec. 9, 1963 d: March 29, 2008</div>
-<div class="tree-entry gen-3">Andrew Francis Fenady b: Private</div>
-<div class="tree-entry gen-3 spouse">+ Regina b: Private</div>
-<div class="tree-entry gen-4">Griffin Fenady b: Private</div>
-<div class="tree-entry gen-4">Parker Elizabeth Fenady b: Private</div>
-<div class="tree-entry gen-3">Thomas Ulysses Peter George Fenady b: Private</div>
-<div class="tree-entry gen-2">Georg John Fenady b: July 29, 1930 d: May 29, 2008</div>
-<div class="tree-entry gen-2 spouse">+ Akaterini 'Katherine' Matthews b: Private</div>
-<div class="tree-entry gen-3">John George Fenady b: Private</div>
-<div class="tree-entry gen-3">Mary Georgea Fenady b: Private</div>
-<div class="tree-entry gen-3 spouse">+ Kevin Vincent Ryan b: Private</div>
-<div class="tree-entry gen-4">Shamus Matthew Ryan b: Private</div>
-<div class="tree-entry gen-4">Clayton Timothy Ryan b: Private</div>
-<div class="tree-entry gen-1">Despina Beneta b: 1900</div>
-<div class="tree-entry gen-1">Paraskevi Beneta b: 1905</div>
-
+  <div class="page-content tree-page">
+    <div class="tree-outer">
+      <div class="tree-legend">
+        <div class="legend-item"><div class="ls navy"></div> Ancestor</div>
+        <div class="legend-item"><div class="ls white"></div> Descendant</div>
+        <div class="legend-item"><div class="ls blue"></div> Spouse (married-in)</div>
+        <div class="legend-item"><div class="ls gray"></div> Living (private)</div>
+        <div class="legend-item" style="color:var(--color-gold,#c9a227);font-weight:700;font-size:1rem">&times;</div>&thinsp;Married
+        <div class="legend-item" style="font-size:.75rem;color:#999">Click a descendant card to collapse/expand</div>
+      </div>
+      <div class="tree-forest" id="forest"></div>
     </div>
   </div>
 </main>
@@ -133,11 +140,101 @@ December 14, 1984</div>
       <a href="contact.html">Contact</a>
       <a href="not-recovered.html">Not Archived</a>
     </nav>
-    <p class="footer-copy">
-      Original content &copy; Tenedian Brotherhood. Website restored and modernized from archived materials.
-    </p>
+    <p class="footer-copy">Original content &copy; Tenedian Brotherhood.
+      Website restored and modernized from archived materials.</p>
   </div>
 </footer>
 
+<script>
+var TREES = [{"id":"p1","name":"George Beneta","m":[{"sp":{"id":"p2","name":"Eleni Nikoliaidis","birth":"Unknown"},"kids":[{"id":"p3","name":"Nicholas Beneta","m":[{"sp":{"id":"p4","name":"Helen 'Elaine' Houles","birth":"June 07, 1902","death":"July 27, 1991"},"kids":[]}],"birth":"August 14, 1888","death":"September 1964"},{"id":"p5","name":"Chrisi Beneta","m":[{"sp":{"id":"p6","name":"Theodore Pero","priv":true},"kids":[]},{"sp":{"id":"p7","name":"Panagioti Thanos","priv":true},"kids":[{"id":"p8","name":"Annette Thanos","m":[],"priv":true},{"id":"p9","name":"Helen Thanos","m":[{"sp":{"id":"p10","name":"Gust J. Tarzan","birth":"June 24, 1922","death":"December 19, 2008"},"kids":[{"id":"p11","name":"John G. Tarzan, Dr.","m":[{"sp":{"id":"p12","name":"Patricia Ann Treat","birth":"September 28, 1948","death":"October 06, 1987"},"kids":[{"id":"p13","name":"Kareem L. Tarzan","m":[],"priv":true},{"id":"p14","name":"Alexander Tarzan","m":[],"priv":true}]},{"sp":{"id":"p15","name":"Sheila L.","priv":true},"kids":[{"id":"p16","name":"Michelle S. Tarzan","m":[],"priv":true}],"label":"2nd marriage"}],"priv":true},{"id":"p17","name":"Peter G. Tarzan","m":[],"birth":"1959","death":"August 29, 1973"}]}],"birth":"April 30, 1929","death":"September 18, 1999"},{"id":"p18","name":"Thomas P. Thanos","m":[],"birth":"May 22, 1930","death":"March 07, 1979"}],"label":"2nd marriage"}],"birth":"August 05, 1895","death":"February 18, 1972"},{"id":"p19","name":"Katina Beneta","m":[{"sp":{"id":"p20","name":"Anastasios 'Tom' Manos","priv":true},"kids":[{"id":"p21","name":"Mary Manos","m":[{"sp":{"id":"p22","name":"Constantinos Stelios 'Gus' Stamatinos","priv":true},"kids":[{"id":"p23","name":"Stephen G. 'Steve' Stamatinos","m":[{"sp":{"id":"p24","name":"Deborah Ann 'Debbie' Stripling","priv":true},"kids":[{"id":"p25","name":"Costa Stephen Stamatinos","m":[{"sp":{"id":"p26","name":"Susan Tobin","priv":true},"kids":[]}],"priv":true}]}],"priv":true},{"id":"p27","name":"Katherine Irene Stamatinos","m":[{"sp":{"id":"p28","name":"Michael Geyer","priv":true},"kids":[{"id":"p29","name":"Alex Geyer","m":[],"priv":true}]}],"birth":"November 13, 1953","death":"Dec. 23, 2008"},{"id":"p30","name":"Tom G. Stamatinos","m":[{"sp":{"id":"p31","name":"Lucille J 'Lucy' Adkisson","priv":true},"kids":[]}],"priv":true},{"id":"p32","name":"Beth Stamatinos","m":[{"sp":{"id":"p33","name":"Michael R. Blanton","priv":true},"kids":[{"id":"p34","name":"Curtis Blanton","m":[],"priv":true},{"id":"p35","name":"David Blanton","m":[],"priv":true},{"id":"p36","name":"Katy Blanton","m":[],"priv":true}]}],"priv":true}]}],"priv":true},{"id":"p37","name":"John T. Manos","m":[{"sp":{"id":"p38","name":"Ann P Oderwald","priv":true},"kids":[]}],"birth":"September 01, 1923","death":"September 02, 2002"},{"id":"p39","name":"Eleni 'Helen' Manos","m":[{"sp":{"id":"p40","name":"Norman Kittrell Donahoe","birth":"Jan. 23, 1927","death":"December 14, 1984"},"kids":[]}],"priv":true}]}],"birth":"1898","death":"September 03, 1955"},{"id":"p41","name":"Marika 'Mary' J. Beneta","m":[{"sp":{"id":"p42","name":"John Andreas Fanoudas / Fenady","birth":"1899","death":"Feb 19, 1955"},"kids":[{"id":"p43","name":"Andrew 'Andy' Fenady","m":[{"sp":{"id":"p44","name":"Mary Francis Dolan","priv":true},"kids":[{"id":"p45","name":"Mary Eugenia Fenady","m":[{"sp":{"id":"p46","name":"Patrick Ryan","priv":true},"kids":[{"id":"p47","name":"Jonathan Ryan","m":[],"priv":true},{"id":"p48","name":"James Ryan","m":[],"priv":true},{"id":"p49","name":"Megan Ryan","m":[],"priv":true}]}],"priv":true},{"id":"p50","name":"John Andrew 'Duke' Fenady","m":[{"sp":{"id":"p51","name":"Di Sweeney","priv":true},"kids":[]}],"priv":true},{"id":"p52","name":"Nicholas Sean Fenady","m":[{"sp":{"id":"p53","name":"Leslie","priv":true},"kids":[{"id":"p54","name":"Jack Fenady","m":[],"priv":true}]}],"priv":true},{"id":"p55","name":"Francis Shannon Fenady","m":[],"birth":"Dec. 9, 1963","death":"March 29, 2008"},{"id":"p56","name":"Andrew Francis Fenady","m":[{"sp":{"id":"p57","name":"Regina","priv":true},"kids":[{"id":"p58","name":"Griffin Fenady","m":[],"priv":true},{"id":"p59","name":"Parker Elizabeth Fenady","m":[],"priv":true}]}],"priv":true},{"id":"p60","name":"Thomas Ulysses Peter George Fenady","m":[],"priv":true}]}],"priv":true},{"id":"p61","name":"Georg John Fenady","m":[{"sp":{"id":"p62","name":"Akaterini 'Katherine' Matthews","priv":true},"kids":[{"id":"p63","name":"John George Fenady","m":[],"priv":true},{"id":"p64","name":"Mary Georgea Fenady","m":[{"sp":{"id":"p65","name":"Kevin Vincent Ryan","priv":true},"kids":[{"id":"p66","name":"Shamus Matthew Ryan","m":[],"priv":true},{"id":"p67","name":"Clayton Timothy Ryan","m":[],"priv":true}]}],"priv":true}]}],"birth":"July 29, 1930","death":"May 29, 2008"}]}],"birth":"March 19, 1899","death":"Jan 29, 1979"},{"id":"p68","name":"Despina Beneta","m":[],"birth":"1900"},{"id":"p69","name":"Paraskevi Beneta","m":[],"birth":"1905"}]}],"birth":"Unknown"}];
+var TREE_TITLES = ["Beneta Family"];
+function makeCard(p, cls) {
+  var div = document.createElement('div');
+  div.className = 'card ' + (cls || '');
+  var n = document.createElement('span'); n.className = 'n';
+  n.textContent = p.name; div.appendChild(n);
+  var parts = [];
+  if (p.birth) parts.push('b. ' + p.birth);
+  if (p.death) parts.push('d. ' + p.death);
+  if (p.priv && !p.birth && !p.death) parts.push('Living');
+  if (parts.length) {
+    var d = document.createElement('span'); d.className = 'd';
+    d.textContent = parts.join('  ·  '); div.appendChild(d);
+  }
+  return div;
+}
+
+function renderNode(p, gen) {
+  var wrapper = document.createElement('div'); wrapper.className = 'tree-node';
+  var body = document.createElement('div'); body.className = 'node-body';
+  var marriages = p.m || [];
+  var allKids = [];
+  for (var i = 0; i < marriages.length; i++) {
+    var ks = marriages[i].kids || [];
+    for (var j = 0; j < ks.length; j++) allKids.push(ks[j]);
+  }
+  var cls = gen === 0 ? 'root' : (p.priv ? 'priv' : '');
+  if (allKids.length) cls += (cls ? ' ' : '') + 'collapsible';
+  var mc = makeCard(p, cls);
+  if (marriages.length > 0) {
+    var row = document.createElement('div'); row.className = 'couple-row';
+    row.appendChild(mc);
+    if (marriages[0].sp) {
+      var dot = document.createElement('span'); dot.className = 'cx';
+      dot.textContent = '×'; row.appendChild(dot);
+      var spCls = 'spouse' + (marriages[0].sp.priv ? ' priv' : '');
+      row.appendChild(makeCard(marriages[0].sp, spCls));
+    }
+    body.appendChild(row);
+    for (var mi = 1; mi < marriages.length; mi++) {
+      var mg = marriages[mi];
+      if (mg.label) {
+        var lbl = document.createElement('div'); lbl.className = 'remarriage-lbl';
+        lbl.textContent = mg.label + ':'; body.appendChild(lbl);
+      }
+      if (mg.sp) {
+        var r2 = document.createElement('div'); r2.className = 'couple-row';
+        var ph = document.createElement('div'); ph.style.cssText = 'width:148px;flex-shrink:0;';
+        r2.appendChild(ph);
+        var d2 = document.createElement('span'); d2.className = 'cx';
+        d2.textContent = '×'; r2.appendChild(d2);
+        var sp2Cls = 'spouse' + (mg.sp.priv ? ' priv' : '');
+        r2.appendChild(makeCard(mg.sp, sp2Cls)); body.appendChild(r2);
+      }
+    }
+  } else {
+    var soloRow = document.createElement('div'); soloRow.className = 'couple-row';
+    soloRow.appendChild(mc); body.appendChild(soloRow);
+  }
+  wrapper.appendChild(body);
+  if (allKids.length) {
+    wrapper.classList.add('has-ch');
+    var cr = document.createElement('div'); cr.className = 'tree-children';
+    for (var ki = 0; ki < allKids.length; ki++) cr.appendChild(renderNode(allKids[ki], gen + 1));
+    wrapper.appendChild(cr);
+    mc.addEventListener('click', (function(nd) {
+      return function(e) { e.stopPropagation(); nd.classList.toggle('closed'); };
+    }(wrapper)));
+  }
+  return wrapper;
+}
+
+function buildSection(title, data, showTitle) {
+  var sec = document.createElement('div'); sec.className = 'tree-section';
+  if (showTitle) {
+    var h = document.createElement('h2'); h.className = 'tree-section-heading';
+    h.textContent = title; sec.appendChild(h);
+  }
+  var root = document.createElement('div'); root.className = 'tree-root';
+  root.appendChild(renderNode(data, 0)); sec.appendChild(root);
+  return sec;
+}
+
+var forest = document.getElementById('forest');
+var multiTree = TREES.length > 1;
+for (var ti = 0; ti < TREES.length; ti++) {
+  forest.appendChild(buildSection(TREE_TITLES[ti], TREES[ti], multiTree));
+}
+</script>
 </body>
 </html>

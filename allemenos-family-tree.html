@@ -3,8 +3,88 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Allemenos Family Tree — Tenedian Brotherhood</title>
+  <title>Allemenos Family — Tenedian Brotherhood</title>
   <link rel="stylesheet" href="css/style.css">
+  <style>
+    .tree-page { padding: 0; }
+    .tree-outer { overflow-x: auto; padding: 2.5rem 1.5rem 3rem;
+                  background: var(--color-off-white, #f8f5f0); }
+    .tree-forest { display: flex; flex-direction: column; gap: 3.5rem; }
+    .tree-section-heading {
+      font-family: var(--font-heading, 'Playfair Display', serif);
+      color: var(--color-navy, #0a1628); font-size: 1.2rem;
+      margin: 0 0 1.25rem; padding-bottom: 0.4rem;
+      border-bottom: 2px solid var(--color-gold, #c9a227); }
+    .tree-legend { display: flex; gap: 1.2rem; flex-wrap: wrap;
+                   margin-bottom: 2rem; font-size: 0.8rem; color: #555;
+                   align-items: center; }
+    .legend-item { display: flex; align-items: center; gap: 5px; }
+    .ls { width: 20px; height: 13px; border-radius: 3px;
+          border: 2px solid var(--color-gold, #c9a227);
+          display: inline-block; flex-shrink: 0; }
+    .ls.navy  { background: var(--color-navy, #0a1628); }
+    .ls.white { background: #fff; }
+    .ls.blue  { background: #dce8ff; border-color: #6888cc; }
+    .ls.gray  { background: #eee; border-color: #bbb; }
+    /* Tree layout */
+    .tree-section { overflow-x: auto; padding-bottom: 0.5rem; }
+    .tree-root { display: inline-flex; flex-direction: column;
+                 align-items: center; padding: 0.5rem 1rem; }
+    .tree-node { display: flex; flex-direction: column; align-items: center;
+                 position: relative; }
+    .node-body { display: flex; flex-direction: column; align-items: center;
+                 gap: 3px; position: relative; }
+    .couple-row { display: flex; align-items: center; gap: 5px; }
+    .cx { color: var(--color-gold, #c9a227); font-weight: 700; font-size: 1rem;
+          padding: 0 2px; flex-shrink: 0; }
+    .remarriage-lbl { font-size: 0.65rem; color: #999; font-style: italic;
+                      text-align: center; margin-top: 5px; }
+    /* Cards */
+    .card { background: #fff; border: 2px solid var(--color-gold, #c9a227);
+            border-radius: 6px; padding: 7px 10px; width: 148px;
+            text-align: center; font-size: 0.74rem; line-height: 1.35;
+            position: relative; }
+    .card .n { font-weight: 700; color: var(--color-navy, #0a1628);
+               display: block; font-size: 0.78rem; }
+    .card .d { color: #888; font-size: 0.67rem; display: block; margin-top: 2px; }
+    .card.root { background: var(--color-navy, #0a1628);
+                 border-color: var(--color-gold, #c9a227); }
+    .card.root .n { color: var(--color-gold, #c9a227); }
+    .card.root .d { color: #99aabb; }
+    .card.spouse { background: #dce8ff; border-color: #6888cc; }
+    .card.spouse .n { color: #1a3a80; }
+    .card.priv  { background: #eee; border-color: #bbb; }
+    .card.priv .n { color: #666; }
+    .card.priv .d { color: #aaa; }
+    .card.collapsible { cursor: pointer; }
+    .card.collapsible::after { content: '\25BE'; position: absolute;
+      bottom: 3px; right: 5px; font-size: 0.6rem;
+      color: var(--color-gold, #c9a227); }
+    .tree-node.closed > .node-body .card.collapsible::after { content: '\25B8'; }
+    /* Connector lines (CSS pseudo-elements) */
+    :root { --gap: 44px; }
+    .tree-node.has-ch > .node-body::after {
+      content: ''; position: absolute; left: 50%; transform: translateX(-50%);
+      top: 100%; width: 2px; height: var(--gap);
+      background: var(--color-gold, #c9a227); }
+    .tree-children { display: flex; flex-direction: row; gap: 14px;
+                     align-items: flex-start; justify-content: center;
+                     margin-top: var(--gap); }
+    .tree-node.closed > .node-body::after  { display: none !important; }
+    .tree-node.closed > .tree-children     { display: none !important; }
+    .tree-children > .tree-node { position: relative; }
+    .tree-children > .tree-node::before {
+      content: ''; position: absolute; left: 50%; transform: translateX(-50%);
+      top: calc(-1 * var(--gap)); width: 2px; height: var(--gap);
+      background: var(--color-gold, #c9a227); }
+    .tree-children > .tree-node::after {
+      content: ''; position: absolute; top: calc(-1 * var(--gap));
+      left: 0; right: 0; height: 2px;
+      background: var(--color-gold, #c9a227); }
+    .tree-children > .tree-node:first-child::after  { left: 50%; }
+    .tree-children > .tree-node:last-child::after   { right: 50%; }
+    .tree-children > .tree-node:first-child:last-child::after { display: none; }
+  </style>
 </head>
 <body>
 
@@ -29,484 +109,22 @@
 <main>
   <header class="page-header">
     <div class="page-header-inner">
-      <h1 class="page-title">Allemenos Family Tree</h1>
-      <p class="page-subtitle"><a href="family-trees.html" style="color:rgba(255,255,255,.6); font-size:.85rem;">&larr; Back to Family Trees</a></p>
+      <h1 class="page-title">Allemenos Family</h1>
+      <p class="page-subtitle"><a href="family-trees.html" style="color:rgba(255,255,255,.65);font-size:.85rem;">&larr; Back to Family Trees</a></p>
     </div>
   </header>
 
-  <div class="page-content">
-    <div class="privacy-notice">
-      <strong>Privacy notice:</strong> Per the original website policy, birth dates are not
-      disclosed for individuals born after 1920 unless they are deceased.
-    </div>
-
-    <div class="family-tree-content">
-<div class="tree-entry gen-0 note">Allemenos/Aliemenious/Alemenos 
-/ Elmer 
-Family</div>
-<div class="tree-entry gen-0 note">THIS FAMILY HAS SEVERAL DIFFERENT SPELLINGS. THERE ARE 2 FAMILIES LISTED HERE 
-BUT I DO NOT KNOW IF OR HOW THEY ARE RELATED.</div>
-<div class="tree-entry gen-0">Christos Allemenos b: Unknown</div>
-<div class="tree-entry gen-0 spouse">+ Unknown Wife b: Unknown</div>
-<div class="tree-entry gen-0 note">2 George Christos Allemenos b: 1886 in Tenedos  d: November 26, 
-1953</div>
-<div class="tree-entry gen-0 note">+Nellie Jane Hettinger b: August 08, 1898   d: July 30, 
-1982</div>
-<div class="tree-entry gen-2">Gerasimos 'Jasper' Allemenos b: 1918  d: June 13, 1929</div>
-<div class="tree-entry gen-2 note">3 Theodore W. Aliemenious b: December 20, 1919  d: May 
-29, 1996</div>
-<div class="tree-entry gen-2 spouse">+ Marge b: Unknown</div>
-<div class="tree-entry gen-2">Merica Helen Allemenos b: Nov. 20, 1921  d: January 30, 1978</div>
-<div class="tree-entry gen-2 note">+John W. 'Jack' Foster b: June 30, 1918 d: January 12, 
-1984</div>
-<div class="tree-entry gen-3">Jacqueline Jane Foster b: Private</div>
-<div class="tree-entry gen-3 note">+Buddy Eugene Ankney, Sr. b: July 01, 1933 d: 
-December 19, 2003</div>
-<div class="tree-entry gen-3 note">5 Juanita Mary Louise Ankney   
-b: Private</div>
-<div class="tree-entry gen-3 note">5 Elisabeth Anne Marie Ankney  
-b: Private</div>
-<div class="tree-entry gen-3 note">+Michael Frost  
-b: Private</div>
-<div class="tree-entry gen-3 note">6 Jesse Michael Frost  
-b: Private</div>
-<div class="tree-entry gen-3 spouse">+ Unknown b: Unknown</div>
-<div class="tree-entry gen-4">Brayland Frost b: Private</div>
-<div class="tree-entry gen-4">Alyssa Frost b: Private</div>
-<div class="tree-entry gen-4 note">*2nd Partner of Elisabeth Anne Marie Ankney:</div>
-<div class="tree-entry gen-4 note">+Kamel Burkett  
-b: Private</div>
-<div class="tree-entry gen-4 note">6 Sammyia Yasmeen-Kamel Burkett  
-b: Private</div>
-<div class="tree-entry gen-4 spouse">+ Kyle Justin Thanasiu b: Private</div>
-<div class="tree-entry gen-4">Zoey Jane Thanasiu b: Private</div>
-<div class="tree-entry gen-4 note">6 Amal Fatimah-Kamel Burkett  
-b: Private</div>
-<div class="tree-entry gen-4 note">6 Samir Kamel-Aidain Burkett b: April 17, 
-1999  d: Dec 06, 2006</div>
-<div class="tree-entry gen-4 note">4 Wanda Rae Foster 
-b: Private</div>
-<div class="tree-entry gen-4 spouse">+ Unknown Haver b: Unknown</div>
-<div class="tree-entry gen-4 note">4 Georgia Foster  
-b: Private</div>
-<div class="tree-entry gen-4 note">+James Hall  
-b: Private</div>
-<div class="tree-entry gen-4 note">4 Henry 'Hank' Foster b: November 20, 1953  d: 
-June 06, 2009</div>
-<div class="tree-entry gen-4 note">+Helen 
-b: Private</div>
-<div class="tree-entry gen-4 note">5 Joe Riggs  
-b: Private</div>
-<div class="tree-entry gen-4 note">5 John Foster  
-b: Private</div>
-<div class="tree-entry gen-4 note">3 Christopher Pete Aliemenious b: August 07, 1924  d: 
-August 09, 1980</div>
-<div class="tree-entry gen-4 spouse">+ Louise M. Robertson b: February 23, 1930 d: July 25, 1998</div>
-<div class="tree-entry gen-4 note">4 Lenny C. Aliemenious   
-b: Private</div>
-<div class="tree-entry gen-4 note">+Mary E. Murphy  
-b: Private</div>
-<div class="tree-entry gen-4 note">4 Larry Gilbert Aliemenious b: August 18, 1948  d: 
-February 11, 2006</div>
-<div class="tree-entry gen-4 note">+Candie 
-b: Private</div>
-<div class="tree-entry gen-4 note">5 Larry L. Aliemenious 
-b: Private</div>
-<div class="tree-entry gen-4 note">+[1] Nora L. Smoot  
-b: Private</div>
-<div class="tree-entry gen-4 note">5 Christopher D. Aliemenious  
-b: Private</div>
-<div class="tree-entry gen-4 note">5 Richard D. Aliemenious b: May 12, 1972  
-d: February 28, 2003</div>
-<div class="tree-entry gen-4 note">*2nd Wife of Larry Gilbert Aliemenious:</div>
-<div class="tree-entry gen-4 note">+Midori Matsuyama b: April 27, 1947  d: 
-February 04, 2009</div>
-<div class="tree-entry gen-4 note">5 Cyndie L. Aliemenious  
-b: Private</div>
-<div class="tree-entry gen-4 note">5 Wendy Aliemenious  
-b: Private</div>
-<div class="tree-entry gen-4 spouse">+ Carl Smith  b: Private</div>
-<div class="tree-entry gen-4 note">*3rd Wife of Larry Gilbert Aliemenious:</div>
-<div class="tree-entry gen-4 note">+Doris J. Smith  
-b: Private</div>
-<div class="tree-entry gen-4 note">4 Sherlyn Jane Aliemenious   
-b: Private</div>
-<div class="tree-entry gen-4 note">+David Charles Hinch  b: 
-Nov. 10, 1946  d: April 30, 2010</div>
-<div class="tree-entry gen-4">Christina Hinch b: Private</div>
-<div class="tree-entry gen-4 note">5 Angelena Hinch  
-
-b: Private</div>
-<div class="tree-entry gen-4 note">5 Warren Hinch  
-
-b: Private</div>
-<div class="tree-entry gen-4 note">5 Solamon Hinch  
-
-b: Private</div>
-<div class="tree-entry gen-4 note">5 Benjamin Hinch  
-
-b: Private</div>
-<div class="tree-entry gen-4 note">5 Gideon Hinch  
-
-b: Private</div>
-<div class="tree-entry gen-4 note">5 Stephen Hinch  
-
-b: Private</div>
-<div class="tree-entry gen-4 note">5 Charlena Hinch  
-
-b: Private</div>
-<div class="tree-entry gen-4 note">5 Rachelena Hinch  
-
-b: Private</div>
-<div class="tree-entry gen-4 note">5 Danavin Hinch  
-
-b: Private</div>
-<div class="tree-entry gen-4 note">5 Sarahlena Hinch  
-
-b: Private</div>
-<div class="tree-entry gen-4 note">5 Damian Hinch  
-
-b: Private  d: Before 2010</div>
-<div class="tree-entry gen-4 note">4 John Dennis Aliemenious Sr.  b: July 10, 1953  d: 
-September 11, 2008</div>
-<div class="tree-entry gen-4 spouse">+ Madonna Miller  b: Private</div>
-<div class="tree-entry gen-4 note">5 Donna Marie Aliemenious  
-b: Private</div>
-<div class="tree-entry gen-4 note">+Steve Never  
-b: Private</div>
-<div class="tree-entry gen-4 note">5 John Dennis Aliemenious, Jr. b: October 2, 1973  d: 
-February 13, 1974</div>
-<div class="tree-entry gen-4">Sandra Lynn Aliemenious d: Bef. 2008</div>
-<div class="tree-entry gen-4 note">5 Jason Aliemenious  
-b: Private</div>
-<div class="tree-entry gen-4 note">+Renee  
-b: Private</div>
-<div class="tree-entry gen-4 note">5 Jamie Lynn Aliemenious  
-b: Private</div>
-<div class="tree-entry gen-4 note">+Nathaniel Clayton Barkimer  
-b: Private</div>
-<div class="tree-entry gen-4 note">5 Jennifer Aliemenious  
-b: Private</div>
-<div class="tree-entry gen-4 note">4 David G. Aliemenious  
-b: Private</div>
-<div class="tree-entry gen-4 note">+Jody  
-b: Private</div>
-<div class="tree-entry gen-4 note">*2nd Wife of David G. Aliemenious:</div>
-<div class="tree-entry gen-4 note">+Kathleen  
-b: Private</div>
-<div class="tree-entry gen-4 note">*3rd Wife of David G. Aliemenious:</div>
-<div class="tree-entry gen-4 note">+Loretta Morris 
-b: Private</div>
-<div class="tree-entry gen-4 note">*4th Wife of David G. Aliemenious:</div>
-<div class="tree-entry gen-4 note">+Elizabeth Causen  
-b: Private</div>
-<div class="tree-entry gen-4 note">*5th Wife of David G. Aliemenious:</div>
-<div class="tree-entry gen-4 note">+Linda J.  
-b: Private</div>
-<div class="tree-entry gen-4 note">4 Steven W. Aliemenious  
-b: Private</div>
-<div class="tree-entry gen-4 note">+Rhonda Reed  
-b: Private</div>
-<div class="tree-entry gen-4 note">5 Darrilyn M. Aliemenious  
-b: Private</div>
-<div class="tree-entry gen-4 note">+Budd E May  
-b: Private</div>
-<div class="tree-entry gen-4 note">*2nd Husband of Darrilyn M. Aliemenious:</div>
-<div class="tree-entry gen-4 note">+William J Dionne  
-b: Private</div>
-<div class="tree-entry gen-4 note">5 Alysha Marie Aliemenious b: Sept 16, 1978  
-d: Dec 29, 2007</div>
-<div class="tree-entry gen-4 note">+Edward 'Eddie' D. Ramsey, Sr.  
-b: Private</div>
-<div class="tree-entry gen-4 note">6 Edward 'Eddie' D. Ramsey, Jr.  
-b: Private</div>
-<div class="tree-entry gen-4 note">*2nd Husband of Alysha Marie Aliemenious:</div>
-<div class="tree-entry gen-4 note">+Ian Trickett  
-b: Private</div>
-<div class="tree-entry gen-4 note">6 Justin Trickett  
-b: Private</div>
-<div class="tree-entry gen-4 note">5 Stephen Aliemenious  
-b: Private</div>
-<div class="tree-entry gen-4 note">*2nd Wife of Steven W. Aliemenious:</div>
-<div class="tree-entry gen-4 note">+Kathy L. Stripling  
-b: Private</div>
-<div class="tree-entry gen-4 note">4 Mark Nelson Aliemenious, Sr. b: April 02, 1959 d: May 25, 
-2010</div>
-<div class="tree-entry gen-4 note">+Cheryl 
-S. Garrison  b: Private</div>
-<div class="tree-entry gen-4 note">5 Jamica Renee Aliemenious  
-
-b: Private</div>
-<div class="tree-entry gen-4 note">*2nd Wife of Mark Nelson Aliemenious:</div>
-<div class="tree-entry gen-4 note">+Denise Lynn Jacobs  
-
-b: Private</div>
-<div class="tree-entry gen-4 note">5 Mark Nelson 
-
-Aliemenious, Jr.  b: Private</div>
-<div class="tree-entry gen-4 note">5 Nicholas Michael 
-
-Aliemenious  b: Private</div>
-<div class="tree-entry gen-4 note">5 Ashley Denise 
-
-Aliemenious  b: Private</div>
-<div class="tree-entry gen-4 note">4 Bryan F. Aliemenious b: December 05, 1960  d: 
-June 27, 1990</div>
-<div class="tree-entry gen-4 note">+Wilma E. Gill  
-b: Private</div>
-<div class="tree-entry gen-4 note">4 Christopher Aliemenious b: Unknown d: Bef. February 
-16, 2006</div>
-<div class="tree-entry gen-4 note">4 Guy M. Aliemenious   
-b: Private</div>
-<div class="tree-entry gen-4 note">+[1] Nora L. Smoot  
-b: Private</div>
-<div class="tree-entry gen-4 note">4 Jerry Lee Aliemenious  
-b: Private</div>
-<div class="tree-entry gen-4 note">+Brenda F. Wilhelm  
-b: Private</div>
-<div class="tree-entry gen-4 note">*2nd Wife of Jerry Lee Aliemenious:</div>
-<div class="tree-entry gen-4 note">+Teri S. Fix  
-b: Private</div>
-<div class="tree-entry gen-4 note">4 Marty Warren Aliemenious  
-b: Private</div>
-<div class="tree-entry gen-4 note">+Geraldine 'Jerrie'  
-b: Private</div>
-<div class="tree-entry gen-2">Kathryn Allemenos b: March 25, 1926  d: March 12, 1994</div>
-<div class="tree-entry gen-2 note">+Joseph McIntyre  
-b: Private</div>
-<div class="tree-entry gen-2 note">*2nd Husband of Kathryn Allemenos:</div>
-<div class="tree-entry gen-2 note">+Unknown Campbell  
-b: Private</div>
-<div class="tree-entry gen-2 note">3 George Sonny Elmer b: December 18, 1928  d: September 
-17, 1994</div>
-<div class="tree-entry gen-2 note">+Elaine P. Childers b: November 28, 1946  d: August 
-26, 2008</div>
-<div class="tree-entry gen-3">Georgilina Elmer  b: Private</div>
-<div class="tree-entry gen-3 note">+James H. Porter  
-b: Private</div>
-<div class="tree-entry gen-3 note">4 Billie Ann Elmer  
-b: Private</div>
-<div class="tree-entry gen-3 note">4 Nellie Elmer 
-b: Private</div>
-<div class="tree-entry gen-3 note">+Steven E. Batch  
-b: Private</div>
-<div class="tree-entry gen-3 note">3 Helen M. Allemenos b: April 01, 1930   d: July 12, 
-1992</div>
-<div class="tree-entry gen-3 note">+Norman Campbell 
- b: May 27, 1927  d: October 11, 
-2011</div>
-<div class="tree-entry gen-3 note">4 George 
-Campbell  b: Private</div>
-<div class="tree-entry gen-3 note">4 Anita 
-K. Campbell   b: Private</div>
-<div class="tree-entry gen-3 note">+Randy Orner  
-b: Private</div>
-<div class="tree-entry gen-3 note">5 Randy Orner  b: 
-Private</div>
-<div class="tree-entry gen-3 note">+Jennifer  b: 
-Private</div>
-<div class="tree-entry gen-3 note">4 Tamara 
-A. Campbell   b: Private</div>
-<div class="tree-entry gen-3 note">4 Cindy 
-L. Campbell    b: Private</div>
-<div class="tree-entry gen-3 note">+Frank Rose  
-b: Private</div>
-<div class="tree-entry gen-3 note">4 Sandra 
-'Sandy' L. Campbell  b: Private</div>
-<div class="tree-entry gen-3 note">+Glenn F. Coleman   b: 
-Private</div>
-<div class="tree-entry gen-3 note">4 Diane 
-L. Campbell   b: Private</div>
-<div class="tree-entry gen-3 note">+Bassam 
-'Sam' Kanouh  b: November 22, 1962 d: November 19, 2009</div>
-<div class="tree-entry gen-3 note">5 Natalie Kanouh   b: 
-Private</div>
-<div class="tree-entry gen-3 note">+Unknown Stuard   b: 
-Private</div>
-<div class="tree-entry gen-3 note">6 Adam Stuard   b: 
-Private</div>
-<div class="tree-entry gen-3 note">5 Sara Darlene Kanouh   
-
-b: Private</div>
-<div class="tree-entry gen-3 note">5 Alex Kanouh  b: 
-Private</div>
-<div class="tree-entry gen-3 note">4 Darlene M. Campbell   b: 
-Private</div>
-<div class="tree-entry gen-3 note">+John E. Southard   b: 
-Private</div>
-<div class="tree-entry gen-3 note">5 Anthony Southard   b: 
-Private</div>
-<div class="tree-entry gen-3 note">5 Michael Wesley Southard  b: 
-Private</div>
-<div class="tree-entry gen-3 note">4 Robert 
-Allen Campbell  b: May 08, 1958  d: November 03, 2008</div>
-<div class="tree-entry gen-3 note">4 Dennis 
-Ray Campbell  b: September 01, 1959  d: December 13, 2008</div>
-<div class="tree-entry gen-3 note">4 Norma 
-Jean 'Squeaky' Campbell  b: Jan. 26, 1951 d: Sept 20, 1992</div>
-<div class="tree-entry gen-3 note">+Leonard J. Stasko  
-
-b: Private</div>
-<div class="tree-entry gen-2">Christine Allemenos b: March 24, 1932  d: July 06, 1932</div>
-<div class="tree-entry gen-2 note">3 Kostandinos G. 'Gust' Elmer  
-b: Private</div>
-<div class="tree-entry gen-2 note">+Eleftheria 'Liberty' Grivanos  
-b: Private</div>
-<div class="tree-entry gen-2 note">4 Athena 'Tina' Elmer  
-b: Private</div>
-<div class="tree-entry gen-2 note">+Kostandinos Konstandas  
-b: Private</div>
-<div class="tree-entry gen-2 note">5 Chris Konstandas  
-b: Private</div>
-<div class="tree-entry gen-2 note">5 Constantine 'Dean' Konstandas  
-b: Private</div>
-<div class="tree-entry gen-2 note">4 Savvas 'Steve' Elmer  
-b: Private</div>
-<div class="tree-entry gen-2 note">+Eleni  
-b: Private</div>
-<div class="tree-entry gen-2 note">5 Elefteria Terri Elmer  
-b: Private</div>
-<div class="tree-entry gen-2 note">5 Demetra Jamie Elmer  
-b: Private</div>
-<div class="tree-entry gen-2 note">4 Eleni Elmer  
-b: Private</div>
-<div class="tree-entry gen-1">Peter Christos Allemenos b: 1893 in Tenedos  d: April 16, 1954</div>
-<div class="tree-entry gen-1">Alexander Christos Allemenos  b: Unknown in Tenedos d: Unknown</div>
-<div class="tree-entry gen-0">Nicholas Alemenos b: in Tenedos, Greece d: in Tenedos, Greece</div>
-<div class="tree-entry gen-0 spouse">+ Kalliope Kakadelis b: in Tenedos, Greece d: in Tenedos, Greece</div>
-<div class="tree-entry gen-0 note">2 George Nicholas Alemenos b: March 17, 1889 in Tenedos, Greece d: 
-June 12, 1961</div>
-<div class="tree-entry gen-0 note">+Marika 'Mary' Mormanis / Morris b: Jan. 06, 1899 in Tenedos d: 
-Aug. 22, 1989</div>
-<div class="tree-entry gen-0 note">3 Nicholas George Allemenos b: December 23, 1921 d: February 
-24, 1987</div>
-<div class="tree-entry gen-0 spouse">+ Elizabeth Alexander b: December 6, 1921 d: July 15, 2011</div>
-<div class="tree-entry gen-0 note">4 Joan Marie 'Jody' Allemenos  
-b: Private</div>
-<div class="tree-entry gen-0 note">+Charles Keeton  
-b: Private</div>
-<div class="tree-entry gen-0 note">*2nd Husband of Joan Marie 'Jody' Allemenos:</div>
-<div class="tree-entry gen-0 note">+Harry Daniel McFarland  
-b: Private</div>
-<div class="tree-entry gen-0 note">5 Stephanie Elizabeth McFarland  
-b: Private</div>
-<div class="tree-entry gen-0 note">+Aaron John Canty  
-b: Private</div>
-<div class="tree-entry gen-0 note">6 Liam Canty  
-b: Private</div>
-<div class="tree-entry gen-0 note">5 Alexander Daniel McFarland  
-b: Private</div>
-<div class="tree-entry gen-0 note">+Katherine Rose Macklin  
-b: Private</div>
-<div class="tree-entry gen-0 note">4 George Nicholas Allemenos  
-b: Private</div>
-<div class="tree-entry gen-0 note">+Debra Streets 
-b: Private</div>
-<div class="tree-entry gen-0 note">5 Nicholas George Allemenos b: September 23, 
-1976 d: March 17, 1994</div>
-<div class="tree-entry gen-0 note">5 Lisa Nicole Allemenos b: May 28, 1980 d: March 17, 
-1994</div>
-<div class="tree-entry gen-0 note">*2nd Wife of George Nicholas Allemenos:</div>
-<div class="tree-entry gen-0 note">+Barbara Collins 
-b: Private</div>
-<div class="tree-entry gen-0 note">*3rd Wife of George Nicholas Allemenos:</div>
-<div class="tree-entry gen-0 note">+Lorettta Le Beau  
-b: Private</div>
-<div class="tree-entry gen-0 note">3 Despina 'Virginia' Georgian Allemenos b: April 30, 1923 d: 
-June 01, 2006</div>
-<div class="tree-entry gen-0 note">+George (Sideridakis) Sideris  
-b: Private</div>
-<div class="tree-entry gen-0 note">4 Peter G. 'Takie' Sideris b: July 06, 1947 d: April 
-05, 1989</div>
-<div class="tree-entry gen-0 note">4 Eugenia 'Jeannie' Sideris  
-b: Private</div>
-<div class="tree-entry gen-0 note">+Charles G. 'Chuck' Wiltse, Jr. b: 1954 d: 
-February 14, 2006</div>
-<div class="tree-entry gen-0 note">5 Rachel Wiltse  
-b: Private</div>
-<div class="tree-entry gen-0 note">5 Jason Wiltse  
-b: Private</div>
-<div class="tree-entry gen-0 note">*2nd Husband of Despina 'Virginia' Georgian Allemenos:</div>
-<div class="tree-entry gen-0 spouse">+ Leon C. DeGolier b: March 26, 1923 d: December 09, 2004</div>
-<div class="tree-entry gen-0 note">4 Athanasia 'Karen' DeGolier  
-b: Private</div>
-<div class="tree-entry gen-0 spouse">+ Harvey Dilworth b: Private</div>
-<div class="tree-entry gen-0 note">2nd Husband of 
-
-Athanasia 'Karen' DeGolier:</div>
-<div class="tree-entry gen-0 note">+Unknown Gibbs 
-b: Private</div>
-<div class="tree-entry gen-0 note">5 Michelle Louraine Gibbs  
-b: Private</div>
-<div class="tree-entry gen-0 note">5 Nicole Lee Gibbs  
-b: Private</div>
-<div class="tree-entry gen-0 note">5 Rebecca Ann Gibbs  
-b: Private</div>
-<div class="tree-entry gen-0 note">4 Paraskevi 'Cheryl' DeGolier  
-b: Private</div>
-<div class="tree-entry gen-0 note">+Unknown Breyer 
-b: Private</div>
-<div class="tree-entry gen-3">Frederick C. DeGolier b: 1957 d: October 03, 1977</div>
-<div class="tree-entry gen-3 note">4 Theodossia 'Michelle' DeGolier  
-b: Private</div>
-<div class="tree-entry gen-3 note">+Unknown Zygela  
-b: Private</div>
-<div class="tree-entry gen-3 note">3 Gus George Allemenos b: March 21, 1924  d: March 01, 
-1991</div>
-<div class="tree-entry gen-3 spouse">+ Katherine Alexopoulos b: July 04, 1930 d: May 22, 2001</div>
-<div class="tree-entry gen-3 note">4 Antonia Allemenos  
-b: Private</div>
-<div class="tree-entry gen-3 note">2 Christopher Nicholas Alemenos b: Feb. 1892 in Tenedos  d: June 
-30, 1951</div>
-<div class="tree-entry gen-3 note">+Zmaragda 'Marie' b: December 23, 1901 in Tenedos  d: 
-September 23, 1972</div>
-<div class="tree-entry gen-3 note">3 Odechefs C. 'Ode' Alemenos b: May 26, 1922 d: January 10, 
-2001</div>
-<div class="tree-entry gen-3 note">+Rhoda 'Marsha' Pounds  
-b: Private</div>
-<div class="tree-entry gen-3 note">4 Deborah Alemenos  
-b: Private</div>
-<div class="tree-entry gen-3 note">+Zachary G. Markham  
-b: Private</div>
-<div class="tree-entry gen-3 note">4 Christopher Alemenos  
-b: Private</div>
-<div class="tree-entry gen-2">Mary Alemenos b: October 25, 1923 d: May 24, 2003</div>
-<div class="tree-entry gen-2 note">+John George Theodorakis b: January 06, 1919 d: October 
-16, 1988</div>
-<div class="tree-entry gen-2 note">4 Maria Theodorakis  
-b: Private</div>
-<div class="tree-entry gen-2 note">4 Christine Theodorakis  
-b: Private</div>
-<div class="tree-entry gen-2 note">3 Colopy Alemenos  
-b: Private</div>
-<div class="tree-entry gen-2 note">+Constantine A. 'Connie' Marker  
-b: May 17, 1923  d: Dec. 31, 2010</div>
-<div class="tree-entry gen-2 note">4 Constance Georgia 'Connie' Marker 
-
-b: Private</div>
-<div class="tree-entry gen-2 spouse">+ Charles W. Gray b: Private</div>
-<div class="tree-entry gen-2 note">4 Christina Marker 
-
-b: Private</div>
-<div class="tree-entry gen-2 note">+Dennis Johns 
-
-b: Private</div>
-<div class="tree-entry gen-2 note">5 Peter Johns 
-
-b: Private</div>
-<div class="tree-entry gen-2 note">5 Angela Johns 
-
-b: Private</div>
-<div class="tree-entry gen-2">Helen Alemenos b: July 12, 1927 d: March 21, 2005</div>
-<div class="tree-entry gen-2 note">+Franklin Dewey Everly  
-b: Private</div>
-<div class="tree-entry gen-2 note">4 Andonia 'Maria' Everly  
-b: Private</div>
-<div class="tree-entry gen-2 note">4 Michael Everly  
-b: Private</div>
-<div class="tree-entry gen-2 note">4 Cynthia Everly  
-b: Private</div>
-
+  <div class="page-content tree-page">
+    <div class="tree-outer">
+      <div class="tree-legend">
+        <div class="legend-item"><div class="ls navy"></div> Ancestor</div>
+        <div class="legend-item"><div class="ls white"></div> Descendant</div>
+        <div class="legend-item"><div class="ls blue"></div> Spouse (married-in)</div>
+        <div class="legend-item"><div class="ls gray"></div> Living (private)</div>
+        <div class="legend-item" style="color:var(--color-gold,#c9a227);font-weight:700;font-size:1rem">&times;</div>&thinsp;Married
+        <div class="legend-item" style="font-size:.75rem;color:#999">Click a descendant card to collapse/expand</div>
+      </div>
+      <div class="tree-forest" id="forest"></div>
     </div>
   </div>
 </main>
@@ -522,11 +140,101 @@ b: Private</div>
       <a href="contact.html">Contact</a>
       <a href="not-recovered.html">Not Archived</a>
     </nav>
-    <p class="footer-copy">
-      Original content &copy; Tenedian Brotherhood. Website restored and modernized from archived materials.
-    </p>
+    <p class="footer-copy">Original content &copy; Tenedian Brotherhood.
+      Website restored and modernized from archived materials.</p>
   </div>
 </footer>
 
+<script>
+var TREES = [{"id":"p1","name":"Christos Allemenos","m":[{"sp":{"id":"p2","name":"Unknown Wife","birth":"Unknown"},"kids":[{"id":"p3","name":"George Christos Allemenos","m":[{"sp":{"id":"p4","name":"Nellie Jane Hettinger","birth":"August 08, 1898","death":"July 30, 1982"},"kids":[{"id":"p5","name":"Gerasimos 'Jasper' Allemenos","m":[],"birth":"1918","death":"June 13, 1929"},{"id":"p6","name":"Theodore W. Aliemenious","m":[{"sp":{"id":"p7","name":"Marge","birth":"Unknown"},"kids":[]}],"birth":"December 20, 1919","death":"May 29, 1996"},{"id":"p8","name":"Merica Helen Allemenos","m":[{"sp":{"id":"p9","name":"John W. 'Jack' Foster","birth":"June 30, 1918","death":"January 12, 1984"},"kids":[{"id":"p10","name":"Jacqueline Jane Foster","m":[{"sp":{"id":"p11","name":"Buddy Eugene Ankney, Sr.","birth":"July 01, 1933","death":"December 19, 2003"},"kids":[{"id":"p12","name":"Juanita Mary Louise Ankney","m":[],"priv":true},{"id":"p13","name":"Elisabeth Anne Marie Ankney","m":[{"sp":{"id":"p14","name":"Michael Frost","priv":true},"kids":[{"id":"p15","name":"Jesse Michael Frost","m":[{"sp":{"id":"p16","name":"Unknown","birth":"Unknown"},"kids":[{"id":"p17","name":"Brayland Frost","m":[],"priv":true},{"id":"p18","name":"Alyssa Frost","m":[],"priv":true}]}],"priv":true}]},{"sp":{"id":"p19","name":"Kamel Burkett","priv":true},"kids":[{"id":"p20","name":"Sammyia Yasmeen-Kamel Burkett","m":[{"sp":{"id":"p21","name":"Kyle Justin Thanasiu","priv":true},"kids":[{"id":"p22","name":"Zoey Jane Thanasiu","m":[],"priv":true}]}],"priv":true},{"id":"p23","name":"Amal Fatimah-Kamel Burkett","m":[],"priv":true},{"id":"p24","name":"Samir Kamel-Aidain Burkett","m":[],"birth":"April 17, 1999","death":"Dec 06, 2006"}],"label":"2nd marriage"}],"priv":true}]}],"priv":true},{"id":"p25","name":"Wanda Rae Foster","m":[{"sp":{"id":"p26","name":"Unknown Haver","birth":"Unknown"},"kids":[]}],"priv":true},{"id":"p27","name":"Georgia Foster","m":[{"sp":{"id":"p28","name":"James Hall","priv":true},"kids":[]}],"priv":true},{"id":"p29","name":"Henry 'Hank' Foster","m":[{"sp":{"id":"p30","name":"Helen","priv":true},"kids":[{"id":"p31","name":"Joe Riggs","m":[],"priv":true},{"id":"p32","name":"John Foster","m":[],"priv":true}]}],"birth":"November 20, 1953","death":"June 06, 2009"}]}],"birth":"Nov. 20, 1921","death":"January 30, 1978"},{"id":"p33","name":"Christopher Pete Aliemenious","m":[{"sp":{"id":"p34","name":"Louise M. Robertson","birth":"February 23, 1930","death":"July 25, 1998"},"kids":[{"id":"p35","name":"Lenny C. Aliemenious","m":[{"sp":{"id":"p36","name":"Mary E. Murphy","priv":true},"kids":[]}],"priv":true},{"id":"p37","name":"Larry Gilbert Aliemenious","m":[{"sp":{"id":"p38","name":"Candie","priv":true},"kids":[{"id":"p39","name":"Larry L. Aliemenious","m":[{"sp":{"id":"p40","name":"[1] Nora L. Smoot","priv":true},"kids":[]}],"priv":true},{"id":"p41","name":"Christopher D. Aliemenious","m":[],"death":"Aliemenious b: Private","priv":true},{"id":"p42","name":"Richard D. Aliemenious","m":[],"birth":"May 12, 1972","death":"Aliemenious b: May 12, 1972 d: February 28, 2003"}]},{"sp":{"id":"p43","name":"Midori Matsuyama","birth":"April 27, 1947","death":"February 04, 2009"},"kids":[{"id":"p44","name":"Cyndie L. Aliemenious","m":[],"priv":true},{"id":"p45","name":"Wendy Aliemenious","m":[{"sp":{"id":"p46","name":"Carl Smith","priv":true},"kids":[]}],"priv":true}],"label":"2nd marriage"},{"sp":{"id":"p47","name":"Doris J. Smith","priv":true},"kids":[],"label":"3rd marriage"}],"birth":"August 18, 1948","death":"February 11, 2006"},{"id":"p48","name":"Sherlyn Jane Aliemenious","m":[{"sp":{"id":"p49","name":"David Charles Hinch","birth":"Nov. 10, 1946","death":"April 30, 2010"},"kids":[{"id":"p50","name":"Christina Hinch","m":[],"priv":true},{"id":"p51","name":"Angelena Hinch","m":[],"priv":true},{"id":"p52","name":"Warren Hinch","m":[],"priv":true},{"id":"p53","name":"Solamon Hinch","m":[],"priv":true},{"id":"p54","name":"Benjamin Hinch","m":[],"priv":true},{"id":"p55","name":"Gideon Hinch","m":[],"priv":true},{"id":"p56","name":"Stephen Hinch","m":[],"priv":true},{"id":"p57","name":"Charlena Hinch","m":[],"priv":true},{"id":"p58","name":"Rachelena Hinch","m":[],"priv":true},{"id":"p59","name":"Danavin Hinch","m":[],"priv":true},{"id":"p60","name":"Sarahlena Hinch","m":[],"priv":true},{"id":"p61","name":"Damian Hinch","m":[],"death":"Before 2010","priv":true}]}],"priv":true},{"id":"p62","name":"John Dennis Aliemenious Sr.","m":[{"sp":{"id":"p63","name":"Madonna Miller","priv":true},"kids":[{"id":"p64","name":"Donna Marie Aliemenious","m":[{"sp":{"id":"p65","name":"Steve Never","priv":true},"kids":[]}],"priv":true},{"id":"p66","name":"John Dennis Aliemenious, Jr.","m":[],"birth":"October 2, 1973","death":"February 13, 1974"},{"id":"p67","name":"Sandra Lynn Aliemenious d: Bef. 2008","m":[],"death":"Bef. 2008"},{"id":"p68","name":"Jason Aliemenious","m":[{"sp":{"id":"p69","name":"Renee","priv":true},"kids":[]}],"priv":true},{"id":"p70","name":"Jamie Lynn Aliemenious","m":[{"sp":{"id":"p71","name":"Nathaniel Clayton Barkimer","priv":true},"kids":[]}],"priv":true},{"id":"p72","name":"Jennifer Aliemenious","m":[],"priv":true}]}],"birth":"July 10, 1953","death":"September 11, 2008"},{"id":"p73","name":"David G. Aliemenious","m":[{"sp":{"id":"p74","name":"Jody","priv":true},"kids":[]},{"sp":{"id":"p75","name":"Kathleen","priv":true},"kids":[],"label":"2nd marriage"},{"sp":{"id":"p76","name":"Loretta Morris","priv":true},"kids":[],"label":"3rd marriage"},{"sp":{"id":"p77","name":"Elizabeth Causen","priv":true},"kids":[],"label":"4th marriage"},{"sp":{"id":"p78","name":"Linda J.","priv":true},"kids":[],"label":"5th marriage"}],"priv":true},{"id":"p79","name":"Steven W. Aliemenious","m":[{"sp":{"id":"p80","name":"Rhonda Reed","priv":true},"kids":[{"id":"p81","name":"Darrilyn M. Aliemenious","m":[{"sp":{"id":"p82","name":"Budd E May","priv":true},"kids":[]},{"sp":{"id":"p83","name":"William J Dionne","priv":true},"kids":[],"label":"2nd marriage"}],"priv":true},{"id":"p84","name":"Alysha Marie Aliemenious","m":[{"sp":{"id":"p85","name":"Edward 'Eddie' D. Ramsey, Sr.","death":"Ramsey, Sr. b: Private","priv":true},"kids":[{"id":"p86","name":"Edward 'Eddie' D. Ramsey, Jr.","m":[],"death":"Ramsey, Jr. b: Private","priv":true}]},{"sp":{"id":"p87","name":"Ian Trickett","priv":true},"kids":[{"id":"p88","name":"Justin Trickett","m":[],"priv":true}],"label":"2nd marriage"}],"birth":"Sept 16, 1978","death":"Dec 29, 2007"},{"id":"p89","name":"Stephen Aliemenious","m":[],"priv":true}]},{"sp":{"id":"p90","name":"Kathy L. Stripling","priv":true},"kids":[],"label":"2nd marriage"}],"priv":true},{"id":"p91","name":"Mark Nelson Aliemenious, Sr.","m":[{"sp":{"id":"p92","name":"Cheryl S. Garrison","priv":true},"kids":[{"id":"p93","name":"Jamica Renee Aliemenious","m":[],"priv":true}]},{"sp":{"id":"p94","name":"Denise Lynn Jacobs","priv":true},"kids":[{"id":"p95","name":"Mark Nelson Aliemenious, Jr.","m":[],"priv":true},{"id":"p96","name":"Nicholas Michael Aliemenious","m":[],"priv":true},{"id":"p97","name":"Ashley Denise Aliemenious","m":[],"priv":true}],"label":"2nd marriage"}],"birth":"April 02, 1959","death":"May 25, 2010"},{"id":"p98","name":"Bryan F. Aliemenious","m":[{"sp":{"id":"p99","name":"Wilma E. Gill","priv":true},"kids":[]}],"birth":"December 05, 1960","death":"June 27, 1990"},{"id":"p100","name":"Christopher Aliemenious","m":[],"birth":"Unknown","death":"Bef. February 16, 2006"},{"id":"p101","name":"Guy M. Aliemenious","m":[{"sp":{"id":"p102","name":"[1] Nora L. Smoot","priv":true},"kids":[]}],"priv":true},{"id":"p103","name":"Jerry Lee Aliemenious","m":[{"sp":{"id":"p104","name":"Brenda F. Wilhelm","priv":true},"kids":[]},{"sp":{"id":"p105","name":"Teri S. Fix","priv":true},"kids":[],"label":"2nd marriage"}],"priv":true},{"id":"p106","name":"Marty Warren Aliemenious","m":[{"sp":{"id":"p107","name":"Geraldine 'Jerrie'","priv":true},"kids":[]}],"priv":true}]}],"birth":"August 07, 1924","death":"August 09, 1980"},{"id":"p108","name":"Kathryn Allemenos","m":[{"sp":{"id":"p109","name":"Joseph McIntyre","priv":true},"kids":[]},{"sp":{"id":"p110","name":"Unknown Campbell","priv":true},"kids":[],"label":"2nd marriage"}],"birth":"March 25, 1926","death":"March 12, 1994"},{"id":"p111","name":"George Sonny Elmer","m":[{"sp":{"id":"p112","name":"Elaine P. Childers","birth":"November 28, 1946","death":"August 26, 2008"},"kids":[{"id":"p113","name":"Georgilina Elmer","m":[{"sp":{"id":"p114","name":"James H. Porter","priv":true},"kids":[]}],"priv":true},{"id":"p115","name":"Billie Ann Elmer","m":[],"priv":true},{"id":"p116","name":"Nellie Elmer","m":[{"sp":{"id":"p117","name":"Steven E. Batch","priv":true},"kids":[]}],"priv":true}]}],"birth":"December 18, 1928","death":"September 17, 1994"},{"id":"p118","name":"Helen M. Allemenos","m":[{"sp":{"id":"p119","name":"Norman Campbell","birth":"May 27, 1927","death":"October 11, 2011"},"kids":[{"id":"p120","name":"George Campbell","m":[],"priv":true},{"id":"p121","name":"Anita K. Campbell","m":[{"sp":{"id":"p122","name":"Randy Orner","priv":true},"kids":[{"id":"p123","name":"Randy Orner","m":[{"sp":{"id":"p124","name":"Jennifer","priv":true},"kids":[]}],"priv":true}]}],"priv":true},{"id":"p125","name":"Tamara A. Campbell","m":[],"priv":true},{"id":"p126","name":"Cindy L. Campbell","m":[{"sp":{"id":"p127","name":"Frank Rose","priv":true},"kids":[]}],"priv":true},{"id":"p128","name":"Sandra 'Sandy' L. Campbell","m":[{"sp":{"id":"p129","name":"Glenn F. Coleman","priv":true},"kids":[]}],"priv":true},{"id":"p130","name":"Diane L. Campbell","m":[{"sp":{"id":"p131","name":"Bassam 'Sam' Kanouh","birth":"November 22, 1962","death":"November 19, 2009"},"kids":[{"id":"p132","name":"Natalie Kanouh","m":[{"sp":{"id":"p133","name":"Unknown Stuard","priv":true},"kids":[{"id":"p134","name":"Adam Stuard","m":[],"priv":true}]}],"priv":true},{"id":"p135","name":"Sara Darlene Kanouh","m":[],"priv":true},{"id":"p136","name":"Alex Kanouh","m":[],"priv":true}]}],"priv":true},{"id":"p137","name":"Darlene M. Campbell","m":[{"sp":{"id":"p138","name":"John E. Southard","priv":true},"kids":[{"id":"p139","name":"Anthony Southard","m":[],"priv":true},{"id":"p140","name":"Michael Wesley Southard","m":[],"priv":true}]}],"priv":true},{"id":"p141","name":"Robert Allen Campbell","m":[],"birth":"May 08, 1958","death":"November 03, 2008"},{"id":"p142","name":"Dennis Ray Campbell","m":[],"birth":"September 01, 1959","death":"December 13, 2008"},{"id":"p143","name":"Norma Jean 'Squeaky' Campbell","m":[{"sp":{"id":"p144","name":"Leonard J. Stasko","priv":true},"kids":[]}],"birth":"Jan. 26, 1951","death":"Sept 20, 1992"}]}],"birth":"April 01, 1930","death":"July 12, 1992"},{"id":"p145","name":"Christine Allemenos","m":[],"birth":"March 24, 1932","death":"July 06, 1932"},{"id":"p146","name":"Kostandinos G. 'Gust' Elmer","m":[{"sp":{"id":"p147","name":"Eleftheria 'Liberty' Grivanos","priv":true},"kids":[{"id":"p148","name":"Athena 'Tina' Elmer","m":[{"sp":{"id":"p149","name":"Kostandinos Konstandas","priv":true},"kids":[{"id":"p150","name":"Chris Konstandas","m":[],"priv":true},{"id":"p151","name":"Constantine 'Dean' Konstandas","m":[],"priv":true}]}],"priv":true},{"id":"p152","name":"Savvas 'Steve' Elmer","m":[{"sp":{"id":"p153","name":"Eleni","priv":true},"kids":[{"id":"p154","name":"Elefteria Terri Elmer","m":[],"priv":true},{"id":"p155","name":"Demetra Jamie Elmer","m":[],"priv":true}]}],"priv":true},{"id":"p156","name":"Eleni Elmer","m":[],"priv":true}]}],"priv":true}]}],"birth":"1886","death":"November 26, 1953"},{"id":"p157","name":"Peter Christos Allemenos","m":[],"birth":"1893","death":"April 16, 1954"},{"id":"p158","name":"Alexander Christos Allemenos","m":[],"birth":"Unknown","death":"Unknown"}]}],"birth":"Unknown"},{"id":"p159","name":"Nicholas Alemenos","m":[{"sp":{"id":"p160","name":"Kalliope Kakadelis","birth":"in Tenedos, Greece","death":"in Tenedos, Greece"},"kids":[{"id":"p161","name":"George Nicholas Alemenos","m":[{"sp":{"id":"p162","name":"Marika 'Mary' Mormanis / Morris","birth":"Jan. 06, 1899","death":"Aug. 22, 1989"},"kids":[{"id":"p163","name":"Nicholas George Allemenos","m":[{"sp":{"id":"p164","name":"Elizabeth Alexander","birth":"December 6, 1921","death":"July 15, 2011"},"kids":[{"id":"p165","name":"Joan Marie 'Jody' Allemenos","m":[{"sp":{"id":"p166","name":"Charles Keeton","priv":true},"kids":[]},{"sp":{"id":"p167","name":"Harry Daniel McFarland","priv":true},"kids":[{"id":"p168","name":"Stephanie Elizabeth McFarland","m":[{"sp":{"id":"p169","name":"Aaron John Canty","priv":true},"kids":[{"id":"p170","name":"Liam Canty","m":[],"priv":true}]}],"priv":true},{"id":"p171","name":"Alexander Daniel McFarland","m":[{"sp":{"id":"p172","name":"Katherine Rose Macklin","priv":true},"kids":[]}],"priv":true}],"label":"2nd marriage"}],"priv":true},{"id":"p173","name":"George Nicholas Allemenos","m":[{"sp":{"id":"p174","name":"Debra Streets","priv":true},"kids":[{"id":"p175","name":"Nicholas George Allemenos","m":[],"birth":"September 23, 1976","death":"March 17, 1994"},{"id":"p176","name":"Lisa Nicole Allemenos","m":[],"birth":"May 28, 1980","death":"March 17, 1994"}]},{"sp":{"id":"p177","name":"Barbara Collins","priv":true},"kids":[],"label":"2nd marriage"},{"sp":{"id":"p178","name":"Lorettta Le Beau","priv":true},"kids":[],"label":"3rd marriage"}],"priv":true}]}],"birth":"December 23, 1921","death":"February 24, 1987"},{"id":"p179","name":"Despina 'Virginia' Georgian Allemenos","m":[{"sp":{"id":"p180","name":"George (Sideridakis) Sideris","priv":true},"kids":[{"id":"p181","name":"Peter G. 'Takie' Sideris","m":[],"birth":"July 06, 1947","death":"April 05, 1989"},{"id":"p182","name":"Eugenia 'Jeannie' Sideris","m":[{"sp":{"id":"p183","name":"Charles G. 'Chuck' Wiltse, Jr.","birth":"1954","death":"February 14, 2006"},"kids":[{"id":"p184","name":"Rachel Wiltse","m":[],"priv":true},{"id":"p185","name":"Jason Wiltse","m":[],"priv":true}]}],"priv":true}]},{"sp":{"id":"p186","name":"Leon C. DeGolier","birth":"March 26, 1923","death":"December 09, 2004"},"kids":[{"id":"p187","name":"Athanasia 'Karen' DeGolier","m":[{"sp":{"id":"p188","name":"Harvey Dilworth","priv":true},"kids":[]},{"sp":{"id":"p189","name":"Unknown Gibbs","priv":true},"kids":[{"id":"p190","name":"Michelle Louraine Gibbs","m":[],"priv":true},{"id":"p191","name":"Nicole Lee Gibbs","m":[],"priv":true},{"id":"p192","name":"Rebecca Ann Gibbs","m":[],"priv":true}],"label":"2nd marriage"}],"priv":true},{"id":"p193","name":"Paraskevi 'Cheryl' DeGolier","m":[{"sp":{"id":"p194","name":"Unknown Breyer","priv":true},"kids":[]}],"priv":true},{"id":"p195","name":"Frederick C. DeGolier","m":[],"birth":"1957","death":"October 03, 1977"},{"id":"p196","name":"Theodossia 'Michelle' DeGolier","m":[{"sp":{"id":"p197","name":"Unknown Zygela","priv":true},"kids":[]}],"priv":true}],"label":"2nd marriage"}],"birth":"April 30, 1923","death":"June 01, 2006"},{"id":"p198","name":"Gus George Allemenos","m":[{"sp":{"id":"p199","name":"Katherine Alexopoulos","birth":"July 04, 1930","death":"May 22, 2001"},"kids":[{"id":"p200","name":"Antonia Allemenos","m":[],"priv":true}]}],"birth":"March 21, 1924","death":"March 01, 1991"}]}],"birth":"March 17, 1889","death":"June 12, 1961"},{"id":"p201","name":"Christopher Nicholas Alemenos","m":[{"sp":{"id":"p202","name":"Zmaragda 'Marie'","birth":"December 23, 1901","death":"September 23, 1972"},"kids":[{"id":"p203","name":"Odechefs C. 'Ode' Alemenos","m":[{"sp":{"id":"p204","name":"Rhoda 'Marsha' Pounds","priv":true},"kids":[{"id":"p205","name":"Deborah Alemenos","m":[{"sp":{"id":"p206","name":"Zachary G. Markham","priv":true},"kids":[]}],"priv":true},{"id":"p207","name":"Christopher Alemenos","m":[],"priv":true}]}],"birth":"May 26, 1922","death":"January 10, 2001"},{"id":"p208","name":"Mary Alemenos","m":[{"sp":{"id":"p209","name":"John George Theodorakis","birth":"January 06, 1919","death":"October 16, 1988"},"kids":[{"id":"p210","name":"Maria Theodorakis","m":[],"priv":true},{"id":"p211","name":"Christine Theodorakis","m":[],"priv":true}]}],"birth":"October 25, 1923","death":"May 24, 2003"},{"id":"p212","name":"Colopy Alemenos","m":[{"sp":{"id":"p213","name":"Constantine A. 'Connie' Marker","birth":"May 17, 1923","death":"Dec. 31, 2010"},"kids":[{"id":"p214","name":"Constance Georgia 'Connie' Marker","m":[{"sp":{"id":"p215","name":"Charles W. Gray","priv":true},"kids":[]}],"priv":true},{"id":"p216","name":"Christina Marker","m":[{"sp":{"id":"p217","name":"Dennis Johns","priv":true},"kids":[{"id":"p218","name":"Peter Johns","m":[],"priv":true},{"id":"p219","name":"Angela Johns","m":[],"priv":true}]}],"priv":true}]}],"priv":true},{"id":"p220","name":"Helen Alemenos","m":[{"sp":{"id":"p221","name":"Franklin Dewey Everly","priv":true},"kids":[{"id":"p222","name":"Andonia 'Maria' Everly","m":[],"priv":true},{"id":"p223","name":"Michael Everly","m":[],"priv":true},{"id":"p224","name":"Cynthia Everly","m":[],"priv":true}]}],"birth":"July 12, 1927","death":"March 21, 2005"}]}],"birth":"Feb. 1892","death":"June 30, 1951"}]}],"birth":"in Tenedos, Greece","death":"in Tenedos, Greece"}];
+var TREE_TITLES = ["Descendants of Christos Allemenos","Descendants of Nicholas Alemenos"];
+function makeCard(p, cls) {
+  var div = document.createElement('div');
+  div.className = 'card ' + (cls || '');
+  var n = document.createElement('span'); n.className = 'n';
+  n.textContent = p.name; div.appendChild(n);
+  var parts = [];
+  if (p.birth) parts.push('b. ' + p.birth);
+  if (p.death) parts.push('d. ' + p.death);
+  if (p.priv && !p.birth && !p.death) parts.push('Living');
+  if (parts.length) {
+    var d = document.createElement('span'); d.className = 'd';
+    d.textContent = parts.join('  ·  '); div.appendChild(d);
+  }
+  return div;
+}
+
+function renderNode(p, gen) {
+  var wrapper = document.createElement('div'); wrapper.className = 'tree-node';
+  var body = document.createElement('div'); body.className = 'node-body';
+  var marriages = p.m || [];
+  var allKids = [];
+  for (var i = 0; i < marriages.length; i++) {
+    var ks = marriages[i].kids || [];
+    for (var j = 0; j < ks.length; j++) allKids.push(ks[j]);
+  }
+  var cls = gen === 0 ? 'root' : (p.priv ? 'priv' : '');
+  if (allKids.length) cls += (cls ? ' ' : '') + 'collapsible';
+  var mc = makeCard(p, cls);
+  if (marriages.length > 0) {
+    var row = document.createElement('div'); row.className = 'couple-row';
+    row.appendChild(mc);
+    if (marriages[0].sp) {
+      var dot = document.createElement('span'); dot.className = 'cx';
+      dot.textContent = '×'; row.appendChild(dot);
+      var spCls = 'spouse' + (marriages[0].sp.priv ? ' priv' : '');
+      row.appendChild(makeCard(marriages[0].sp, spCls));
+    }
+    body.appendChild(row);
+    for (var mi = 1; mi < marriages.length; mi++) {
+      var mg = marriages[mi];
+      if (mg.label) {
+        var lbl = document.createElement('div'); lbl.className = 'remarriage-lbl';
+        lbl.textContent = mg.label + ':'; body.appendChild(lbl);
+      }
+      if (mg.sp) {
+        var r2 = document.createElement('div'); r2.className = 'couple-row';
+        var ph = document.createElement('div'); ph.style.cssText = 'width:148px;flex-shrink:0;';
+        r2.appendChild(ph);
+        var d2 = document.createElement('span'); d2.className = 'cx';
+        d2.textContent = '×'; r2.appendChild(d2);
+        var sp2Cls = 'spouse' + (mg.sp.priv ? ' priv' : '');
+        r2.appendChild(makeCard(mg.sp, sp2Cls)); body.appendChild(r2);
+      }
+    }
+  } else {
+    var soloRow = document.createElement('div'); soloRow.className = 'couple-row';
+    soloRow.appendChild(mc); body.appendChild(soloRow);
+  }
+  wrapper.appendChild(body);
+  if (allKids.length) {
+    wrapper.classList.add('has-ch');
+    var cr = document.createElement('div'); cr.className = 'tree-children';
+    for (var ki = 0; ki < allKids.length; ki++) cr.appendChild(renderNode(allKids[ki], gen + 1));
+    wrapper.appendChild(cr);
+    mc.addEventListener('click', (function(nd) {
+      return function(e) { e.stopPropagation(); nd.classList.toggle('closed'); };
+    }(wrapper)));
+  }
+  return wrapper;
+}
+
+function buildSection(title, data, showTitle) {
+  var sec = document.createElement('div'); sec.className = 'tree-section';
+  if (showTitle) {
+    var h = document.createElement('h2'); h.className = 'tree-section-heading';
+    h.textContent = title; sec.appendChild(h);
+  }
+  var root = document.createElement('div'); root.className = 'tree-root';
+  root.appendChild(renderNode(data, 0)); sec.appendChild(root);
+  return sec;
+}
+
+var forest = document.getElementById('forest');
+var multiTree = TREES.length > 1;
+for (var ti = 0; ti < TREES.length; ti++) {
+  forest.appendChild(buildSection(TREE_TITLES[ti], TREES[ti], multiTree));
+}
+</script>
 </body>
 </html>

@@ -5,6 +5,86 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Kadiguranis Family — Tenedian Brotherhood</title>
   <link rel="stylesheet" href="css/style.css">
+  <style>
+    .tree-page { padding: 0; }
+    .tree-outer { overflow-x: auto; padding: 2.5rem 1.5rem 3rem;
+                  background: var(--color-off-white, #f8f5f0); }
+    .tree-forest { display: flex; flex-direction: column; gap: 3.5rem; }
+    .tree-section-heading {
+      font-family: var(--font-heading, 'Playfair Display', serif);
+      color: var(--color-navy, #0a1628); font-size: 1.2rem;
+      margin: 0 0 1.25rem; padding-bottom: 0.4rem;
+      border-bottom: 2px solid var(--color-gold, #c9a227); }
+    .tree-legend { display: flex; gap: 1.2rem; flex-wrap: wrap;
+                   margin-bottom: 2rem; font-size: 0.8rem; color: #555;
+                   align-items: center; }
+    .legend-item { display: flex; align-items: center; gap: 5px; }
+    .ls { width: 20px; height: 13px; border-radius: 3px;
+          border: 2px solid var(--color-gold, #c9a227);
+          display: inline-block; flex-shrink: 0; }
+    .ls.navy  { background: var(--color-navy, #0a1628); }
+    .ls.white { background: #fff; }
+    .ls.blue  { background: #dce8ff; border-color: #6888cc; }
+    .ls.gray  { background: #eee; border-color: #bbb; }
+    /* Tree layout */
+    .tree-section { overflow-x: auto; padding-bottom: 0.5rem; }
+    .tree-root { display: inline-flex; flex-direction: column;
+                 align-items: center; padding: 0.5rem 1rem; }
+    .tree-node { display: flex; flex-direction: column; align-items: center;
+                 position: relative; }
+    .node-body { display: flex; flex-direction: column; align-items: center;
+                 gap: 3px; position: relative; }
+    .couple-row { display: flex; align-items: center; gap: 5px; }
+    .cx { color: var(--color-gold, #c9a227); font-weight: 700; font-size: 1rem;
+          padding: 0 2px; flex-shrink: 0; }
+    .remarriage-lbl { font-size: 0.65rem; color: #999; font-style: italic;
+                      text-align: center; margin-top: 5px; }
+    /* Cards */
+    .card { background: #fff; border: 2px solid var(--color-gold, #c9a227);
+            border-radius: 6px; padding: 7px 10px; width: 148px;
+            text-align: center; font-size: 0.74rem; line-height: 1.35;
+            position: relative; }
+    .card .n { font-weight: 700; color: var(--color-navy, #0a1628);
+               display: block; font-size: 0.78rem; }
+    .card .d { color: #888; font-size: 0.67rem; display: block; margin-top: 2px; }
+    .card.root { background: var(--color-navy, #0a1628);
+                 border-color: var(--color-gold, #c9a227); }
+    .card.root .n { color: var(--color-gold, #c9a227); }
+    .card.root .d { color: #99aabb; }
+    .card.spouse { background: #dce8ff; border-color: #6888cc; }
+    .card.spouse .n { color: #1a3a80; }
+    .card.priv  { background: #eee; border-color: #bbb; }
+    .card.priv .n { color: #666; }
+    .card.priv .d { color: #aaa; }
+    .card.collapsible { cursor: pointer; }
+    .card.collapsible::after { content: '\25BE'; position: absolute;
+      bottom: 3px; right: 5px; font-size: 0.6rem;
+      color: var(--color-gold, #c9a227); }
+    .tree-node.closed > .node-body .card.collapsible::after { content: '\25B8'; }
+    /* Connector lines (CSS pseudo-elements) */
+    :root { --gap: 44px; }
+    .tree-node.has-ch > .node-body::after {
+      content: ''; position: absolute; left: 50%; transform: translateX(-50%);
+      top: 100%; width: 2px; height: var(--gap);
+      background: var(--color-gold, #c9a227); }
+    .tree-children { display: flex; flex-direction: row; gap: 14px;
+                     align-items: flex-start; justify-content: center;
+                     margin-top: var(--gap); }
+    .tree-node.closed > .node-body::after  { display: none !important; }
+    .tree-node.closed > .tree-children     { display: none !important; }
+    .tree-children > .tree-node { position: relative; }
+    .tree-children > .tree-node::before {
+      content: ''; position: absolute; left: 50%; transform: translateX(-50%);
+      top: calc(-1 * var(--gap)); width: 2px; height: var(--gap);
+      background: var(--color-gold, #c9a227); }
+    .tree-children > .tree-node::after {
+      content: ''; position: absolute; top: calc(-1 * var(--gap));
+      left: 0; right: 0; height: 2px;
+      background: var(--color-gold, #c9a227); }
+    .tree-children > .tree-node:first-child::after  { left: 50%; }
+    .tree-children > .tree-node:last-child::after   { right: 50%; }
+    .tree-children > .tree-node:first-child:last-child::after { display: none; }
+  </style>
 </head>
 <body>
 
@@ -30,263 +110,21 @@
   <header class="page-header">
     <div class="page-header-inner">
       <h1 class="page-title">Kadiguranis Family</h1>
-      <p class="page-subtitle"><a href="family-trees.html" style="color:rgba(255,255,255,.6); font-size:.85rem;">&larr; Back to Family Trees</a></p>
+      <p class="page-subtitle"><a href="family-trees.html" style="color:rgba(255,255,255,.65);font-size:.85rem;">&larr; Back to Family Trees</a></p>
     </div>
   </header>
 
-  <div class="page-content">
-    <div class="privacy-notice">
-      <strong>Privacy notice:</strong> Per the original website policy, birth dates are not
-      disclosed for individuals born after 1920 unless they are deceased.
-    </div>
-
-    <div class="family-tree-content">
-<div class="tree-entry gen-0 note">Katigiorani 
-Family</div>
-<div class="tree-entry gen-0 note">Note*** There are 
-many 
-different surname spellings in this family tree.</div>
-<div class="tree-entry gen-0">Gabriel Kathiganis b: Unknown</div>
-<div class="tree-entry gen-0 spouse">+ Kallope b: Unknown</div>
-<div class="tree-entry gen-1">John G. Kadiuraus b: January 15, 1890  d: May 24, 1941</div>
-<div class="tree-entry gen-1 note">+Paraskevi N. 'Bertha' Atherine b: March 18, 1883 in Tenedos d: 
-April 24, 1935</div>
-<div class="tree-entry gen-2">Gabriel Angelo Kadiuraus b: May 27, 1921  d: July 9, 2011</div>
-<div class="tree-entry gen-2 spouse">+ Marie Helen Kramer  b: Private</div>
-<div class="tree-entry gen-3">John Kandiguranis  b: Private</div>
-<div class="tree-entry gen-3 spouse">+ Yoneko Sakamoto  b: Private</div>
-<div class="tree-entry gen-4">Angela Hana Kandiguranis b: Private</div>
-<div class="tree-entry gen-4 spouse">+ Michael Brazelton  b: Private</div>
-<div class="tree-entry gen-4">James Matthew Kandiguranis  b: Private</div>
-<div class="tree-entry gen-4 note">*2nd Wife of John Kandiguranis:</div>
-<div class="tree-entry gen-4 spouse">+ Judith Kay Lash   b: Private</div>
-<div class="tree-entry gen-3">Patricia Kandiguranis  b: Private</div>
-<div class="tree-entry gen-3 spouse">+ Douglas E. Monk  b: Private</div>
-<div class="tree-entry gen-4">Sherry Monk  b: Private</div>
-<div class="tree-entry gen-4">Shawna M. Monk  b: Private</div>
-<div class="tree-entry gen-4">Sandra Monk  b: Private</div>
-<div class="tree-entry gen-4 spouse">+ Unknown Durant  b: Private</div>
-<div class="tree-entry gen-4">Stephanie Monk  b: Private</div>
-<div class="tree-entry gen-4">Holly A. Monk  b: Private</div>
-<div class="tree-entry gen-4 spouse">+ Larry Johnson  b: Private</div>
-<div class="tree-entry gen-4">Anthony Johnson  b: Private</div>
-<div class="tree-entry gen-4">Reba Johnson  b: Private</div>
-<div class="tree-entry gen-4 note">*2nd Husband of Patricia Kandiguranis:</div>
-<div class="tree-entry gen-4 spouse">+ Charles J. Shull  b: Private</div>
-<div class="tree-entry gen-4 note">*3rd Husband of Patricia Kandiguranis:</div>
-<div class="tree-entry gen-4 spouse">+ Walter D. Huffman  b: Private</div>
-<div class="tree-entry gen-4 note">*4th Husband of Patricia Kandiguranis:</div>
-<div class="tree-entry gen-4 spouse">+ Pascual Mendoza-Soto  b: Private</div>
-<div class="tree-entry gen-3">Pamela Kandiguranis  b: Private</div>
-<div class="tree-entry gen-3 spouse">+ Rickey E. Daudelin  b: Private</div>
-<div class="tree-entry gen-4">Tiffanie M. Daudelin  b: Private</div>
-<div class="tree-entry gen-4 spouse">+ James F. Sutter  b: Private</div>
-<div class="tree-entry gen-4">Unknown Daudelin  b: Private</div>
-<div class="tree-entry gen-4">John E. Daudelin  b: Private</div>
-<div class="tree-entry gen-4 spouse">+ Crystal Lentz  b: Private</div>
-<div class="tree-entry gen-4">Emily Daudelin  b: Private</div>
-<div class="tree-entry gen-4">Bradon Daudelin  b: Private</div>
-<div class="tree-entry gen-4">Unknown Daudelin  b: Private</div>
-<div class="tree-entry gen-4 note">*2nd Husband of Pamela Kandiguranis:</div>
-<div class="tree-entry gen-4 spouse">+ Harold D. Cowden  b: Private</div>
-<div class="tree-entry gen-4 note">*3rd Husband of Pamela Kandiguranis:</div>
-<div class="tree-entry gen-4 spouse">+ James K. Long  b: Private</div>
-<div class="tree-entry gen-4 note">*4th Husband of Pamela Kandiguranis:</div>
-<div class="tree-entry gen-4 spouse">+ Robert A. Szydlowski  b: Private</div>
-<div class="tree-entry gen-4 note">*2nd Wife of Gabriel Kadiuraus:</div>
-<div class="tree-entry gen-4 spouse">+ Marilyn Fenstermaker  b: Private</div>
-<div class="tree-entry gen-3">Terrence A. 'Terry' Kadiuraus  b: Private</div>
-<div class="tree-entry gen-3 spouse">+ Patricia  b: Private</div>
-<div class="tree-entry gen-2">Dimitri Kadigurani  b: Private</div>
-<div class="tree-entry gen-2 spouse">+ Barbara Kapesizis b: June 08, 1924  d: August 27, 2006</div>
-<div class="tree-entry gen-2 note">*2nd Wife of Dimitri Kadigurani:</div>
-<div class="tree-entry gen-2 spouse">+ Unknown Wife  b: Private</div>
-<div class="tree-entry gen-3">Karen Kadigurani  b: Private</div>
-<div class="tree-entry gen-3 note">*3rd Wife of Dimitri Kadigurani:</div>
-<div class="tree-entry gen-3 spouse">+ Mary S.  b: Private</div>
-<div class="tree-entry gen-3 note">*4th Wife of Dimitri Kadigurani:</div>
-<div class="tree-entry gen-3 spouse">+ Carol L. Echardt  b: Private</div>
-<div class="tree-entry gen-3 note">2 Gus Gabriel Korakas b: February 16, 1896 in Tenedos  d: April 15, 
-1968</div>
-<div class="tree-entry gen-3 spouse">+ Alice Helen Johnson b: June 08, 1909  d: November 08, 1993</div>
-<div class="tree-entry gen-2">Alice Jean Korakas  b: Private</div>
-<div class="tree-entry gen-2 spouse">+ George Ulch  b: Private</div>
-<div class="tree-entry gen-3">George Ulch, Jr.  b: Private</div>
-<div class="tree-entry gen-3">Sue Ulch  b: Private</div>
-<div class="tree-entry gen-3">Frank Edward Ulch  b: Private</div>
-<div class="tree-entry gen-3 spouse">+ Mary Ann Hodges  b: Private</div>
-<div class="tree-entry gen-4">Frank Edward Ulch II  b: Private</div>
-<div class="tree-entry gen-4 spouse">+ Virginia M. Coker  b: Private</div>
-<div class="tree-entry gen-4">Michael J. Ulch   b: Private</div>
-<div class="tree-entry gen-4 spouse">+ Jennifer M. Hagerman  b: Private</div>
-<div class="tree-entry gen-4">Ginny Ulch  b: Private</div>
-<div class="tree-entry gen-4">Christie Ulch  b: Private</div>
-<div class="tree-entry gen-4 spouse">+ Unknown Boatman  b: Private</div>
-<div class="tree-entry gen-4">Brenda Boatman  b: Private</div>
-<div class="tree-entry gen-4">Jade Boatman  b: Private</div>
-<div class="tree-entry gen-4">Corey William Ulch  b: Private</div>
-<div class="tree-entry gen-3">Michael Ulch  b: Private</div>
-<div class="tree-entry gen-3">Nancy Ulch  b: Private</div>
-<div class="tree-entry gen-3 note">*2nd Husband of Alice Jean Korakas:</div>
-<div class="tree-entry gen-3 spouse">+ Frederick J. Perry  b: Private</div>
-<div class="tree-entry gen-3">Katie Perry  b: Private</div>
-<div class="tree-entry gen-3">Frederick J. Perry II  b: Private</div>
-<div class="tree-entry gen-3 spouse">+ Barbara Moore  b: Private</div>
-<div class="tree-entry gen-4">Mary Jean Perry  b: Private</div>
-<div class="tree-entry gen-2">Rosemary Korakas b: March 19, 1928  d: May 23, 1990</div>
-<div class="tree-entry gen-2 note">+John Michael Berente, Sr. b: May 06, 1924  d: May 11, 
-1987</div>
-<div class="tree-entry gen-3">Ronald Lee Berente  b: Private</div>
-<div class="tree-entry gen-3 spouse">+ Beverly J.  b: Private</div>
-<div class="tree-entry gen-3 note">*2nd Wife of Ronald Lee Berente:</div>
-<div class="tree-entry gen-3 spouse">+ Barbara R. Dandar  b: Private</div>
-<div class="tree-entry gen-3 note">4 John Michael Berente, Jr. b: 1948  d: November 16, 
-1965</div>
-<div class="tree-entry gen-3">Stephen R. Berente, Sr.  b: Private</div>
-<div class="tree-entry gen-3 spouse">+ Jennie L Hodges  b: Private</div>
-<div class="tree-entry gen-4">Stephen R. Berente, Jr.  b: Private</div>
-<div class="tree-entry gen-3">Diana R. Berente  b: Private</div>
-<div class="tree-entry gen-3 spouse">+ Frank Lewis Foster, Sr.  b: Private</div>
-<div class="tree-entry gen-4">Frank Lewis Foster, Jr.  b: Private</div>
-<div class="tree-entry gen-4 note">*2nd Husband of Rosemary Korakas:</div>
-<div class="tree-entry gen-4 spouse">+ James G. Zervos, Sr.  b: Private</div>
-<div class="tree-entry gen-3">Georgette Zervos  b: Private</div>
-<div class="tree-entry gen-3">Jamie Sue Zervos  b: Private</div>
-<div class="tree-entry gen-3 spouse">+ Miguel G. Pena  b: Private</div>
-<div class="tree-entry gen-3">James G. Zervos, Jr.  b: Private</div>
-<div class="tree-entry gen-2">Mildred 'Millie' Korakas  b: Private</div>
-<div class="tree-entry gen-2 spouse">+ Unknown Fuller  b: Private</div>
-<div class="tree-entry gen-3">George Fuller  b: Private</div>
-<div class="tree-entry gen-3 note">*2nd Husband of Mildred 'Millie' Korakas:</div>
-<div class="tree-entry gen-3 spouse">+ Unknown White  b: Private</div>
-<div class="tree-entry gen-2">Sylvia Korakas  b: Private</div>
-<div class="tree-entry gen-2 spouse">+ Unknown Carroll  b: Private</div>
-<div class="tree-entry gen-2 note">*2nd Husband of Sylvia Korakas:</div>
-<div class="tree-entry gen-2 spouse">+ Unknown Fultz  b: Private</div>
-<div class="tree-entry gen-2">Gus Eugene Korakas b: March 06, 1931 d: August 26, 2005</div>
-<div class="tree-entry gen-2 spouse">+ Margaret J. Stall b: Abt. 1936 d: April 12, 1985</div>
-<div class="tree-entry gen-3">Randy W. Korakas  b: Private</div>
-<div class="tree-entry gen-3">Robin Korakas  b: Private</div>
-<div class="tree-entry gen-3 spouse">+ Unknown Bartlett  b: Private</div>
-<div class="tree-entry gen-3">Renee E. Korakas  b: Private</div>
-<div class="tree-entry gen-3 note">4 Rayco Korakas b: December 02, 1968  d: December 02, 
-1968</div>
-<div class="tree-entry gen-3 note">*2nd Wife of Gus Eugene Korakas:</div>
-<div class="tree-entry gen-3 spouse">+ Delores J. Guinn  b: Private</div>
-<div class="tree-entry gen-2">Betty Korakas b: November 11, 1934  d: December 23, 2008</div>
-<div class="tree-entry gen-2 note">+Reinhart Louis Kohler, Sr. b: December 29, 1921 d: May 09, 
-1996</div>
-<div class="tree-entry gen-3">Robert E. Kohler, Sr.  b: Private</div>
-<div class="tree-entry gen-3 spouse">+ Marsha Dalton  b: Private</div>
-<div class="tree-entry gen-4">Robert E. Kohler, Jr.  b: Private</div>
-<div class="tree-entry gen-4">Vernon L. Kohler  b: Private</div>
-<div class="tree-entry gen-4">Lisa Marie Kohler  b: Private</div>
-<div class="tree-entry gen-3">Debra Ann Kohler  b: Private</div>
-<div class="tree-entry gen-3 spouse">+ Ron b: Private</div>
-<div class="tree-entry gen-4">Ron Jr. b: Private</div>
-<div class="tree-entry gen-4 note">*2nd Husband of Debra Ann Kohler:</div>
-<div class="tree-entry gen-4 spouse">+ Gilbert Self  b: Private</div>
-<div class="tree-entry gen-4">Eric Self  b: Private</div>
-<div class="tree-entry gen-4">Lawanna Self  b: Private</div>
-<div class="tree-entry gen-4">Jonathan Wayne Self  b: Private</div>
-<div class="tree-entry gen-4 note">4 Reinhart Louis Kohler, Jr. b: July 28, 1955 d: October 
-29, 2002</div>
-<div class="tree-entry gen-4 spouse">+ Elizabeth Marie Castillo b: Private</div>
-<div class="tree-entry gen-4">Melissa Ruth Kohler  b: Private</div>
-<div class="tree-entry gen-4 note">5 Vanessa Cecilia Kohler b: July 22, 1984 in 
-Sacramento Co.,California</div>
-<div class="tree-entry gen-4">Jessica Ann Kohler  b: Private</div>
-<div class="tree-entry gen-4">Chrisa Larita Kohler  b: Private</div>
-<div class="tree-entry gen-4">Sabrina Lynn Kohler  b: Private</div>
-<div class="tree-entry gen-3">Julia Isadora Kohler  b: Private</div>
-<div class="tree-entry gen-3 spouse">+ Donald Davis  b: Private</div>
-<div class="tree-entry gen-4">Kelly R. Davis  b: Private</div>
-<div class="tree-entry gen-4">Derek Allen Davis  b: Private</div>
-<div class="tree-entry gen-4 note">*2nd Husband of Julia Isadora Kohler:</div>
-<div class="tree-entry gen-4 spouse">+ Robert Lee Clay, Sr.  b: Private</div>
-<div class="tree-entry gen-4">Robert Lee Clay, Jr.  b: Private</div>
-<div class="tree-entry gen-3">Sandra Lynn Kohler  b: Private</div>
-<div class="tree-entry gen-3 spouse">+ James Stephen Pokorski  b: Private</div>
-<div class="tree-entry gen-4">Son  b: Private</div>
-<div class="tree-entry gen-4">Daughter  b: Private</div>
-<div class="tree-entry gen-3">Linda Sue Kohler  b: Private</div>
-<div class="tree-entry gen-3 spouse">+ Charles Michael Myers  b: Private</div>
-<div class="tree-entry gen-4">Michael Charles Myers  b: Private</div>
-<div class="tree-entry gen-4">Brandy Lee Myers  b: Private</div>
-<div class="tree-entry gen-4">Crystyn Marie Myers  b: Private</div>
-<div class="tree-entry gen-3">Brenda Louise Kohler  b: Private</div>
-<div class="tree-entry gen-3 spouse">+ Stephen A. Hill, Sr.  b: Private</div>
-<div class="tree-entry gen-4">Stephen A. Hill, Jr.  b: Private</div>
-<div class="tree-entry gen-4">Patricia Hill  b: Private</div>
-<div class="tree-entry gen-4">Christina Ann Hill  b: Private</div>
-<div class="tree-entry gen-4">David James Hill  b: Private</div>
-<div class="tree-entry gen-3">Larita Kay Kohler  b: Private</div>
-<div class="tree-entry gen-3 spouse">+ Louis Matlock  b: Private</div>
-<div class="tree-entry gen-4">Brian Matlock  b: Private</div>
-<div class="tree-entry gen-2">Anne Marjorie Korakas  b: Private</div>
-<div class="tree-entry gen-2">John William (Korakas) Miller, Sr.  b: Private</div>
-<div class="tree-entry gen-2 spouse">+ Judith L. Goulette  b: Private</div>
-<div class="tree-entry gen-3">John William Miller, Jr.  b: Private</div>
-<div class="tree-entry gen-3 spouse">+ Cynthia A. 'Cindy' Waterbury  b: Private</div>
-<div class="tree-entry gen-4">Amber Nicole Miller  b: Private</div>
-<div class="tree-entry gen-4">April Michelle Miller  b: Private</div>
-<div class="tree-entry gen-4">John William Miller III  b: Private</div>
-<div class="tree-entry gen-3">Jackie Lynn Miller  b: Private</div>
-<div class="tree-entry gen-3 spouse">+ Brian Dwaine Reeves, Sr.  b: Private</div>
-<div class="tree-entry gen-4">Brandy Michelle Reeves  b: Private</div>
-<div class="tree-entry gen-4">Jennifer Lynn Reeves  b: Private</div>
-<div class="tree-entry gen-4 spouse">+ Unknown Shubert  b: Private</div>
-<div class="tree-entry gen-4">Brian Dwaine Reeves, Jr.  b: Private</div>
-<div class="tree-entry gen-4">Heather Marie Reeves  b: Private</div>
-<div class="tree-entry gen-4">James Marshal Reeves  b: Private</div>
-<div class="tree-entry gen-4">Christopher Alan Reeves  b: Private</div>
-<div class="tree-entry gen-4">Michael Aaron Reeves  b: Private</div>
-<div class="tree-entry gen-3">Tina R. Miller  b: Private</div>
-<div class="tree-entry gen-3 spouse">+ William Paul Asher, Sr.  b: Private</div>
-<div class="tree-entry gen-4">Tisha Rae Asher  b: Private</div>
-<div class="tree-entry gen-4">William Paul Asher, Jr.  b: Private</div>
-<div class="tree-entry gen-3">Teresa M. Miller  b: Private</div>
-<div class="tree-entry gen-3 spouse">+ Sean Languasco, Sr.  b: Private</div>
-<div class="tree-entry gen-4">Sean Languasco, Jr.  b: Private</div>
-<div class="tree-entry gen-4">Raelynn Marie Languasco  b: Private</div>
-<div class="tree-entry gen-4 note">*2nd Partner of Teresa M. Miller:</div>
-<div class="tree-entry gen-4 spouse">+ Chris Hulan  b: Private</div>
-<div class="tree-entry gen-4">Kelsey Marie Hulan  b: Private</div>
-<div class="tree-entry gen-2">George H. Korakas  b: Private</div>
-<div class="tree-entry gen-2 spouse">+ Debbi Morse  b: Private</div>
-<div class="tree-entry gen-2">Jack W. Korakas  b: Private</div>
-<div class="tree-entry gen-2 spouse">+ Marsha L.  b: Private</div>
-<div class="tree-entry gen-2 note">*2nd Wife of Jack W. Korakas:</div>
-<div class="tree-entry gen-2 spouse">+ Sarah F. Rubelmann  b: Private</div>
-<div class="tree-entry gen-2">Judy Korakas  b: Private</div>
-<div class="tree-entry gen-2 note">+Ronald Joseph Foley, Sr. b: August 05, 1945 d: January 30, 
-1975</div>
-<div class="tree-entry gen-3">Lori Foley  b: Private</div>
-<div class="tree-entry gen-3 spouse">+ Unknown Leland  b: Private</div>
-<div class="tree-entry gen-3">Suzanne Foley  b: Private</div>
-<div class="tree-entry gen-3 spouse">+ Kyle G. O'Hugh  b: Private</div>
-<div class="tree-entry gen-3">Ronald Joseph Foley, Jr.  b: Private</div>
-<div class="tree-entry gen-3">Anthony A. Foley  b: Private</div>
-<div class="tree-entry gen-3 spouse">+ Melissa K. Miley  b: Private</div>
-<div class="tree-entry gen-2">Larry D. Korakas  b: Private</div>
-<div class="tree-entry gen-2 spouse">+ Sandra Davis  b: Private</div>
-<div class="tree-entry gen-2">Gerald Lee Korakas, Sr.  b: Private</div>
-<div class="tree-entry gen-2 spouse">+ Rose A.  b: Private</div>
-<div class="tree-entry gen-3">Gerald Lee 'Jerry' Korakas, Jr.  b: Private</div>
-<div class="tree-entry gen-3 spouse">+ Beth M Tobianski  b: Private</div>
-<div class="tree-entry gen-4">Gerald Lee 'Jerry' Korakas III  b: Private</div>
-<div class="tree-entry gen-4 note">*2nd Wife of Gerald Lee 'Jerry' Korakas, Jr.:</div>
-<div class="tree-entry gen-4 spouse">+ Kathleen C. Kaczynski  b: Private</div>
-<div class="tree-entry gen-4">Nikki Korakas  b: Private</div>
-<div class="tree-entry gen-4 note">*3rd Wife of Gerald Lee 'Jerry' Korakas, Jr.:</div>
-<div class="tree-entry gen-4 spouse">+ Michelle A. Imholt  b: Private</div>
-<div class="tree-entry gen-2">Karen Marie Korakas  b: Private</div>
-<div class="tree-entry gen-2 spouse">+ Robert 'Bob' Arndt, Jr.  b: Private</div>
-<div class="tree-entry gen-3">Robert 'Bob' Arndt III  b: Private</div>
-<div class="tree-entry gen-3 spouse">+ Dawn Hatfield  b: Private</div>
-<div class="tree-entry gen-3 note">*2nd Husband of Karen Marie Korakas:</div>
-<div class="tree-entry gen-3 spouse">+ Unknown Coffman  b: Private</div>
-
+  <div class="page-content tree-page">
+    <div class="tree-outer">
+      <div class="tree-legend">
+        <div class="legend-item"><div class="ls navy"></div> Ancestor</div>
+        <div class="legend-item"><div class="ls white"></div> Descendant</div>
+        <div class="legend-item"><div class="ls blue"></div> Spouse (married-in)</div>
+        <div class="legend-item"><div class="ls gray"></div> Living (private)</div>
+        <div class="legend-item" style="color:var(--color-gold,#c9a227);font-weight:700;font-size:1rem">&times;</div>&thinsp;Married
+        <div class="legend-item" style="font-size:.75rem;color:#999">Click a descendant card to collapse/expand</div>
+      </div>
+      <div class="tree-forest" id="forest"></div>
     </div>
   </div>
 </main>
@@ -302,11 +140,101 @@ Sacramento Co.,California</div>
       <a href="contact.html">Contact</a>
       <a href="not-recovered.html">Not Archived</a>
     </nav>
-    <p class="footer-copy">
-      Original content &copy; Tenedian Brotherhood. Website restored and modernized from archived materials.
-    </p>
+    <p class="footer-copy">Original content &copy; Tenedian Brotherhood.
+      Website restored and modernized from archived materials.</p>
   </div>
 </footer>
 
+<script>
+var TREES = [{"id":"p1","name":"Gabriel Kathiganis","m":[{"sp":{"id":"p2","name":"Kallope","birth":"Unknown"},"kids":[{"id":"p3","name":"John G. Kadiuraus","m":[{"sp":{"id":"p4","name":"Paraskevi N. 'Bertha' Atherine","birth":"March 18, 1883","death":"April 24, 1935"},"kids":[{"id":"p5","name":"Gabriel Angelo Kadiuraus","m":[{"sp":{"id":"p6","name":"Marie Helen Kramer","priv":true},"kids":[{"id":"p7","name":"John Kandiguranis","m":[{"sp":{"id":"p8","name":"Yoneko Sakamoto","priv":true},"kids":[{"id":"p9","name":"Angela Hana Kandiguranis","m":[{"sp":{"id":"p10","name":"Michael Brazelton","priv":true},"kids":[]}],"priv":true},{"id":"p11","name":"James Matthew Kandiguranis","m":[],"priv":true}]},{"sp":{"id":"p12","name":"Judith Kay Lash","priv":true},"kids":[],"label":"2nd marriage"}],"priv":true},{"id":"p13","name":"Patricia Kandiguranis","m":[{"sp":{"id":"p14","name":"Douglas E. Monk","priv":true},"kids":[{"id":"p15","name":"Sherry Monk","m":[],"priv":true},{"id":"p16","name":"Shawna M. Monk","m":[],"priv":true},{"id":"p17","name":"Sandra Monk","m":[{"sp":{"id":"p18","name":"Unknown Durant","priv":true},"kids":[]}],"priv":true},{"id":"p19","name":"Stephanie Monk","m":[],"priv":true},{"id":"p20","name":"Holly A. Monk","m":[{"sp":{"id":"p21","name":"Larry Johnson","priv":true},"kids":[{"id":"p22","name":"Anthony Johnson","m":[],"priv":true},{"id":"p23","name":"Reba Johnson","m":[],"priv":true}]}],"priv":true}]},{"sp":{"id":"p24","name":"Charles J. Shull","priv":true},"kids":[],"label":"2nd marriage"},{"sp":{"id":"p25","name":"Walter D. Huffman","death":"Huffman b: Private","priv":true},"kids":[],"label":"3rd marriage"},{"sp":{"id":"p26","name":"Pascual Mendoza-Soto","priv":true},"kids":[],"label":"4th marriage"}],"priv":true},{"id":"p27","name":"Pamela Kandiguranis","m":[{"sp":{"id":"p28","name":"Rickey E. Daudelin","priv":true},"kids":[{"id":"p29","name":"Tiffanie M. Daudelin","m":[{"sp":{"id":"p30","name":"James F. Sutter","priv":true},"kids":[]}],"priv":true},{"id":"p31","name":"Unknown Daudelin","m":[],"priv":true},{"id":"p32","name":"John E. Daudelin","m":[{"sp":{"id":"p33","name":"Crystal Lentz","priv":true},"kids":[{"id":"p34","name":"Emily Daudelin","m":[],"priv":true},{"id":"p35","name":"Bradon Daudelin","m":[],"priv":true}]}],"priv":true},{"id":"p36","name":"Unknown Daudelin","m":[],"priv":true}]},{"sp":{"id":"p37","name":"Harold D. Cowden","death":"Cowden b: Private","priv":true},"kids":[],"label":"2nd marriage"},{"sp":{"id":"p38","name":"James K. Long","priv":true},"kids":[],"label":"3rd marriage"},{"sp":{"id":"p39","name":"Robert A. Szydlowski","priv":true},"kids":[],"label":"4th marriage"}],"priv":true}]},{"sp":{"id":"p40","name":"Marilyn Fenstermaker","priv":true},"kids":[{"id":"p41","name":"Terrence A. 'Terry' Kadiuraus","m":[{"sp":{"id":"p42","name":"Patricia","priv":true},"kids":[]}],"priv":true}],"label":"2nd marriage"}],"birth":"May 27, 1921","death":"July 9, 2011"},{"id":"p43","name":"Dimitri Kadigurani","m":[{"sp":{"id":"p44","name":"Barbara Kapesizis","birth":"June 08, 1924","death":"August 27, 2006"},"kids":[]},{"sp":{"id":"p45","name":"Unknown Wife","priv":true},"kids":[{"id":"p46","name":"Karen Kadigurani","m":[],"priv":true}],"label":"2nd marriage"},{"sp":{"id":"p47","name":"Mary S.","priv":true},"kids":[],"label":"3rd marriage"},{"sp":{"id":"p48","name":"Carol L. Echardt","priv":true},"kids":[],"label":"4th marriage"}],"priv":true}]}],"birth":"January 15, 1890","death":"May 24, 1941"},{"id":"p49","name":"Gus Gabriel Korakas","m":[{"sp":{"id":"p50","name":"Alice Helen Johnson","birth":"June 08, 1909","death":"November 08, 1993"},"kids":[{"id":"p51","name":"Alice Jean Korakas","m":[{"sp":{"id":"p52","name":"George Ulch","priv":true},"kids":[{"id":"p53","name":"George Ulch, Jr.","m":[],"priv":true},{"id":"p54","name":"Sue Ulch","m":[],"priv":true},{"id":"p55","name":"Frank Edward Ulch","m":[{"sp":{"id":"p56","name":"Mary Ann Hodges","priv":true},"kids":[{"id":"p57","name":"Frank Edward Ulch II","m":[{"sp":{"id":"p58","name":"Virginia M. Coker","priv":true},"kids":[]}],"priv":true},{"id":"p59","name":"Michael J. Ulch","m":[{"sp":{"id":"p60","name":"Jennifer M. Hagerman","priv":true},"kids":[]}],"priv":true},{"id":"p61","name":"Ginny Ulch","m":[],"priv":true},{"id":"p62","name":"Christie Ulch","m":[{"sp":{"id":"p63","name":"Unknown Boatman","priv":true},"kids":[{"id":"p64","name":"Brenda Boatman","m":[],"priv":true},{"id":"p65","name":"Jade Boatman","m":[],"priv":true}]}],"priv":true},{"id":"p66","name":"Corey William Ulch","m":[],"priv":true}]}],"priv":true},{"id":"p67","name":"Michael Ulch","m":[],"priv":true},{"id":"p68","name":"Nancy Ulch","m":[],"priv":true}]},{"sp":{"id":"p69","name":"Frederick J. Perry","priv":true},"kids":[{"id":"p70","name":"Katie Perry","m":[],"priv":true},{"id":"p71","name":"Frederick J. Perry II","m":[{"sp":{"id":"p72","name":"Barbara Moore","priv":true},"kids":[{"id":"p73","name":"Mary Jean Perry","m":[],"priv":true}]}],"priv":true}],"label":"2nd marriage"}],"priv":true},{"id":"p74","name":"Rosemary Korakas","m":[{"sp":{"id":"p75","name":"John Michael Berente, Sr.","birth":"May 06, 1924","death":"May 11, 1987"},"kids":[{"id":"p76","name":"Ronald Lee Berente","m":[{"sp":{"id":"p77","name":"Beverly J.","priv":true},"kids":[]},{"sp":{"id":"p78","name":"Barbara R. Dandar","priv":true},"kids":[],"label":"2nd marriage"}],"priv":true},{"id":"p79","name":"John Michael Berente, Jr.","m":[],"birth":"1948","death":"November 16, 1965"},{"id":"p80","name":"Stephen R. Berente, Sr.","m":[{"sp":{"id":"p81","name":"Jennie L Hodges","priv":true},"kids":[{"id":"p82","name":"Stephen R. Berente, Jr.","m":[],"priv":true}]}],"priv":true},{"id":"p83","name":"Diana R. Berente","m":[{"sp":{"id":"p84","name":"Frank Lewis Foster, Sr.","priv":true},"kids":[{"id":"p85","name":"Frank Lewis Foster, Jr.","m":[],"priv":true}]}],"priv":true}]},{"sp":{"id":"p86","name":"James G. Zervos, Sr.","priv":true},"kids":[{"id":"p87","name":"Georgette Zervos","m":[],"priv":true},{"id":"p88","name":"Jamie Sue Zervos","m":[{"sp":{"id":"p89","name":"Miguel G. Pena","priv":true},"kids":[]}],"priv":true},{"id":"p90","name":"James G. Zervos, Jr.","m":[],"priv":true}],"label":"2nd marriage"}],"birth":"March 19, 1928","death":"May 23, 1990"},{"id":"p91","name":"Mildred 'Millie' Korakas","m":[{"sp":{"id":"p92","name":"Unknown Fuller","priv":true},"kids":[{"id":"p93","name":"George Fuller","m":[],"priv":true}]},{"sp":{"id":"p94","name":"Unknown White","priv":true},"kids":[],"label":"2nd marriage"}],"priv":true},{"id":"p95","name":"Sylvia Korakas","m":[{"sp":{"id":"p96","name":"Unknown Carroll","priv":true},"kids":[]},{"sp":{"id":"p97","name":"Unknown Fultz","priv":true},"kids":[],"label":"2nd marriage"}],"priv":true},{"id":"p98","name":"Gus Eugene Korakas","m":[{"sp":{"id":"p99","name":"Margaret J. Stall","birth":"Abt. 1936","death":"April 12, 1985"},"kids":[{"id":"p100","name":"Randy W. Korakas","m":[],"priv":true},{"id":"p101","name":"Robin Korakas","m":[{"sp":{"id":"p102","name":"Unknown Bartlett","priv":true},"kids":[]}],"priv":true},{"id":"p103","name":"Renee E. Korakas","m":[],"priv":true},{"id":"p104","name":"Rayco Korakas","m":[],"birth":"December 02, 1968","death":"December 02, 1968"}]},{"sp":{"id":"p105","name":"Delores J. Guinn","priv":true},"kids":[],"label":"2nd marriage"}],"birth":"March 06, 1931","death":"August 26, 2005"},{"id":"p106","name":"Betty Korakas","m":[{"sp":{"id":"p107","name":"Reinhart Louis Kohler, Sr.","birth":"December 29, 1921","death":"May 09, 1996"},"kids":[{"id":"p108","name":"Robert E. Kohler, Sr.","m":[{"sp":{"id":"p109","name":"Marsha Dalton","priv":true},"kids":[{"id":"p110","name":"Robert E. Kohler, Jr.","m":[],"priv":true},{"id":"p111","name":"Vernon L. Kohler","m":[],"priv":true},{"id":"p112","name":"Lisa Marie Kohler","m":[],"priv":true}]}],"priv":true},{"id":"p113","name":"Debra Ann Kohler","m":[{"sp":{"id":"p114","name":"Ron","priv":true},"kids":[{"id":"p115","name":"Ron Jr.","m":[],"priv":true}]},{"sp":{"id":"p116","name":"Gilbert Self","priv":true},"kids":[{"id":"p117","name":"Eric Self","m":[],"priv":true},{"id":"p118","name":"Lawanna Self","m":[],"priv":true},{"id":"p119","name":"Jonathan Wayne Self","m":[],"priv":true}],"label":"2nd marriage"}],"priv":true},{"id":"p120","name":"Reinhart Louis Kohler, Jr.","m":[{"sp":{"id":"p121","name":"Elizabeth Marie Castillo","priv":true},"kids":[{"id":"p122","name":"Melissa Ruth Kohler","m":[],"priv":true},{"id":"p123","name":"Vanessa Cecilia Kohler","m":[],"birth":"July 22, 1984","priv":true},{"id":"p124","name":"Jessica Ann Kohler","m":[],"priv":true},{"id":"p125","name":"Chrisa Larita Kohler","m":[],"priv":true},{"id":"p126","name":"Sabrina Lynn Kohler","m":[],"priv":true}]}],"birth":"July 28, 1955","death":"October 29, 2002"},{"id":"p127","name":"Julia Isadora Kohler","m":[{"sp":{"id":"p128","name":"Donald Davis","priv":true},"kids":[{"id":"p129","name":"Kelly R. Davis","m":[],"priv":true},{"id":"p130","name":"Derek Allen Davis","m":[],"priv":true}]},{"sp":{"id":"p131","name":"Robert Lee Clay, Sr.","priv":true},"kids":[{"id":"p132","name":"Robert Lee Clay, Jr.","m":[],"priv":true}],"label":"2nd marriage"}],"priv":true},{"id":"p133","name":"Sandra Lynn Kohler","m":[{"sp":{"id":"p134","name":"James Stephen Pokorski","priv":true},"kids":[{"id":"p135","name":"Son","m":[],"priv":true},{"id":"p136","name":"Daughter","m":[],"priv":true}]}],"priv":true},{"id":"p137","name":"Linda Sue Kohler","m":[{"sp":{"id":"p138","name":"Charles Michael Myers","priv":true},"kids":[{"id":"p139","name":"Michael Charles Myers","m":[],"priv":true},{"id":"p140","name":"Brandy Lee Myers","m":[],"priv":true},{"id":"p141","name":"Crystyn Marie Myers","m":[],"priv":true}]}],"priv":true},{"id":"p142","name":"Brenda Louise Kohler","m":[{"sp":{"id":"p143","name":"Stephen A. Hill, Sr.","priv":true},"kids":[{"id":"p144","name":"Stephen A. Hill, Jr.","m":[],"priv":true},{"id":"p145","name":"Patricia Hill","m":[],"priv":true},{"id":"p146","name":"Christina Ann Hill","m":[],"priv":true},{"id":"p147","name":"David James Hill","m":[],"priv":true}]}],"priv":true},{"id":"p148","name":"Larita Kay Kohler","m":[{"sp":{"id":"p149","name":"Louis Matlock","priv":true},"kids":[{"id":"p150","name":"Brian Matlock","m":[],"priv":true}]}],"priv":true}]}],"birth":"November 11, 1934","death":"December 23, 2008"},{"id":"p151","name":"Anne Marjorie Korakas","m":[],"priv":true},{"id":"p152","name":"John William (Korakas) Miller, Sr.","m":[{"sp":{"id":"p153","name":"Judith L. Goulette","priv":true},"kids":[{"id":"p154","name":"John William Miller, Jr.","m":[{"sp":{"id":"p155","name":"Cynthia A. 'Cindy' Waterbury","priv":true},"kids":[{"id":"p156","name":"Amber Nicole Miller","m":[],"priv":true},{"id":"p157","name":"April Michelle Miller","m":[],"priv":true},{"id":"p158","name":"John William Miller III","m":[],"priv":true}]}],"priv":true},{"id":"p159","name":"Jackie Lynn Miller","m":[{"sp":{"id":"p160","name":"Brian Dwaine Reeves, Sr.","priv":true},"kids":[{"id":"p161","name":"Brandy Michelle Reeves","m":[],"priv":true},{"id":"p162","name":"Jennifer Lynn Reeves","m":[{"sp":{"id":"p163","name":"Unknown Shubert","priv":true},"kids":[]}],"priv":true},{"id":"p164","name":"Brian Dwaine Reeves, Jr.","m":[],"priv":true},{"id":"p165","name":"Heather Marie Reeves","m":[],"priv":true},{"id":"p166","name":"James Marshal Reeves","m":[],"priv":true},{"id":"p167","name":"Christopher Alan Reeves","m":[],"priv":true},{"id":"p168","name":"Michael Aaron Reeves","m":[],"priv":true}]}],"priv":true},{"id":"p169","name":"Tina R. Miller","m":[{"sp":{"id":"p170","name":"William Paul Asher, Sr.","priv":true},"kids":[{"id":"p171","name":"Tisha Rae Asher","m":[],"priv":true},{"id":"p172","name":"William Paul Asher, Jr.","m":[],"priv":true}]}],"priv":true},{"id":"p173","name":"Teresa M. Miller","m":[{"sp":{"id":"p174","name":"Sean Languasco, Sr.","priv":true},"kids":[{"id":"p175","name":"Sean Languasco, Jr.","m":[],"priv":true},{"id":"p176","name":"Raelynn Marie Languasco","m":[],"priv":true}]},{"sp":{"id":"p177","name":"Chris Hulan","priv":true},"kids":[{"id":"p178","name":"Kelsey Marie Hulan","m":[],"priv":true}],"label":"2nd marriage"}],"priv":true}]}],"priv":true},{"id":"p179","name":"George H. Korakas","m":[{"sp":{"id":"p180","name":"Debbi Morse","priv":true},"kids":[]}],"priv":true},{"id":"p181","name":"Jack W. Korakas","m":[{"sp":{"id":"p182","name":"Marsha L.","priv":true},"kids":[]},{"sp":{"id":"p183","name":"Sarah F. Rubelmann","priv":true},"kids":[],"label":"2nd marriage"}],"priv":true},{"id":"p184","name":"Judy Korakas","m":[{"sp":{"id":"p185","name":"Ronald Joseph Foley, Sr.","birth":"August 05, 1945","death":"January 30, 1975"},"kids":[{"id":"p186","name":"Lori Foley","m":[{"sp":{"id":"p187","name":"Unknown Leland","priv":true},"kids":[]}],"priv":true},{"id":"p188","name":"Suzanne Foley","m":[{"sp":{"id":"p189","name":"Kyle G. O'Hugh","priv":true},"kids":[]}],"priv":true},{"id":"p190","name":"Ronald Joseph Foley, Jr.","m":[],"priv":true},{"id":"p191","name":"Anthony A. Foley","m":[{"sp":{"id":"p192","name":"Melissa K. Miley","priv":true},"kids":[]}],"priv":true}]}],"priv":true},{"id":"p193","name":"Larry D. Korakas","m":[{"sp":{"id":"p194","name":"Sandra Davis","priv":true},"kids":[]}],"death":"Korakas b: Private","priv":true},{"id":"p195","name":"Gerald Lee Korakas, Sr.","m":[{"sp":{"id":"p196","name":"Rose A.","priv":true},"kids":[{"id":"p197","name":"Gerald Lee 'Jerry' Korakas, Jr.","m":[{"sp":{"id":"p198","name":"Beth M Tobianski","priv":true},"kids":[{"id":"p199","name":"Gerald Lee 'Jerry' Korakas III","m":[],"priv":true}]},{"sp":{"id":"p200","name":"Kathleen C. Kaczynski","priv":true},"kids":[{"id":"p201","name":"Nikki Korakas","m":[],"priv":true}],"label":"2nd marriage"},{"sp":{"id":"p202","name":"Michelle A. Imholt","priv":true},"kids":[],"label":"3rd marriage"}],"priv":true}]}],"priv":true},{"id":"p203","name":"Karen Marie Korakas","m":[{"sp":{"id":"p204","name":"Robert 'Bob' Arndt, Jr.","priv":true},"kids":[{"id":"p205","name":"Robert 'Bob' Arndt III","m":[{"sp":{"id":"p206","name":"Dawn Hatfield","priv":true},"kids":[]}],"priv":true}]},{"sp":{"id":"p207","name":"Unknown Coffman","priv":true},"kids":[],"label":"2nd marriage"}],"priv":true}]}],"birth":"February 16, 1896","death":"April 15, 1968"}]}],"birth":"Unknown"}];
+var TREE_TITLES = ["Kadiguranis Family"];
+function makeCard(p, cls) {
+  var div = document.createElement('div');
+  div.className = 'card ' + (cls || '');
+  var n = document.createElement('span'); n.className = 'n';
+  n.textContent = p.name; div.appendChild(n);
+  var parts = [];
+  if (p.birth) parts.push('b. ' + p.birth);
+  if (p.death) parts.push('d. ' + p.death);
+  if (p.priv && !p.birth && !p.death) parts.push('Living');
+  if (parts.length) {
+    var d = document.createElement('span'); d.className = 'd';
+    d.textContent = parts.join('  ·  '); div.appendChild(d);
+  }
+  return div;
+}
+
+function renderNode(p, gen) {
+  var wrapper = document.createElement('div'); wrapper.className = 'tree-node';
+  var body = document.createElement('div'); body.className = 'node-body';
+  var marriages = p.m || [];
+  var allKids = [];
+  for (var i = 0; i < marriages.length; i++) {
+    var ks = marriages[i].kids || [];
+    for (var j = 0; j < ks.length; j++) allKids.push(ks[j]);
+  }
+  var cls = gen === 0 ? 'root' : (p.priv ? 'priv' : '');
+  if (allKids.length) cls += (cls ? ' ' : '') + 'collapsible';
+  var mc = makeCard(p, cls);
+  if (marriages.length > 0) {
+    var row = document.createElement('div'); row.className = 'couple-row';
+    row.appendChild(mc);
+    if (marriages[0].sp) {
+      var dot = document.createElement('span'); dot.className = 'cx';
+      dot.textContent = '×'; row.appendChild(dot);
+      var spCls = 'spouse' + (marriages[0].sp.priv ? ' priv' : '');
+      row.appendChild(makeCard(marriages[0].sp, spCls));
+    }
+    body.appendChild(row);
+    for (var mi = 1; mi < marriages.length; mi++) {
+      var mg = marriages[mi];
+      if (mg.label) {
+        var lbl = document.createElement('div'); lbl.className = 'remarriage-lbl';
+        lbl.textContent = mg.label + ':'; body.appendChild(lbl);
+      }
+      if (mg.sp) {
+        var r2 = document.createElement('div'); r2.className = 'couple-row';
+        var ph = document.createElement('div'); ph.style.cssText = 'width:148px;flex-shrink:0;';
+        r2.appendChild(ph);
+        var d2 = document.createElement('span'); d2.className = 'cx';
+        d2.textContent = '×'; r2.appendChild(d2);
+        var sp2Cls = 'spouse' + (mg.sp.priv ? ' priv' : '');
+        r2.appendChild(makeCard(mg.sp, sp2Cls)); body.appendChild(r2);
+      }
+    }
+  } else {
+    var soloRow = document.createElement('div'); soloRow.className = 'couple-row';
+    soloRow.appendChild(mc); body.appendChild(soloRow);
+  }
+  wrapper.appendChild(body);
+  if (allKids.length) {
+    wrapper.classList.add('has-ch');
+    var cr = document.createElement('div'); cr.className = 'tree-children';
+    for (var ki = 0; ki < allKids.length; ki++) cr.appendChild(renderNode(allKids[ki], gen + 1));
+    wrapper.appendChild(cr);
+    mc.addEventListener('click', (function(nd) {
+      return function(e) { e.stopPropagation(); nd.classList.toggle('closed'); };
+    }(wrapper)));
+  }
+  return wrapper;
+}
+
+function buildSection(title, data, showTitle) {
+  var sec = document.createElement('div'); sec.className = 'tree-section';
+  if (showTitle) {
+    var h = document.createElement('h2'); h.className = 'tree-section-heading';
+    h.textContent = title; sec.appendChild(h);
+  }
+  var root = document.createElement('div'); root.className = 'tree-root';
+  root.appendChild(renderNode(data, 0)); sec.appendChild(root);
+  return sec;
+}
+
+var forest = document.getElementById('forest');
+var multiTree = TREES.length > 1;
+for (var ti = 0; ti < TREES.length; ti++) {
+  forest.appendChild(buildSection(TREE_TITLES[ti], TREES[ti], multiTree));
+}
+</script>
 </body>
 </html>

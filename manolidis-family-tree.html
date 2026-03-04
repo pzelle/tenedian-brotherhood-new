@@ -3,8 +3,88 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Manolidis — Tenedian Brotherhood</title>
+  <title>Manolidis Family — Tenedian Brotherhood</title>
   <link rel="stylesheet" href="css/style.css">
+  <style>
+    .tree-page { padding: 0; }
+    .tree-outer { overflow-x: auto; padding: 2.5rem 1.5rem 3rem;
+                  background: var(--color-off-white, #f8f5f0); }
+    .tree-forest { display: flex; flex-direction: column; gap: 3.5rem; }
+    .tree-section-heading {
+      font-family: var(--font-heading, 'Playfair Display', serif);
+      color: var(--color-navy, #0a1628); font-size: 1.2rem;
+      margin: 0 0 1.25rem; padding-bottom: 0.4rem;
+      border-bottom: 2px solid var(--color-gold, #c9a227); }
+    .tree-legend { display: flex; gap: 1.2rem; flex-wrap: wrap;
+                   margin-bottom: 2rem; font-size: 0.8rem; color: #555;
+                   align-items: center; }
+    .legend-item { display: flex; align-items: center; gap: 5px; }
+    .ls { width: 20px; height: 13px; border-radius: 3px;
+          border: 2px solid var(--color-gold, #c9a227);
+          display: inline-block; flex-shrink: 0; }
+    .ls.navy  { background: var(--color-navy, #0a1628); }
+    .ls.white { background: #fff; }
+    .ls.blue  { background: #dce8ff; border-color: #6888cc; }
+    .ls.gray  { background: #eee; border-color: #bbb; }
+    /* Tree layout */
+    .tree-section { overflow-x: auto; padding-bottom: 0.5rem; }
+    .tree-root { display: inline-flex; flex-direction: column;
+                 align-items: center; padding: 0.5rem 1rem; }
+    .tree-node { display: flex; flex-direction: column; align-items: center;
+                 position: relative; }
+    .node-body { display: flex; flex-direction: column; align-items: center;
+                 gap: 3px; position: relative; }
+    .couple-row { display: flex; align-items: center; gap: 5px; }
+    .cx { color: var(--color-gold, #c9a227); font-weight: 700; font-size: 1rem;
+          padding: 0 2px; flex-shrink: 0; }
+    .remarriage-lbl { font-size: 0.65rem; color: #999; font-style: italic;
+                      text-align: center; margin-top: 5px; }
+    /* Cards */
+    .card { background: #fff; border: 2px solid var(--color-gold, #c9a227);
+            border-radius: 6px; padding: 7px 10px; width: 148px;
+            text-align: center; font-size: 0.74rem; line-height: 1.35;
+            position: relative; }
+    .card .n { font-weight: 700; color: var(--color-navy, #0a1628);
+               display: block; font-size: 0.78rem; }
+    .card .d { color: #888; font-size: 0.67rem; display: block; margin-top: 2px; }
+    .card.root { background: var(--color-navy, #0a1628);
+                 border-color: var(--color-gold, #c9a227); }
+    .card.root .n { color: var(--color-gold, #c9a227); }
+    .card.root .d { color: #99aabb; }
+    .card.spouse { background: #dce8ff; border-color: #6888cc; }
+    .card.spouse .n { color: #1a3a80; }
+    .card.priv  { background: #eee; border-color: #bbb; }
+    .card.priv .n { color: #666; }
+    .card.priv .d { color: #aaa; }
+    .card.collapsible { cursor: pointer; }
+    .card.collapsible::after { content: '\25BE'; position: absolute;
+      bottom: 3px; right: 5px; font-size: 0.6rem;
+      color: var(--color-gold, #c9a227); }
+    .tree-node.closed > .node-body .card.collapsible::after { content: '\25B8'; }
+    /* Connector lines (CSS pseudo-elements) */
+    :root { --gap: 44px; }
+    .tree-node.has-ch > .node-body::after {
+      content: ''; position: absolute; left: 50%; transform: translateX(-50%);
+      top: 100%; width: 2px; height: var(--gap);
+      background: var(--color-gold, #c9a227); }
+    .tree-children { display: flex; flex-direction: row; gap: 14px;
+                     align-items: flex-start; justify-content: center;
+                     margin-top: var(--gap); }
+    .tree-node.closed > .node-body::after  { display: none !important; }
+    .tree-node.closed > .tree-children     { display: none !important; }
+    .tree-children > .tree-node { position: relative; }
+    .tree-children > .tree-node::before {
+      content: ''; position: absolute; left: 50%; transform: translateX(-50%);
+      top: calc(-1 * var(--gap)); width: 2px; height: var(--gap);
+      background: var(--color-gold, #c9a227); }
+    .tree-children > .tree-node::after {
+      content: ''; position: absolute; top: calc(-1 * var(--gap));
+      left: 0; right: 0; height: 2px;
+      background: var(--color-gold, #c9a227); }
+    .tree-children > .tree-node:first-child::after  { left: 50%; }
+    .tree-children > .tree-node:last-child::after   { right: 50%; }
+    .tree-children > .tree-node:first-child:last-child::after { display: none; }
+  </style>
 </head>
 <body>
 
@@ -29,239 +109,22 @@
 <main>
   <header class="page-header">
     <div class="page-header-inner">
-      <h1 class="page-title">Manolidis</h1>
-      <p class="page-subtitle"><a href="family-trees.html" style="color:rgba(255,255,255,.6); font-size:.85rem;">&larr; Back to Family Trees</a></p>
+      <h1 class="page-title">Manolidis Family</h1>
+      <p class="page-subtitle"><a href="family-trees.html" style="color:rgba(255,255,255,.65);font-size:.85rem;">&larr; Back to Family Trees</a></p>
     </div>
   </header>
 
-  <div class="page-content">
-    <div class="privacy-notice">
-      <strong>Privacy notice:</strong> Per the original website policy, birth dates are not
-      disclosed for individuals born after 1920 unless they are deceased.
-    </div>
-
-    <div class="family-tree-content">
-<div class="tree-entry gen-0 note">Manolidis / Manol Family</div>
-<div class="tree-entry gen-0 note">Note: There are 3 
-different families listed here. I do not know if or how they are related.</div>
-<div class="tree-entry gen-0">George Manolidis b: Unknown</div>
-<div class="tree-entry gen-0 spouse">+ Katherine Makras b: Unknown</div>
-<div class="tree-entry gen-0 note">2 Apostolos G. Manolidis b: 
-June 30, 1885 in Tenedos, Greece d: April 18, 1961</div>
-<div class="tree-entry gen-0 spouse">+ Agnes b: April 17, 1892 in Italy d: November 23, 1961</div>
-<div class="tree-entry gen-0 note">2 Elefteria 'Liberty' Manolidis 
-b: July 16, 1892 in Tenedos, Greece d: April 29, 1974</div>
-<div class="tree-entry gen-0 note">+James Gaitanes b: June 24, 
-1893 in Tenedos, Greece d: August 28, 1961</div>
-<div class="tree-entry gen-0 note">3 Katherine Gaitanes b: 
-November 05, 1917 d: June 23, 2004</div>
-<div class="tree-entry gen-0 note">+John J. Rapton b: 
-April 18, 1912 in Greece d: March 05, 1999</div>
-<div class="tree-entry gen-0 note">4 James John 
-Rapton b: October 12, 1934  d: May 02, 2006</div>
-<div class="tree-entry gen-0 note">+Unknown b: 
-Private</div>
-<div class="tree-entry gen-0 note">5 James 
-M. Rapton b: Private</div>
-<div class="tree-entry gen-0 spouse">+ Petra b: Private</div>
-<div class="tree-entry gen-4">James Rapton b: Private</div>
-<div class="tree-entry gen-4">Dominic J. Rapton b: Private</div>
-<div class="tree-entry gen-4">Heather M. Rapton b: Private</div>
-<div class="tree-entry gen-4 note">*2nd Wife of 
-James John Rapton:</div>
-<div class="tree-entry gen-4 note">+Sylvia 
-Gruver b: Private</div>
-<div class="tree-entry gen-4 note">*2nd Husband of Katherine 
-Gaitanes:</div>
-<div class="tree-entry gen-4 note">+George S. Kangas b: 
-February 01, 1917 d: November 15, 1994</div>
-<div class="tree-entry gen-4 note">4 Dr.Phyllis Rose Kangas 
-b: Private</div>
-<div class="tree-entry gen-4 note">+Thomas 
-Franklin Kuehnle b: January 22, 1933 d: November 29, 1993</div>
-<div class="tree-entry gen-4 note">5 Todd 
-Kuehnle b: Private</div>
-<div class="tree-entry gen-4 spouse">+ Jennifer b: Private</div>
-<div class="tree-entry gen-4 note">5 Eric. 
-S. Kuehnle b: Private</div>
-<div class="tree-entry gen-4 note">*2nd Husband of 
-Phyllis Kangas.:</div>
-<div class="tree-entry gen-4 note">+Albert Daniel Walters, 
-Jr. 
-b: Private</div>
-<div class="tree-entry gen-4 note">2 Savas 'Samuel' Manolidis b: 
-August 1894 in Tenedos, Greece d: Dec. 21, 1927</div>
-<div class="tree-entry gen-4 note">+Efthemia 'Effie' Arvanitis 
-b: May 10, 1901 in Tenedos, Greece d: Feb. 11, 1994</div>
-<div class="tree-entry gen-4 note">3 Nicholas 'Nick' Savas 
-Manol b: October 13, 1922 d: October 13,1959</div>
-<div class="tree-entry gen-4 note">+Stella Busilowski b: 
-Private</div>
-<div class="tree-entry gen-4 note">4 Samuel Nicholas 
-'Sam' Manol b: Private</div>
-<div class="tree-entry gen-4 note">+Catherine A. 
-'Cathy' Morris b: Private</div>
-<div class="tree-entry gen-4">Nicholas Peter Manol b: Private</div>
-<div class="tree-entry gen-4 note">5 Zachary 
-Manol b: Private</div>
-<div class="tree-entry gen-4 note">3 George Savas Manol (1) b: January 9, 1925  
-d: February 2, 1925</div>
-<div class="tree-entry gen-4 note">3 George Savas Manol (2) b: 
-Private</div>
-<div class="tree-entry gen-4 note">+Alberta Beilstein b: 
-1921 d: February 02, 1962</div>
-<div class="tree-entry gen-4 note">4 Thomas Albert 
-Manol b: December 17, 1955 d: September 16, 1965</div>
-<div class="tree-entry gen-4 note">*2nd Wife of George Savas 
-Manol:</div>
-<div class="tree-entry gen-4 note">+Joyce Jeanette 
-Robertson b: Private</div>
-<div class="tree-entry gen-4 note">4 Lisa Michelle 
-Manol b: Private</div>
-<div class="tree-entry gen-4 note">3 Paraskevi Catherine 
-'Frieda' Manol b: Private</div>
-<div class="tree-entry gen-4 note">+Constantine 'Gus' 
-Sevastakis b: April 22, 1926  d: Sept. 27, 2010</div>
-<div class="tree-entry gen-4 note">4 Christopher 
-Sevastakis b: Private</div>
-<div class="tree-entry gen-4 note">4 Arletta 
-Sevastakis b: Private</div>
-<div class="tree-entry gen-3">Nicholas X Sevastakis b: Private</div>
-<div class="tree-entry gen-3 note">+Claudia b: 
-Private</div>
-<div class="tree-entry gen-0">Theodore Manolidis b: Unknown in Tenedos, Greece</div>
-<div class="tree-entry gen-0 spouse">+ Katherine Grivanos b: Unknown in Tenedos, Greece</div>
-<div class="tree-entry gen-0 note">2 Eleni 'Helen' Manolidis b: Aug. 20, 1889 in Tenedos, Greece d: 
-March 31, 1948</div>
-<div class="tree-entry gen-0 note">+John N. Cabacum b: January 1878 in Tenedos, Greece d: Nov. 10, 
-1951</div>
-<div class="tree-entry gen-0 note">3 Nicholas J. 'Nick' Cabacum b: May 28, 1917 in Tenedos d: 
-Sept. 24, 2004</div>
-<div class="tree-entry gen-0 note">+Theodora Pavlis b: November 17, 1930 in Greece d: April 
-13, 1985</div>
-<div class="tree-entry gen-3">John N. Cabacum b: Private</div>
-<div class="tree-entry gen-3 note">+Susan Lynn Nixon   
-b: Private</div>
-<div class="tree-entry gen-3 note">*2nd Wife of John N. Cabacum:</div>
-<div class="tree-entry gen-3 note">+Kim Kathryn Duvall  
-b: Private</div>
-<div class="tree-entry gen-3 note">5 Sophia T. Cabacum  
-b: Private</div>
-<div class="tree-entry gen-3 note">+Christo L. Aultman  
-b: Private</div>
-<div class="tree-entry gen-3 note">5 Orianna L. Cabacum  
-b: Private</div>
-<div class="tree-entry gen-3 note">5 Tiffany Sue Cabacum  
-b: Private</div>
-<div class="tree-entry gen-3 note">4 Eleni Cabacum  
-b: Private</div>
-<div class="tree-entry gen-3 note">+John K. Hatzistefanou   
-b: Private</div>
-<div class="tree-entry gen-3 note">5 Constantinos 'Gus' Hatzistefanou  
-b: Private</div>
-<div class="tree-entry gen-3 note">*2nd Husband of Eleni Cabacum:</div>
-<div class="tree-entry gen-3 note">+Thomas Laddie Bowman 
-b: Private</div>
-<div class="tree-entry gen-0">Theodore Manolidis  b: Unknown in Tenedos</div>
-<div class="tree-entry gen-0 note">+Kaliope Arvanitis  b: 
-Unknown in Tenedos</div>
-<div class="tree-entry gen-0 note">2 Despina 'Bessie' 'Manol' Manolidis b: May 01, 1900 in Tenedos  
-d: Feb 08, 1937</div>
-<div class="tree-entry gen-0 spouse">+ Georgios Avgerinos b: 1869 in Tenedos  d: 1920 - 1922</div>
-<div class="tree-entry gen-0 note">3 Theodore (Avgerinos) Arven b: June 01, 1919 in Tenedos  
-d: March 02, 1971</div>
-<div class="tree-entry gen-0 spouse">+ Wanda Gray Carter b: Private</div>
-<div class="tree-entry gen-0 note">4 Theodore Arven, Jr. b: July 29, 1948  d: 
-February 28, 2010</div>
-<div class="tree-entry gen-0 note">+Mary Pierson  
-b: Private</div>
-<div class="tree-entry gen-0 note">5 Theodore Arven III  
-b: Private</div>
-<div class="tree-entry gen-0 note">+Veronica Nelson  
-b: Private</div>
-<div class="tree-entry gen-0 note">6 Cody Arven  
-b: Private</div>
-<div class="tree-entry gen-0 note">6 Brook Arven  
-b: Private</div>
-<div class="tree-entry gen-0 note">6 Ashley Arven  
-b: Private</div>
-<div class="tree-entry gen-0 note">5 Valerie Suzanne Arven  
-b: Private</div>
-<div class="tree-entry gen-0 note">+Robert Dano, Jr.  
-b: Private</div>
-<div class="tree-entry gen-0 note">6 Evan Dano  
-b: Private</div>
-<div class="tree-entry gen-0 note">6 Melanie Dano  
-b: Private</div>
-<div class="tree-entry gen-0 note">*2nd Wife of Theodore Arven, Jr.:</div>
-<div class="tree-entry gen-0 note">+Vicki Moretz  
-b: Private</div>
-<div class="tree-entry gen-0 note">4 Penelope June 'Penny' Arven  
-b: Private</div>
-<div class="tree-entry gen-0 note">+Arthur Michael Costin  
-b: Private</div>
-<div class="tree-entry gen-0 note">5 Christopher Michael Costin  
-b: Private</div>
-<div class="tree-entry gen-0 note">+Crystal Lindly  
-b: Private</div>
-<div class="tree-entry gen-0 note">4 Despina 'Bebe' Arven  
-b: Private</div>
-<div class="tree-entry gen-0 note">+Donald Horton Williams, Sr  
-b: Private</div>
-<div class="tree-entry gen-0 note">5 Donald Horton Williams, Jr.  
-b: Private</div>
-<div class="tree-entry gen-0 note">5 Trent Williams  
-b: Private</div>
-<div class="tree-entry gen-0 note">+Kelly Register  
-b: Private</div>
-<div class="tree-entry gen-0 note">*2nd Husband of Despina 'Bessie' 'Manol' Manolidis:</div>
-<div class="tree-entry gen-0 note">+William S. Arvanitis b: March 20, 1897 in Tenedos  d: 
-October 10, 1930</div>
-<div class="tree-entry gen-0 note">3 Christina (Arvanitis) Arven  
-b: Aug. 3, 1923  d. 
-May 6, 2011</div>
-<div class="tree-entry gen-0 note">+John I. Patyna b: August 06, 1922  d: September 06, 
-1997</div>
-<div class="tree-entry gen-0 note">4 Frances Christine Patyna  
-b: Private</div>
-<div class="tree-entry gen-0 note">+James F. Freitas  
-b: Private</div>
-<div class="tree-entry gen-0 note">*2nd Husband of Frances Christine Patyna:</div>
-<div class="tree-entry gen-0 note">+Robert Bailey, Jr.  
-b: Private</div>
-<div class="tree-entry gen-0 note">3 George (Arvanitis) Panos  
-b: Private</div>
-<div class="tree-entry gen-0 note">+Nina Wittich  
-b: August 5, 1929  d: June 12, 
-2010</div>
-<div class="tree-entry gen-0 note">4 Shelly Virginia Panos  
-b: Private</div>
-<div class="tree-entry gen-0 note">4 Kristina Marie Panos  
-b: Private</div>
-<div class="tree-entry gen-0 note">4 Katina Marie Panos  
-b: Private</div>
-<div class="tree-entry gen-0 note">+John Williams  
-b: Private</div>
-<div class="tree-entry gen-0 note">3 William (Arvanitis) Panos  
-b: Private</div>
-<div class="tree-entry gen-0 note">+Jeanne Marie Graeff  
-b: Private</div>
-<div class="tree-entry gen-0 note">4 Nikolette Marie 'Niki' Panos b: October 07, 1959  
-d: December 31, 2002</div>
-<div class="tree-entry gen-0 note">+Charles N. Nersesian  
-b: Private</div>
-<div class="tree-entry gen-0 note">4 Christopher William Panos  
-b: Private</div>
-<div class="tree-entry gen-0 note">+Jaimie Lee Benson  
-b: Private</div>
-<div class="tree-entry gen-0 note">*3rd Husband of Despina 'Bessie' 'Manol' Manolidis:</div>
-<div class="tree-entry gen-0 note">+Nicholas George 'Nick' (Panagopolos) Panos b: March 04, 1892  
-d: July 26, 1970</div>
-<div class="tree-entry gen-0 note">3 Baby Boy Panagopolos b: February 08, 1937  d: February 
-08, 1937</div>
-<div class="tree-entry gen-0 note">2 George Manolidis
-b: Unknown in Tenedos</div>
-
+  <div class="page-content tree-page">
+    <div class="tree-outer">
+      <div class="tree-legend">
+        <div class="legend-item"><div class="ls navy"></div> Ancestor</div>
+        <div class="legend-item"><div class="ls white"></div> Descendant</div>
+        <div class="legend-item"><div class="ls blue"></div> Spouse (married-in)</div>
+        <div class="legend-item"><div class="ls gray"></div> Living (private)</div>
+        <div class="legend-item" style="color:var(--color-gold,#c9a227);font-weight:700;font-size:1rem">&times;</div>&thinsp;Married
+        <div class="legend-item" style="font-size:.75rem;color:#999">Click a descendant card to collapse/expand</div>
+      </div>
+      <div class="tree-forest" id="forest"></div>
     </div>
   </div>
 </main>
@@ -277,11 +140,101 @@ b: Unknown in Tenedos</div>
       <a href="contact.html">Contact</a>
       <a href="not-recovered.html">Not Archived</a>
     </nav>
-    <p class="footer-copy">
-      Original content &copy; Tenedian Brotherhood. Website restored and modernized from archived materials.
-    </p>
+    <p class="footer-copy">Original content &copy; Tenedian Brotherhood.
+      Website restored and modernized from archived materials.</p>
   </div>
 </footer>
 
+<script>
+var TREES = [{"id":"p1","name":"George Manolidis","m":[{"sp":{"id":"p2","name":"Katherine Makras","birth":"Unknown"},"kids":[{"id":"p3","name":"Apostolos G. Manolidis","m":[{"sp":{"id":"p4","name":"Agnes","birth":"April 17, 1892","death":"November 23, 1961"},"kids":[]}],"birth":"June 30, 1885","death":"April 18, 1961"},{"id":"p5","name":"Elefteria 'Liberty' Manolidis","m":[{"sp":{"id":"p6","name":"James Gaitanes","birth":"June 24, 1893","death":"August 28, 1961"},"kids":[{"id":"p7","name":"Katherine Gaitanes","m":[{"sp":{"id":"p8","name":"John J. Rapton","birth":"April 18, 1912","death":"March 05, 1999"},"kids":[{"id":"p9","name":"James John Rapton","m":[{"sp":{"id":"p10","name":"Unknown","priv":true},"kids":[{"id":"p11","name":"James M. Rapton","m":[{"sp":{"id":"p12","name":"Petra","priv":true},"kids":[{"id":"p13","name":"James Rapton","m":[],"priv":true},{"id":"p14","name":"Dominic J. Rapton","m":[],"priv":true},{"id":"p15","name":"Heather M. Rapton","m":[],"priv":true}]}],"priv":true}]},{"sp":{"id":"p16","name":"Sylvia Gruver","priv":true},"kids":[],"label":"2nd marriage"}],"birth":"October 12, 1934","death":"May 02, 2006"}]},{"sp":{"id":"p17","name":"George S. Kangas","birth":"February 01, 1917","death":"November 15, 1994"},"kids":[{"id":"p18","name":"Dr.Phyllis Rose Kangas","m":[{"sp":{"id":"p19","name":"Thomas Franklin Kuehnle","birth":"January 22, 1933","death":"November 29, 1993"},"kids":[{"id":"p20","name":"Todd Kuehnle","m":[{"sp":{"id":"p21","name":"Jennifer","priv":true},"kids":[]}],"priv":true},{"id":"p22","name":"Eric. S. Kuehnle","m":[],"priv":true}]},{"sp":{"id":"p23","name":"Albert Daniel Walters, Jr.","priv":true},"kids":[],"label":"2nd marriage"}],"priv":true}],"label":"2nd marriage"}],"birth":"November 05, 1917","death":"June 23, 2004"}]}],"birth":"July 16, 1892","death":"April 29, 1974"},{"id":"p24","name":"Savas 'Samuel' Manolidis","m":[{"sp":{"id":"p25","name":"Efthemia 'Effie' Arvanitis","birth":"May 10, 1901","death":"Feb. 11, 1994"},"kids":[{"id":"p26","name":"Nicholas 'Nick' Savas Manol","m":[{"sp":{"id":"p27","name":"Stella Busilowski","priv":true},"kids":[{"id":"p28","name":"Samuel Nicholas 'Sam' Manol","m":[{"sp":{"id":"p29","name":"Catherine A. 'Cathy' Morris","priv":true},"kids":[{"id":"p30","name":"Nicholas Peter Manol","m":[],"priv":true},{"id":"p31","name":"Zachary Manol","m":[],"priv":true}]}],"priv":true}]}],"birth":"October 13, 1922","death":"October 13,1959"},{"id":"p32","name":"George Savas Manol (1)","m":[],"birth":"January 9, 1925","death":"February 2, 1925"},{"id":"p33","name":"George Savas Manol (2)","m":[{"sp":{"id":"p34","name":"Alberta Beilstein","birth":"1921","death":"February 02, 1962"},"kids":[{"id":"p35","name":"Thomas Albert Manol","m":[],"birth":"December 17, 1955","death":"September 16, 1965"}]},{"sp":{"id":"p36","name":"Joyce Jeanette Robertson","priv":true},"kids":[{"id":"p37","name":"Lisa Michelle Manol","m":[],"priv":true}],"label":"2nd marriage"}],"priv":true},{"id":"p38","name":"Paraskevi Catherine 'Frieda' Manol","m":[{"sp":{"id":"p39","name":"Constantine 'Gus' Sevastakis","birth":"April 22, 1926","death":"Sept. 27, 2010"},"kids":[{"id":"p40","name":"Christopher Sevastakis","m":[],"priv":true},{"id":"p41","name":"Arletta Sevastakis","m":[],"priv":true},{"id":"p42","name":"Nicholas X Sevastakis","m":[{"sp":{"id":"p43","name":"Claudia","priv":true},"kids":[]}],"priv":true}]}],"priv":true}]}],"birth":"August 1894","death":"Dec. 21, 1927"}]}],"birth":"Unknown"},{"id":"p44","name":"Theodore Manolidis","m":[{"sp":{"id":"p45","name":"Katherine Grivanos","birth":"Unknown"},"kids":[{"id":"p46","name":"Eleni 'Helen' Manolidis","m":[{"sp":{"id":"p47","name":"John N. Cabacum","birth":"January 1878","death":"Nov. 10, 1951"},"kids":[{"id":"p48","name":"Nicholas J. 'Nick' Cabacum","m":[{"sp":{"id":"p49","name":"Theodora Pavlis","birth":"November 17, 1930","death":"April 13, 1985"},"kids":[{"id":"p50","name":"John N. Cabacum","m":[{"sp":{"id":"p51","name":"Susan Lynn Nixon","priv":true},"kids":[]},{"sp":{"id":"p52","name":"Kim Kathryn Duvall","priv":true},"kids":[{"id":"p53","name":"Sophia T. Cabacum","m":[{"sp":{"id":"p54","name":"Christo L. Aultman","priv":true},"kids":[]}],"priv":true},{"id":"p55","name":"Orianna L. Cabacum","m":[],"priv":true},{"id":"p56","name":"Tiffany Sue Cabacum","m":[],"priv":true}],"label":"2nd marriage"}],"priv":true},{"id":"p57","name":"Eleni Cabacum","m":[{"sp":{"id":"p58","name":"John K. Hatzistefanou","priv":true},"kids":[{"id":"p59","name":"Constantinos 'Gus' Hatzistefanou","m":[],"priv":true}]},{"sp":{"id":"p60","name":"Thomas Laddie Bowman","priv":true},"kids":[],"label":"2nd marriage"}],"priv":true}]}],"birth":"May 28, 1917","death":"Sept. 24, 2004"}]}],"birth":"Aug. 20, 1889","death":"March 31, 1948"}]}],"birth":"Unknown"},{"id":"p61","name":"Theodore Manolidis","m":[{"sp":{"id":"p62","name":"Kaliope Arvanitis","birth":"Unknown"},"kids":[{"id":"p63","name":"Despina 'Bessie' 'Manol' Manolidis","m":[{"sp":{"id":"p64","name":"Georgios Avgerinos","birth":"1869","death":"1920 - 1922"},"kids":[{"id":"p65","name":"Theodore (Avgerinos) Arven","m":[{"sp":{"id":"p66","name":"Wanda Gray Carter","priv":true},"kids":[{"id":"p67","name":"Theodore Arven, Jr.","m":[{"sp":{"id":"p68","name":"Mary Pierson","priv":true},"kids":[{"id":"p69","name":"Theodore Arven III","m":[{"sp":{"id":"p70","name":"Veronica Nelson","priv":true},"kids":[{"id":"p71","name":"Cody Arven","m":[],"priv":true},{"id":"p72","name":"Brook Arven","m":[],"priv":true},{"id":"p73","name":"Ashley Arven","m":[],"priv":true}]}],"priv":true},{"id":"p74","name":"Valerie Suzanne Arven","m":[{"sp":{"id":"p75","name":"Robert Dano, Jr.","priv":true},"kids":[{"id":"p76","name":"Evan Dano","m":[],"priv":true},{"id":"p77","name":"Melanie Dano","m":[],"priv":true}]}],"priv":true}]},{"sp":{"id":"p78","name":"Vicki Moretz","priv":true},"kids":[],"label":"2nd marriage"}],"birth":"July 29, 1948","death":"February 28, 2010"},{"id":"p79","name":"Penelope June 'Penny' Arven","m":[{"sp":{"id":"p80","name":"Arthur Michael Costin","priv":true},"kids":[{"id":"p81","name":"Christopher Michael Costin","m":[{"sp":{"id":"p82","name":"Crystal Lindly","priv":true},"kids":[]}],"priv":true}]}],"priv":true},{"id":"p83","name":"Despina 'Bebe' Arven","m":[{"sp":{"id":"p84","name":"Donald Horton Williams, Sr","priv":true},"kids":[{"id":"p85","name":"Donald Horton Williams, Jr.","m":[],"priv":true},{"id":"p86","name":"Trent Williams","m":[{"sp":{"id":"p87","name":"Kelly Register","priv":true},"kids":[]}],"priv":true}]}],"priv":true}]}],"birth":"June 01, 1919","death":"March 02, 1971"}]},{"sp":{"id":"p88","name":"William S. Arvanitis","birth":"March 20, 1897","death":"October 10, 1930"},"kids":[{"id":"p89","name":"Christina (Arvanitis) Arven","m":[{"sp":{"id":"p90","name":"John I. Patyna","birth":"August 06, 1922","death":"September 06, 1997"},"kids":[{"id":"p91","name":"Frances Christine Patyna","m":[{"sp":{"id":"p92","name":"James F. Freitas","priv":true},"kids":[]},{"sp":{"id":"p93","name":"Robert Bailey, Jr.","priv":true},"kids":[],"label":"2nd marriage"}],"priv":true}]}],"birth":"Aug. 3, 1923","death":"May 6, 2011"},{"id":"p94","name":"George (Arvanitis) Panos","m":[{"sp":{"id":"p95","name":"Nina Wittich","birth":"August 5, 1929","death":"June 12, 2010"},"kids":[{"id":"p96","name":"Shelly Virginia Panos","m":[],"priv":true},{"id":"p97","name":"Kristina Marie Panos","m":[],"priv":true},{"id":"p98","name":"Katina Marie Panos","m":[{"sp":{"id":"p99","name":"John Williams","priv":true},"kids":[]}],"priv":true}]}],"priv":true},{"id":"p100","name":"William (Arvanitis) Panos","m":[{"sp":{"id":"p101","name":"Jeanne Marie Graeff","priv":true},"kids":[{"id":"p102","name":"Nikolette Marie 'Niki' Panos","m":[{"sp":{"id":"p103","name":"Charles N. Nersesian","priv":true},"kids":[]}],"birth":"October 07, 1959","death":"December 31, 2002"},{"id":"p104","name":"Christopher William Panos","m":[{"sp":{"id":"p105","name":"Jaimie Lee Benson","priv":true},"kids":[]}],"priv":true}]}],"priv":true}],"label":"2nd marriage"},{"sp":{"id":"p106","name":"Nicholas George 'Nick' (Panagopolos) Panos","birth":"March 04, 1892","death":"July 26, 1970"},"kids":[{"id":"p107","name":"Baby Boy Panagopolos","m":[],"birth":"February 08, 1937","death":"February 08, 1937"}],"label":"3rd marriage"}],"birth":"May 01, 1900","death":"Feb 08, 1937"},{"id":"p108","name":"George Manolidis","m":[],"birth":"Unknown"}]}],"birth":"Unknown"}];
+var TREE_TITLES = ["Descendants of George Manolidis","Descendants of Theodore Manolidis","Descendants of Theodore Manolidis"];
+function makeCard(p, cls) {
+  var div = document.createElement('div');
+  div.className = 'card ' + (cls || '');
+  var n = document.createElement('span'); n.className = 'n';
+  n.textContent = p.name; div.appendChild(n);
+  var parts = [];
+  if (p.birth) parts.push('b. ' + p.birth);
+  if (p.death) parts.push('d. ' + p.death);
+  if (p.priv && !p.birth && !p.death) parts.push('Living');
+  if (parts.length) {
+    var d = document.createElement('span'); d.className = 'd';
+    d.textContent = parts.join('  ·  '); div.appendChild(d);
+  }
+  return div;
+}
+
+function renderNode(p, gen) {
+  var wrapper = document.createElement('div'); wrapper.className = 'tree-node';
+  var body = document.createElement('div'); body.className = 'node-body';
+  var marriages = p.m || [];
+  var allKids = [];
+  for (var i = 0; i < marriages.length; i++) {
+    var ks = marriages[i].kids || [];
+    for (var j = 0; j < ks.length; j++) allKids.push(ks[j]);
+  }
+  var cls = gen === 0 ? 'root' : (p.priv ? 'priv' : '');
+  if (allKids.length) cls += (cls ? ' ' : '') + 'collapsible';
+  var mc = makeCard(p, cls);
+  if (marriages.length > 0) {
+    var row = document.createElement('div'); row.className = 'couple-row';
+    row.appendChild(mc);
+    if (marriages[0].sp) {
+      var dot = document.createElement('span'); dot.className = 'cx';
+      dot.textContent = '×'; row.appendChild(dot);
+      var spCls = 'spouse' + (marriages[0].sp.priv ? ' priv' : '');
+      row.appendChild(makeCard(marriages[0].sp, spCls));
+    }
+    body.appendChild(row);
+    for (var mi = 1; mi < marriages.length; mi++) {
+      var mg = marriages[mi];
+      if (mg.label) {
+        var lbl = document.createElement('div'); lbl.className = 'remarriage-lbl';
+        lbl.textContent = mg.label + ':'; body.appendChild(lbl);
+      }
+      if (mg.sp) {
+        var r2 = document.createElement('div'); r2.className = 'couple-row';
+        var ph = document.createElement('div'); ph.style.cssText = 'width:148px;flex-shrink:0;';
+        r2.appendChild(ph);
+        var d2 = document.createElement('span'); d2.className = 'cx';
+        d2.textContent = '×'; r2.appendChild(d2);
+        var sp2Cls = 'spouse' + (mg.sp.priv ? ' priv' : '');
+        r2.appendChild(makeCard(mg.sp, sp2Cls)); body.appendChild(r2);
+      }
+    }
+  } else {
+    var soloRow = document.createElement('div'); soloRow.className = 'couple-row';
+    soloRow.appendChild(mc); body.appendChild(soloRow);
+  }
+  wrapper.appendChild(body);
+  if (allKids.length) {
+    wrapper.classList.add('has-ch');
+    var cr = document.createElement('div'); cr.className = 'tree-children';
+    for (var ki = 0; ki < allKids.length; ki++) cr.appendChild(renderNode(allKids[ki], gen + 1));
+    wrapper.appendChild(cr);
+    mc.addEventListener('click', (function(nd) {
+      return function(e) { e.stopPropagation(); nd.classList.toggle('closed'); };
+    }(wrapper)));
+  }
+  return wrapper;
+}
+
+function buildSection(title, data, showTitle) {
+  var sec = document.createElement('div'); sec.className = 'tree-section';
+  if (showTitle) {
+    var h = document.createElement('h2'); h.className = 'tree-section-heading';
+    h.textContent = title; sec.appendChild(h);
+  }
+  var root = document.createElement('div'); root.className = 'tree-root';
+  root.appendChild(renderNode(data, 0)); sec.appendChild(root);
+  return sec;
+}
+
+var forest = document.getElementById('forest');
+var multiTree = TREES.length > 1;
+for (var ti = 0; ti < TREES.length; ti++) {
+  forest.appendChild(buildSection(TREE_TITLES[ti], TREES[ti], multiTree));
+}
+</script>
 </body>
 </html>

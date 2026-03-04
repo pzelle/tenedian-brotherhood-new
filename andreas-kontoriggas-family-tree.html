@@ -3,8 +3,88 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Descendants of Andreas Kontoriggas — Tenedian Brotherhood</title>
+  <title>Andreas Kontoriggas Family — Tenedian Brotherhood</title>
   <link rel="stylesheet" href="css/style.css">
+  <style>
+    .tree-page { padding: 0; }
+    .tree-outer { overflow-x: auto; padding: 2.5rem 1.5rem 3rem;
+                  background: var(--color-off-white, #f8f5f0); }
+    .tree-forest { display: flex; flex-direction: column; gap: 3.5rem; }
+    .tree-section-heading {
+      font-family: var(--font-heading, 'Playfair Display', serif);
+      color: var(--color-navy, #0a1628); font-size: 1.2rem;
+      margin: 0 0 1.25rem; padding-bottom: 0.4rem;
+      border-bottom: 2px solid var(--color-gold, #c9a227); }
+    .tree-legend { display: flex; gap: 1.2rem; flex-wrap: wrap;
+                   margin-bottom: 2rem; font-size: 0.8rem; color: #555;
+                   align-items: center; }
+    .legend-item { display: flex; align-items: center; gap: 5px; }
+    .ls { width: 20px; height: 13px; border-radius: 3px;
+          border: 2px solid var(--color-gold, #c9a227);
+          display: inline-block; flex-shrink: 0; }
+    .ls.navy  { background: var(--color-navy, #0a1628); }
+    .ls.white { background: #fff; }
+    .ls.blue  { background: #dce8ff; border-color: #6888cc; }
+    .ls.gray  { background: #eee; border-color: #bbb; }
+    /* Tree layout */
+    .tree-section { overflow-x: auto; padding-bottom: 0.5rem; }
+    .tree-root { display: inline-flex; flex-direction: column;
+                 align-items: center; padding: 0.5rem 1rem; }
+    .tree-node { display: flex; flex-direction: column; align-items: center;
+                 position: relative; }
+    .node-body { display: flex; flex-direction: column; align-items: center;
+                 gap: 3px; position: relative; }
+    .couple-row { display: flex; align-items: center; gap: 5px; }
+    .cx { color: var(--color-gold, #c9a227); font-weight: 700; font-size: 1rem;
+          padding: 0 2px; flex-shrink: 0; }
+    .remarriage-lbl { font-size: 0.65rem; color: #999; font-style: italic;
+                      text-align: center; margin-top: 5px; }
+    /* Cards */
+    .card { background: #fff; border: 2px solid var(--color-gold, #c9a227);
+            border-radius: 6px; padding: 7px 10px; width: 148px;
+            text-align: center; font-size: 0.74rem; line-height: 1.35;
+            position: relative; }
+    .card .n { font-weight: 700; color: var(--color-navy, #0a1628);
+               display: block; font-size: 0.78rem; }
+    .card .d { color: #888; font-size: 0.67rem; display: block; margin-top: 2px; }
+    .card.root { background: var(--color-navy, #0a1628);
+                 border-color: var(--color-gold, #c9a227); }
+    .card.root .n { color: var(--color-gold, #c9a227); }
+    .card.root .d { color: #99aabb; }
+    .card.spouse { background: #dce8ff; border-color: #6888cc; }
+    .card.spouse .n { color: #1a3a80; }
+    .card.priv  { background: #eee; border-color: #bbb; }
+    .card.priv .n { color: #666; }
+    .card.priv .d { color: #aaa; }
+    .card.collapsible { cursor: pointer; }
+    .card.collapsible::after { content: '\25BE'; position: absolute;
+      bottom: 3px; right: 5px; font-size: 0.6rem;
+      color: var(--color-gold, #c9a227); }
+    .tree-node.closed > .node-body .card.collapsible::after { content: '\25B8'; }
+    /* Connector lines (CSS pseudo-elements) */
+    :root { --gap: 44px; }
+    .tree-node.has-ch > .node-body::after {
+      content: ''; position: absolute; left: 50%; transform: translateX(-50%);
+      top: 100%; width: 2px; height: var(--gap);
+      background: var(--color-gold, #c9a227); }
+    .tree-children { display: flex; flex-direction: row; gap: 14px;
+                     align-items: flex-start; justify-content: center;
+                     margin-top: var(--gap); }
+    .tree-node.closed > .node-body::after  { display: none !important; }
+    .tree-node.closed > .tree-children     { display: none !important; }
+    .tree-children > .tree-node { position: relative; }
+    .tree-children > .tree-node::before {
+      content: ''; position: absolute; left: 50%; transform: translateX(-50%);
+      top: calc(-1 * var(--gap)); width: 2px; height: var(--gap);
+      background: var(--color-gold, #c9a227); }
+    .tree-children > .tree-node::after {
+      content: ''; position: absolute; top: calc(-1 * var(--gap));
+      left: 0; right: 0; height: 2px;
+      background: var(--color-gold, #c9a227); }
+    .tree-children > .tree-node:first-child::after  { left: 50%; }
+    .tree-children > .tree-node:last-child::after   { right: 50%; }
+    .tree-children > .tree-node:first-child:last-child::after { display: none; }
+  </style>
 </head>
 <body>
 
@@ -29,154 +109,22 @@
 <main>
   <header class="page-header">
     <div class="page-header-inner">
-      <h1 class="page-title">Descendants of Andreas Kontoriggas</h1>
-      <p class="page-subtitle"><a href="family-trees.html" style="color:rgba(255,255,255,.6); font-size:.85rem;">&larr; Back to Family Trees</a></p>
+      <h1 class="page-title">Andreas Kontoriggas Family</h1>
+      <p class="page-subtitle"><a href="family-trees.html" style="color:rgba(255,255,255,.65);font-size:.85rem;">&larr; Back to Family Trees</a></p>
     </div>
   </header>
 
-  <div class="page-content">
-    <div class="privacy-notice">
-      <strong>Privacy notice:</strong> Per the original website policy, birth dates are not
-      disclosed for individuals born after 1920 unless they are deceased.
-    </div>
-
-    <div class="family-tree-content">
-<div class="tree-entry gen-0">Andreas Kontoriggas b: Unknown</div>
-<div class="tree-entry gen-0 spouse">+ Matilda Kyriakoudis  b: Unknown</div>
-<div class="tree-entry gen-0 note">2 Rigas A. (Kontoriggas) Rego b: 1880 in Tenedos, Greece d: May 24, 
-1929</div>
-<div class="tree-entry gen-0 note">2 Zouboulia Kontoriggas b: February 18, 1881 in Tenedos d: December 
-30, 1960</div>
-<div class="tree-entry gen-0 spouse">+ Manolis Manolidis b: Unknown in Tenedos, Greece</div>
-<div class="tree-entry gen-2">Kirgiakoula Manolidis b: 1916 in Tenedos, Greece d: 1988</div>
-<div class="tree-entry gen-2 spouse">+ Simeon D. Saltos b: Unknown in Tenedos, Greece</div>
-<div class="tree-entry gen-3">Zouboulia Saltos b: Private</div>
-<div class="tree-entry gen-3 spouse">+ Theologos V. Arvanitis b: 1939  d: 2005</div>
-<div class="tree-entry gen-4">Ismarada T. Arvanitis  b: Private</div>
-<div class="tree-entry gen-4 spouse">+ Prodromo Varachopoulos  b: Private</div>
-<div class="tree-entry gen-4">Eleni Varachopoulos  b: Private</div>
-<div class="tree-entry gen-4 note">6 Theologos P. Varachopoulos  b: 
-Private</div>
-<div class="tree-entry gen-4 note">5 Kirgiakoula T. Arvanitis   b: 
-Private</div>
-<div class="tree-entry gen-4 spouse">+ Theodoros Maretsikou  b: Private</div>
-<div class="tree-entry gen-4 note">6 Nikolaos T. Maretsikou  b: 
-Private</div>
-<div class="tree-entry gen-4 note">6 Zoumboulia Dimitra Maretsikou  
-b: Private</div>
-<div class="tree-entry gen-3">Georgios S. Saltos   b: Private</div>
-<div class="tree-entry gen-3 spouse">+ Katerina  b: Private</div>
-<div class="tree-entry gen-3">Kostandinos S. Saltos  b: Private</div>
-<div class="tree-entry gen-2">Nikolas M. Manolidis b: Unknown in Tenedos, Greece</div>
-<div class="tree-entry gen-2">Konstandinos M. Manolidis b: Unknown in Tenedos, Greece</div>
-<div class="tree-entry gen-2">Andreas M. Manolidis b: Private in Tenedos, Greece</div>
-<div class="tree-entry gen-2 spouse">+ Katerina Allemenos b: Private in Tenedos, Greece</div>
-<div class="tree-entry gen-3">Nikos A. Manolidis  b: Private</div>
-<div class="tree-entry gen-3">Evangelis Manolidis  b: Private</div>
-<div class="tree-entry gen-3 note">2 Christo A. (Kontorrigas) Rego b: Dec. 10, 1883 in Tenedos d: 
-December 24, 1956</div>
-<div class="tree-entry gen-3 note">+Martha Melvina 'Vina' Proffit b: December 05, 1887  d: 
-August 06, 1975</div>
-<div class="tree-entry gen-2">Lena Rego b: December 10, 1908  d: February 04, 1973</div>
-<div class="tree-entry gen-2 spouse">+ Ben Caton b: April 19, 1905  d: February 04, 1987</div>
-<div class="tree-entry gen-3">Ben D. Caton, Jr.  b: Private</div>
-<div class="tree-entry gen-3 spouse">+ Unknown Wife  b: Unknown</div>
-<div class="tree-entry gen-3 note">4 Baby Boy Caton b: September 21, 1931 d: September 
-21, 1931</div>
-<div class="tree-entry gen-3">Charles E. Caton  b: Private</div>
-<div class="tree-entry gen-3">Margaret M. Caton   b: Private</div>
-<div class="tree-entry gen-3 note">4 Christo Felix Caton b: June 06, 1935  d: 
-October 31, 1993</div>
-<div class="tree-entry gen-2">Mary Ethel Rego b: March 03, 1911</div>
-<div class="tree-entry gen-2 note">3 Walter Andrew Rego b: December 03, 1912  d: July 25, 
-1976</div>
-<div class="tree-entry gen-2 note">+Ruby Cloteen Helton b: February 18, 1916  d: April 
-29, 2005</div>
-<div class="tree-entry gen-2">William H. Rego b: October 28, 1914  d: May 05, 1973</div>
-<div class="tree-entry gen-2">James A. Rego b: March 16, 1917  d: February 22, 1975</div>
-<div class="tree-entry gen-2 spouse">+ Anna Kapitan b: August 02, 1921 d: August 02, 2002</div>
-<div class="tree-entry gen-3">James Aurther Rego  b: Private</div>
-<div class="tree-entry gen-3 spouse">+ Nancy b: Private</div>
-<div class="tree-entry gen-4">Katherine Rego  b: Private</div>
-<div class="tree-entry gen-3">Linda Sue Rego  b: Private</div>
-<div class="tree-entry gen-3 spouse">+ Richard Lentz  b: Private</div>
-<div class="tree-entry gen-4">Richard Dean Lentz  b: Private</div>
-<div class="tree-entry gen-3">Theodore Chris Rego  b: Private</div>
-<div class="tree-entry gen-3 spouse">+ Alice R. Wullschleger  b: Private</div>
-<div class="tree-entry gen-4">Elizabeth 'Hesper' Rego  b: Private</div>
-<div class="tree-entry gen-4">John Alexander Rego  b: Private</div>
-<div class="tree-entry gen-2">Matilda Rego b: September 15, 1919  d: July 24, 1988</div>
-<div class="tree-entry gen-2 note">+Charles H. Howard, Sr. b: September 03, 1916  d: 
-July 1979</div>
-<div class="tree-entry gen-2 note">4 Charles H. Howard, Jr. b: June 02, 1943  d: 
-April 13, 1981</div>
-<div class="tree-entry gen-3">Carolyn R. Howard  b: Private</div>
-<div class="tree-entry gen-3">John F. Howard  b: Private</div>
-<div class="tree-entry gen-3">Chris R. Howard  b: Private</div>
-<div class="tree-entry gen-3 note">3 Polychronous C. 'Poley' Rego b: August 17, 1921 d: 
-December 10, 1984</div>
-<div class="tree-entry gen-3 note">+Eileen Merryfield b: July 21, 1927  d: November 27, 
-1983</div>
-<div class="tree-entry gen-3">Eveline M. Rego  b: Private</div>
-<div class="tree-entry gen-3">Poley P. Rego  b: Private</div>
-<div class="tree-entry gen-3 note">4 Pamela Ann Rego b: February 13, 1951 d: December 
-02, 1988</div>
-<div class="tree-entry gen-3 spouse">+ David Paul Collett  b: Private</div>
-<div class="tree-entry gen-4">David Paul Collett, Jr.  b: Private</div>
-<div class="tree-entry gen-3">Andrea Rego  b: Private</div>
-<div class="tree-entry gen-3 spouse">+ David L. Partin  b: Private</div>
-<div class="tree-entry gen-3 note">*2nd Husband of Andrea Rego:</div>
-<div class="tree-entry gen-3 spouse">+ Charles F. Bailey  b: Private</div>
-<div class="tree-entry gen-3">Brian C. Rego   b: Private</div>
-<div class="tree-entry gen-2">Theodora Rego  b: Private</div>
-<div class="tree-entry gen-2 note">+Garland C. Craft, Jr. b: February 09, 1928  d: 
-October 28, 2006</div>
-<div class="tree-entry gen-3">Nancy M. Craft  b: Private</div>
-<div class="tree-entry gen-3 spouse">+ Unknown Leas  b: Private</div>
-<div class="tree-entry gen-3">Donna D. Craft  b: Private</div>
-<div class="tree-entry gen-3 spouse">+ Unknown Clingensmith  b: Private</div>
-<div class="tree-entry gen-2">Christo Rego Jr. b: May 06, 1926  d: October 21, 1993</div>
-<div class="tree-entry gen-2 spouse">+ Etta Williams  b: Private</div>
-<div class="tree-entry gen-2 note">4 Christo Rego b: March 26, 1958  d: August 04, 
-2008</div>
-<div class="tree-entry gen-2 spouse">+ Sandra K. Brock  b: Private</div>
-<div class="tree-entry gen-4">Chasity Dawn Rego  b: Private</div>
-<div class="tree-entry gen-4">Christopher Brandon Rego  b: Private</div>
-<div class="tree-entry gen-4 note">3 Edna Deloris Rego b: August 03, 1928  d: August 17, 
-2000</div>
-<div class="tree-entry gen-4 note">+Albert Buell Card b: July 26, 1926  d: April 26, 
-1970</div>
-<div class="tree-entry gen-3">Michael Flynn Card  b: Private</div>
-<div class="tree-entry gen-3 spouse">+ Sandra Sue Hash  b: Private</div>
-<div class="tree-entry gen-4">Michael Ray Card  b: Private</div>
-<div class="tree-entry gen-4 spouse">+ Christy Hayes b: Private</div>
-<div class="tree-entry gen-4">Jeremy Scott Card  b: Private</div>
-<div class="tree-entry gen-4 spouse">+ Darcy Williams b: Private</div>
-<div class="tree-entry gen-4">Riley Elizabeth Card b: Private</div>
-<div class="tree-entry gen-4">Christopher Lloyd Card  b: Private</div>
-<div class="tree-entry gen-3">Richard Stevens Card  b: Private</div>
-<div class="tree-entry gen-2">Henrietta Rego b: August 29, 1930  d: August 29, 2001</div>
-<div class="tree-entry gen-2 spouse">+ Clayton G. Miller b: December 17, 1926 d: March 14, 2006</div>
-<div class="tree-entry gen-1">Paraskevi Kontoriggas b: 1885 in Tenedos, Greece d: Unknown</div>
-<div class="tree-entry gen-1 spouse">+ Konstandinos A. Papameris b: in Tenedos, Greece d: Unknown</div>
-<div class="tree-entry gen-2">Katerina Papameris b: 1906 in Tenedos, Greece d: 1960</div>
-<div class="tree-entry gen-2 note">+George D. Tsarlis b: in Tenedos, Greece d: Unknown in 
-Tenedos, Greece</div>
-<div class="tree-entry gen-3">Vasiliki Tsarlis b: Unknown</div>
-<div class="tree-entry gen-2">Apostolos K. Papameris b: 1910 in Tenedos, Greece</div>
-<div class="tree-entry gen-2 spouse">+ Paraskevi Bmageldis b: Unknown</div>
-<div class="tree-entry gen-3">Konstandinos A. Papameris   b: Private</div>
-<div class="tree-entry gen-3 spouse">+ Stylliani  b: Private</div>
-<div class="tree-entry gen-2 private"><em>Living (born after 1920 — name withheld for privacy)</em></div>
-<div class="tree-entry gen-2 spouse">+ Paraskevi Kakmis b: 1930 d: 1996</div>
-<div class="tree-entry gen-3">Katerina Papameris  b: Private</div>
-<div class="tree-entry gen-3 spouse">+ Manolis Zafferis  b: Private</div>
-<div class="tree-entry gen-4">John Zafferis  b: Private</div>
-<div class="tree-entry gen-2">Marika Papameris b: Private in Tenedos, Greece</div>
-<div class="tree-entry gen-2 spouse">+ Christodoulis Theofanous  b: Private</div>
-<div class="tree-entry gen-3">Venetia Theofanous  b: Private</div>
-<div class="tree-entry gen-1">Yiannis A. Kontoriggas b: 1892 in Tenedos, Greece</div>
-
+  <div class="page-content tree-page">
+    <div class="tree-outer">
+      <div class="tree-legend">
+        <div class="legend-item"><div class="ls navy"></div> Ancestor</div>
+        <div class="legend-item"><div class="ls white"></div> Descendant</div>
+        <div class="legend-item"><div class="ls blue"></div> Spouse (married-in)</div>
+        <div class="legend-item"><div class="ls gray"></div> Living (private)</div>
+        <div class="legend-item" style="color:var(--color-gold,#c9a227);font-weight:700;font-size:1rem">&times;</div>&thinsp;Married
+        <div class="legend-item" style="font-size:.75rem;color:#999">Click a descendant card to collapse/expand</div>
+      </div>
+      <div class="tree-forest" id="forest"></div>
     </div>
   </div>
 </main>
@@ -192,11 +140,101 @@ Tenedos, Greece</div>
       <a href="contact.html">Contact</a>
       <a href="not-recovered.html">Not Archived</a>
     </nav>
-    <p class="footer-copy">
-      Original content &copy; Tenedian Brotherhood. Website restored and modernized from archived materials.
-    </p>
+    <p class="footer-copy">Original content &copy; Tenedian Brotherhood.
+      Website restored and modernized from archived materials.</p>
   </div>
 </footer>
 
+<script>
+var TREES = [{"id":"p1","name":"Andreas Kontoriggas","m":[{"sp":{"id":"p2","name":"Matilda Kyriakoudis","birth":"Unknown"},"kids":[{"id":"p3","name":"Rigas A. (Kontoriggas) Rego","m":[],"birth":"1880","death":"May 24, 1929"},{"id":"p4","name":"Zouboulia Kontoriggas","m":[{"sp":{"id":"p5","name":"Manolis Manolidis","birth":"Unknown"},"kids":[{"id":"p6","name":"Kirgiakoula Manolidis","m":[{"sp":{"id":"p7","name":"Simeon D. Saltos","birth":"Unknown","death":"Saltos b: Unknown in Tenedos, Greece"},"kids":[{"id":"p8","name":"Zouboulia Saltos","m":[{"sp":{"id":"p9","name":"Theologos V. Arvanitis","birth":"1939","death":"2005"},"kids":[{"id":"p10","name":"Ismarada T. Arvanitis","m":[{"sp":{"id":"p11","name":"Prodromo Varachopoulos","priv":true},"kids":[{"id":"p12","name":"Eleni Varachopoulos","m":[],"priv":true},{"id":"p13","name":"Theologos P. Varachopoulos","m":[],"priv":true}]}],"priv":true},{"id":"p14","name":"Kirgiakoula T. Arvanitis","m":[{"sp":{"id":"p15","name":"Theodoros Maretsikou","priv":true},"kids":[{"id":"p16","name":"Nikolaos T. Maretsikou","m":[],"priv":true},{"id":"p17","name":"Zoumboulia Dimitra Maretsikou","m":[],"priv":true}]}],"priv":true}]}],"priv":true},{"id":"p18","name":"Georgios S. Saltos","m":[{"sp":{"id":"p19","name":"Katerina","priv":true},"kids":[]}],"priv":true},{"id":"p20","name":"Kostandinos S. Saltos","m":[],"priv":true}]}],"birth":"1916","death":"1988"},{"id":"p21","name":"Nikolas M. Manolidis","m":[],"birth":"Unknown"},{"id":"p22","name":"Konstandinos M. Manolidis","m":[],"birth":"Unknown"},{"id":"p23","name":"Andreas M. Manolidis","m":[{"sp":{"id":"p24","name":"Katerina Allemenos","priv":true},"kids":[{"id":"p25","name":"Nikos A. Manolidis","m":[],"priv":true},{"id":"p26","name":"Evangelis Manolidis","m":[],"priv":true}]}],"priv":true}]}],"birth":"February 18, 1881","death":"December 30, 1960"},{"id":"p27","name":"Christo A. (Kontorrigas) Rego","m":[{"sp":{"id":"p28","name":"Martha Melvina 'Vina' Proffit","birth":"December 05, 1887","death":"August 06, 1975"},"kids":[{"id":"p29","name":"Lena Rego","m":[{"sp":{"id":"p30","name":"Ben Caton","birth":"April 19, 1905","death":"February 04, 1987"},"kids":[{"id":"p31","name":"Ben D. Caton, Jr.","m":[{"sp":{"id":"p32","name":"Unknown Wife","birth":"Unknown"},"kids":[]}],"death":"Caton, Jr. b: Private","priv":true},{"id":"p33","name":"Baby Boy Caton","m":[],"birth":"September 21, 1931","death":"September 21, 1931"},{"id":"p34","name":"Charles E. Caton","m":[],"priv":true},{"id":"p35","name":"Margaret M. Caton","m":[],"priv":true},{"id":"p36","name":"Christo Felix Caton","m":[],"birth":"June 06, 1935","death":"October 31, 1993"}]}],"birth":"December 10, 1908","death":"February 04, 1973"},{"id":"p37","name":"Mary Ethel Rego","m":[],"birth":"March 03, 1911"},{"id":"p38","name":"Walter Andrew Rego","m":[{"sp":{"id":"p39","name":"Ruby Cloteen Helton","birth":"February 18, 1916","death":"April 29, 2005"},"kids":[]}],"birth":"December 03, 1912","death":"July 25, 1976"},{"id":"p40","name":"William H. Rego","m":[],"birth":"October 28, 1914","death":"May 05, 1973"},{"id":"p41","name":"James A. Rego","m":[{"sp":{"id":"p42","name":"Anna Kapitan","birth":"August 02, 1921","death":"August 02, 2002"},"kids":[{"id":"p43","name":"James Aurther Rego","m":[{"sp":{"id":"p44","name":"Nancy","priv":true},"kids":[{"id":"p45","name":"Katherine Rego","m":[],"priv":true}]}],"priv":true},{"id":"p46","name":"Linda Sue Rego","m":[{"sp":{"id":"p47","name":"Richard Lentz","priv":true},"kids":[{"id":"p48","name":"Richard Dean Lentz","m":[],"priv":true}]}],"priv":true},{"id":"p49","name":"Theodore Chris Rego","m":[{"sp":{"id":"p50","name":"Alice R. Wullschleger","priv":true},"kids":[{"id":"p51","name":"Elizabeth 'Hesper' Rego","m":[],"priv":true},{"id":"p52","name":"John Alexander Rego","m":[],"priv":true}]}],"priv":true}]}],"birth":"March 16, 1917","death":"February 22, 1975"},{"id":"p53","name":"Matilda Rego","m":[{"sp":{"id":"p54","name":"Charles H. Howard, Sr.","birth":"September 03, 1916","death":"July 1979"},"kids":[{"id":"p55","name":"Charles H. Howard, Jr.","m":[],"birth":"June 02, 1943","death":"April 13, 1981"},{"id":"p56","name":"Carolyn R. Howard","m":[],"priv":true},{"id":"p57","name":"John F. Howard","m":[],"priv":true},{"id":"p58","name":"Chris R. Howard","m":[],"priv":true}]}],"birth":"September 15, 1919","death":"July 24, 1988"},{"id":"p59","name":"Polychronous C. 'Poley' Rego","m":[{"sp":{"id":"p60","name":"Eileen Merryfield","birth":"July 21, 1927","death":"November 27, 1983"},"kids":[{"id":"p61","name":"Eveline M. Rego","m":[],"priv":true},{"id":"p62","name":"Poley P. Rego","m":[],"priv":true},{"id":"p63","name":"Pamela Ann Rego","m":[{"sp":{"id":"p64","name":"David Paul Collett","priv":true},"kids":[{"id":"p65","name":"David Paul Collett, Jr.","m":[],"priv":true}]}],"birth":"February 13, 1951","death":"December 02, 1988"},{"id":"p66","name":"Andrea Rego","m":[{"sp":{"id":"p67","name":"David L. Partin","priv":true},"kids":[]},{"sp":{"id":"p68","name":"Charles F. Bailey","priv":true},"kids":[],"label":"2nd marriage"}],"priv":true},{"id":"p69","name":"Brian C. Rego","m":[],"priv":true}]}],"birth":"August 17, 1921","death":"December 10, 1984"},{"id":"p70","name":"Theodora Rego","m":[{"sp":{"id":"p71","name":"Garland C. Craft, Jr.","birth":"February 09, 1928","death":"October 28, 2006"},"kids":[{"id":"p72","name":"Nancy M. Craft","m":[{"sp":{"id":"p73","name":"Unknown Leas","priv":true},"kids":[]}],"priv":true},{"id":"p74","name":"Donna D. Craft","m":[{"sp":{"id":"p75","name":"Unknown Clingensmith","priv":true},"kids":[]}],"death":"Craft b: Private","priv":true}]}],"priv":true},{"id":"p76","name":"Christo Rego Jr.","m":[{"sp":{"id":"p77","name":"Etta Williams","priv":true},"kids":[{"id":"p78","name":"Christo Rego","m":[{"sp":{"id":"p79","name":"Sandra K. Brock","priv":true},"kids":[{"id":"p80","name":"Chasity Dawn Rego","m":[],"priv":true},{"id":"p81","name":"Christopher Brandon Rego","m":[],"priv":true}]}],"birth":"March 26, 1958","death":"August 04, 2008"}]}],"birth":"May 06, 1926","death":"October 21, 1993"},{"id":"p82","name":"Edna Deloris Rego","m":[{"sp":{"id":"p83","name":"Albert Buell Card","birth":"July 26, 1926","death":"April 26, 1970"},"kids":[{"id":"p84","name":"Michael Flynn Card","m":[{"sp":{"id":"p85","name":"Sandra Sue Hash","priv":true},"kids":[{"id":"p86","name":"Michael Ray Card","m":[{"sp":{"id":"p87","name":"Christy Hayes","priv":true},"kids":[]}],"priv":true},{"id":"p88","name":"Jeremy Scott Card","m":[{"sp":{"id":"p89","name":"Darcy Williams","priv":true},"kids":[{"id":"p90","name":"Riley Elizabeth Card","m":[],"priv":true}]}],"priv":true},{"id":"p91","name":"Christopher Lloyd Card","m":[],"priv":true}]}],"priv":true},{"id":"p92","name":"Richard Stevens Card","m":[],"priv":true}]}],"birth":"August 03, 1928","death":"August 17, 2000"},{"id":"p93","name":"Henrietta Rego","m":[{"sp":{"id":"p94","name":"Clayton G. Miller","birth":"December 17, 1926","death":"March 14, 2006"},"kids":[]}],"birth":"August 29, 1930","death":"August 29, 2001"}]}],"birth":"Dec. 10, 1883","death":"December 24, 1956"},{"id":"p95","name":"Paraskevi Kontoriggas","m":[{"sp":{"id":"p96","name":"Konstandinos A. Papameris","birth":"in Tenedos, Greece","death":"Unknown"},"kids":[{"id":"p97","name":"Katerina Papameris","m":[{"sp":{"id":"p98","name":"George D. Tsarlis","birth":"in Tenedos, Greece","death":"Tsarlis b: in Tenedos, Greece d: Unknown in Tenedos, Greece"},"kids":[{"id":"p99","name":"Vasiliki Tsarlis","m":[],"birth":"Unknown"}]}],"birth":"1906","death":"1960"},{"id":"p100","name":"Apostolos K. Papameris","m":[{"sp":{"id":"p101","name":"Paraskevi Bmageldis","birth":"Unknown"},"kids":[{"id":"p102","name":"Konstandinos A. Papameris","m":[{"sp":{"id":"p103","name":"Stylliani","priv":true},"kids":[]}],"priv":true}]}],"birth":"1910"},{"id":"p104","name":"Yiannis K. Papameris","m":[{"sp":{"id":"p105","name":"Paraskevi Kakmis","birth":"1930","death":"1996"},"kids":[{"id":"p106","name":"Katerina Papameris","m":[{"sp":{"id":"p107","name":"Manolis Zafferis","priv":true},"kids":[{"id":"p108","name":"John Zafferis","m":[],"priv":true}]}],"priv":true}]}],"birth":"1920","priv":true},{"id":"p109","name":"Marika Papameris","m":[{"sp":{"id":"p110","name":"Christodoulis Theofanous","priv":true},"kids":[{"id":"p111","name":"Venetia Theofanous","m":[],"priv":true}]}],"priv":true}]}],"birth":"1885","death":"Unknown"},{"id":"p112","name":"Yiannis A. Kontoriggas","m":[],"birth":"1892"}]}],"birth":"Unknown"}];
+var TREE_TITLES = ["Andreas Kontoriggas Family"];
+function makeCard(p, cls) {
+  var div = document.createElement('div');
+  div.className = 'card ' + (cls || '');
+  var n = document.createElement('span'); n.className = 'n';
+  n.textContent = p.name; div.appendChild(n);
+  var parts = [];
+  if (p.birth) parts.push('b. ' + p.birth);
+  if (p.death) parts.push('d. ' + p.death);
+  if (p.priv && !p.birth && !p.death) parts.push('Living');
+  if (parts.length) {
+    var d = document.createElement('span'); d.className = 'd';
+    d.textContent = parts.join('  ·  '); div.appendChild(d);
+  }
+  return div;
+}
+
+function renderNode(p, gen) {
+  var wrapper = document.createElement('div'); wrapper.className = 'tree-node';
+  var body = document.createElement('div'); body.className = 'node-body';
+  var marriages = p.m || [];
+  var allKids = [];
+  for (var i = 0; i < marriages.length; i++) {
+    var ks = marriages[i].kids || [];
+    for (var j = 0; j < ks.length; j++) allKids.push(ks[j]);
+  }
+  var cls = gen === 0 ? 'root' : (p.priv ? 'priv' : '');
+  if (allKids.length) cls += (cls ? ' ' : '') + 'collapsible';
+  var mc = makeCard(p, cls);
+  if (marriages.length > 0) {
+    var row = document.createElement('div'); row.className = 'couple-row';
+    row.appendChild(mc);
+    if (marriages[0].sp) {
+      var dot = document.createElement('span'); dot.className = 'cx';
+      dot.textContent = '×'; row.appendChild(dot);
+      var spCls = 'spouse' + (marriages[0].sp.priv ? ' priv' : '');
+      row.appendChild(makeCard(marriages[0].sp, spCls));
+    }
+    body.appendChild(row);
+    for (var mi = 1; mi < marriages.length; mi++) {
+      var mg = marriages[mi];
+      if (mg.label) {
+        var lbl = document.createElement('div'); lbl.className = 'remarriage-lbl';
+        lbl.textContent = mg.label + ':'; body.appendChild(lbl);
+      }
+      if (mg.sp) {
+        var r2 = document.createElement('div'); r2.className = 'couple-row';
+        var ph = document.createElement('div'); ph.style.cssText = 'width:148px;flex-shrink:0;';
+        r2.appendChild(ph);
+        var d2 = document.createElement('span'); d2.className = 'cx';
+        d2.textContent = '×'; r2.appendChild(d2);
+        var sp2Cls = 'spouse' + (mg.sp.priv ? ' priv' : '');
+        r2.appendChild(makeCard(mg.sp, sp2Cls)); body.appendChild(r2);
+      }
+    }
+  } else {
+    var soloRow = document.createElement('div'); soloRow.className = 'couple-row';
+    soloRow.appendChild(mc); body.appendChild(soloRow);
+  }
+  wrapper.appendChild(body);
+  if (allKids.length) {
+    wrapper.classList.add('has-ch');
+    var cr = document.createElement('div'); cr.className = 'tree-children';
+    for (var ki = 0; ki < allKids.length; ki++) cr.appendChild(renderNode(allKids[ki], gen + 1));
+    wrapper.appendChild(cr);
+    mc.addEventListener('click', (function(nd) {
+      return function(e) { e.stopPropagation(); nd.classList.toggle('closed'); };
+    }(wrapper)));
+  }
+  return wrapper;
+}
+
+function buildSection(title, data, showTitle) {
+  var sec = document.createElement('div'); sec.className = 'tree-section';
+  if (showTitle) {
+    var h = document.createElement('h2'); h.className = 'tree-section-heading';
+    h.textContent = title; sec.appendChild(h);
+  }
+  var root = document.createElement('div'); root.className = 'tree-root';
+  root.appendChild(renderNode(data, 0)); sec.appendChild(root);
+  return sec;
+}
+
+var forest = document.getElementById('forest');
+var multiTree = TREES.length > 1;
+for (var ti = 0; ti < TREES.length; ti++) {
+  forest.appendChild(buildSection(TREE_TITLES[ti], TREES[ti], multiTree));
+}
+</script>
 </body>
 </html>

@@ -3,8 +3,88 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>PSATHAS FAMILY — Tenedian Brotherhood</title>
+  <title>PSATHAS Family — Tenedian Brotherhood</title>
   <link rel="stylesheet" href="css/style.css">
+  <style>
+    .tree-page { padding: 0; }
+    .tree-outer { overflow-x: auto; padding: 2.5rem 1.5rem 3rem;
+                  background: var(--color-off-white, #f8f5f0); }
+    .tree-forest { display: flex; flex-direction: column; gap: 3.5rem; }
+    .tree-section-heading {
+      font-family: var(--font-heading, 'Playfair Display', serif);
+      color: var(--color-navy, #0a1628); font-size: 1.2rem;
+      margin: 0 0 1.25rem; padding-bottom: 0.4rem;
+      border-bottom: 2px solid var(--color-gold, #c9a227); }
+    .tree-legend { display: flex; gap: 1.2rem; flex-wrap: wrap;
+                   margin-bottom: 2rem; font-size: 0.8rem; color: #555;
+                   align-items: center; }
+    .legend-item { display: flex; align-items: center; gap: 5px; }
+    .ls { width: 20px; height: 13px; border-radius: 3px;
+          border: 2px solid var(--color-gold, #c9a227);
+          display: inline-block; flex-shrink: 0; }
+    .ls.navy  { background: var(--color-navy, #0a1628); }
+    .ls.white { background: #fff; }
+    .ls.blue  { background: #dce8ff; border-color: #6888cc; }
+    .ls.gray  { background: #eee; border-color: #bbb; }
+    /* Tree layout */
+    .tree-section { overflow-x: auto; padding-bottom: 0.5rem; }
+    .tree-root { display: inline-flex; flex-direction: column;
+                 align-items: center; padding: 0.5rem 1rem; }
+    .tree-node { display: flex; flex-direction: column; align-items: center;
+                 position: relative; }
+    .node-body { display: flex; flex-direction: column; align-items: center;
+                 gap: 3px; position: relative; }
+    .couple-row { display: flex; align-items: center; gap: 5px; }
+    .cx { color: var(--color-gold, #c9a227); font-weight: 700; font-size: 1rem;
+          padding: 0 2px; flex-shrink: 0; }
+    .remarriage-lbl { font-size: 0.65rem; color: #999; font-style: italic;
+                      text-align: center; margin-top: 5px; }
+    /* Cards */
+    .card { background: #fff; border: 2px solid var(--color-gold, #c9a227);
+            border-radius: 6px; padding: 7px 10px; width: 148px;
+            text-align: center; font-size: 0.74rem; line-height: 1.35;
+            position: relative; }
+    .card .n { font-weight: 700; color: var(--color-navy, #0a1628);
+               display: block; font-size: 0.78rem; }
+    .card .d { color: #888; font-size: 0.67rem; display: block; margin-top: 2px; }
+    .card.root { background: var(--color-navy, #0a1628);
+                 border-color: var(--color-gold, #c9a227); }
+    .card.root .n { color: var(--color-gold, #c9a227); }
+    .card.root .d { color: #99aabb; }
+    .card.spouse { background: #dce8ff; border-color: #6888cc; }
+    .card.spouse .n { color: #1a3a80; }
+    .card.priv  { background: #eee; border-color: #bbb; }
+    .card.priv .n { color: #666; }
+    .card.priv .d { color: #aaa; }
+    .card.collapsible { cursor: pointer; }
+    .card.collapsible::after { content: '\25BE'; position: absolute;
+      bottom: 3px; right: 5px; font-size: 0.6rem;
+      color: var(--color-gold, #c9a227); }
+    .tree-node.closed > .node-body .card.collapsible::after { content: '\25B8'; }
+    /* Connector lines (CSS pseudo-elements) */
+    :root { --gap: 44px; }
+    .tree-node.has-ch > .node-body::after {
+      content: ''; position: absolute; left: 50%; transform: translateX(-50%);
+      top: 100%; width: 2px; height: var(--gap);
+      background: var(--color-gold, #c9a227); }
+    .tree-children { display: flex; flex-direction: row; gap: 14px;
+                     align-items: flex-start; justify-content: center;
+                     margin-top: var(--gap); }
+    .tree-node.closed > .node-body::after  { display: none !important; }
+    .tree-node.closed > .tree-children     { display: none !important; }
+    .tree-children > .tree-node { position: relative; }
+    .tree-children > .tree-node::before {
+      content: ''; position: absolute; left: 50%; transform: translateX(-50%);
+      top: calc(-1 * var(--gap)); width: 2px; height: var(--gap);
+      background: var(--color-gold, #c9a227); }
+    .tree-children > .tree-node::after {
+      content: ''; position: absolute; top: calc(-1 * var(--gap));
+      left: 0; right: 0; height: 2px;
+      background: var(--color-gold, #c9a227); }
+    .tree-children > .tree-node:first-child::after  { left: 50%; }
+    .tree-children > .tree-node:last-child::after   { right: 50%; }
+    .tree-children > .tree-node:first-child:last-child::after { display: none; }
+  </style>
 </head>
 <body>
 
@@ -29,324 +109,22 @@
 <main>
   <header class="page-header">
     <div class="page-header-inner">
-      <h1 class="page-title">PSATHAS FAMILY</h1>
-      <p class="page-subtitle"><a href="family-trees.html" style="color:rgba(255,255,255,.6); font-size:.85rem;">&larr; Back to Family Trees</a></p>
+      <h1 class="page-title">PSATHAS Family</h1>
+      <p class="page-subtitle"><a href="family-trees.html" style="color:rgba(255,255,255,.65);font-size:.85rem;">&larr; Back to Family Trees</a></p>
     </div>
   </header>
 
-  <div class="page-content">
-    <div class="privacy-notice">
-      <strong>Privacy notice:</strong> Per the original website policy, birth dates are not
-      disclosed for individuals born after 1920 unless they are deceased.
-    </div>
-
-    <div class="family-tree-content">
-<div class="tree-entry gen-0 note">PSATHAS FAMILY</div>
-<div class="tree-entry gen-0">Unknown Psathas</div>
-<div class="tree-entry gen-0 spouse">+ Unknown Wife</div>
-<div class="tree-entry gen-0 note">2 Panagiotis Psathas b: Abt. 1848 in Tenedos, 
-Greece</div>
-<div class="tree-entry gen-0 spouse">+ Efstratia b: Unknown in Tenedos, Greece</div>
-<div class="tree-entry gen-0 note">3 Kostandinos P. Psathas b: Unknown in 
-Tenedos, Greece d: Unknown in Tenedos</div>
-<div class="tree-entry gen-0 note">+Fotini Margaritis b: Unknown in 
-Tenedos, Greece d: Unknown in Tenedos</div>
-<div class="tree-entry gen-0 note">4 Efstratios K. Psathas b: 1893 
-in Tenedos, Greece</div>
-<div class="tree-entry gen-0 note">4 Athanasios K. Psathas b: 
-Unknown in Tenedos, Greece</div>
-<div class="tree-entry gen-0 note">4 Panagiotis K. Psathas b: 1896 
-in Tenedos, Greece</div>
-<div class="tree-entry gen-0 note">4 Victoria Psathas b: Unknown 
-in Tenedos, Greece</div>
-<div class="tree-entry gen-0 note">4 Nikolas K. Psathas b: Abt. 
-1910 in Tenedos, Greece d: Unknown</div>
-<div class="tree-entry gen-0 note">+Marika b: Unknown  d:  
-Unknown</div>
-<div class="tree-entry gen-0 note">*2nd Wife of Nikolas K. Psathas:</div>
-<div class="tree-entry gen-0 note">+Ioulia G. Kalaitzis b: 
-July 20, 1910 in Tenedos, Greece d: 1931</div>
-<div class="tree-entry gen-0 note">*3rd Wife of Nikolas K. Psathas:</div>
-<div class="tree-entry gen-0 note">+Maria A. Pontikakis b: 
-Unknown in Tenedos, Greece d: Unknown</div>
-<div class="tree-entry gen-0 note">4 Persifone Psathas b: 1913 in 
-Tenedos, Greece</div>
-<div class="tree-entry gen-0 note">3 Nikolas P. Psathas b: Unknown in 
-Tenedos, Greece d: Aft. June 1917</div>
-<div class="tree-entry gen-0 note">+Fotini Papameris b: Unknown in 
-Tenedos, Greece d: Aft. June 1917</div>
-<div class="tree-entry gen-0 note">4 Katerina 'Kathlyn' Psathas b: 
-Nov. 25, 1897 in Tenedos d: Oct. 11, 1987</div>
-<div class="tree-entry gen-0 note">+George P. Kongos b: April 
-17, 1890 in Tenedos, Greece d: 1955</div>
-<div class="tree-entry gen-0 note">5 Tina Kongos b: August 
-14, 1916  d: June 11, 1926</div>
-<div class="tree-entry gen-0 note">5 Eleni 'Helen' Kongos 
-b: Private</div>
-<div class="tree-entry gen-0 note">+George P. Matzaris 
-b: July 26, 1923 d: July 15, 1995</div>
-<div class="tree-entry gen-0 note">4 Athanassios 'Thomas' N. 
-Psathas b: Nov. 29, 1898 in Tenedos d: Jan. 21, 1969</div>
-<div class="tree-entry gen-0 note">+Hazel b: July 23, 1904 d: 
-September 1984</div>
-<div class="tree-entry gen-0 note">4 Panagiotis 'Peter' N. Psathas 
-b: Abt. 1899 in Tenedos d: March 17, 1981</div>
-<div class="tree-entry gen-0 note">4 Kostandinos 'Kosta' N. 
-Psathas b: Abt. 1901 in Tenedos, Greece d: 1975</div>
-<div class="tree-entry gen-0 note">+Georgia Arvanitis b: Abt. 
-1911 in Tenedos, Greece d: 1974</div>
-<div class="tree-entry gen-0 note">5 Michalis K. Psathas 
-b: Private</div>
-<div class="tree-entry gen-0 spouse private">+ <em>Living (born after 1920 — name withheld for privacy)</em></div>
-<div class="tree-entry gen-0 note">6 Georgia 
-Psathas b: Private</div>
-<div class="tree-entry gen-0 note">6 Katerina 
-Psathas  b: Private</div>
-<div class="tree-entry gen-0 note">5 Despina Psathas
- b: 
-Private</div>
-<div class="tree-entry gen-0 note">+Xristos b:  
-Private</div>
-<div class="tree-entry gen-0 note">6 Konstandinos 
-b: Private</div>
-<div class="tree-entry gen-0 note">6 Andreas  
-b: Private</div>
-<div class="tree-entry gen-0 note">6 Eleni  b: 
-Private</div>
-<div class="tree-entry gen-0 note">5 John K. Psathas
- b: 
-Private</div>
-<div class="tree-entry gen-0 note">+Alexandra 
-Nikolettos  b: 
-Private</div>
-<div class="tree-entry gen-0 note">6 Georgia Gina 
-Psathas  b: 
-Private</div>
-<div class="tree-entry gen-0 note">+John 
-Douvratzidis  b: 
-Private</div>
-<div class="tree-entry gen-0 note">7 
-Chrsitina Douvratzidis  b: 
-Private</div>
-<div class="tree-entry gen-0 note">6 Despina 'Tina' 
-Psathas  b: 
-Private</div>
-<div class="tree-entry gen-0 note">+Lazaros 
-Hatzianastasiadis  b: Private</div>
-<div class="tree-entry gen-4">Stephanie Hatzianastasiadis  b: Private</div>
-<div class="tree-entry gen-4 note">6 Constandina 
-Psathas  b: 
-Private</div>
-<div class="tree-entry gen-4 note">+Athur 
-Karidis  b: 
-Private</div>
-<div class="tree-entry gen-4">Anastasia Karidis  b: Private</div>
-<div class="tree-entry gen-4 note">7 Jason 
-Karidis  b: Private</div>
-<div class="tree-entry gen-4 note">5 Fontini Psathas
- b: 
-Private</div>
-<div class="tree-entry gen-4 note">+Georgios Melahris
- b: 
-Private</div>
-<div class="tree-entry gen-4 note">6 Dimitrios G. 
-Melahris  b: 
-Private</div>
-<div class="tree-entry gen-4 note">5 Athanasia Soula 
-Psathas  b: 
-Private</div>
-<div class="tree-entry gen-4 note">+Panagiotis Georges
- b: 
-Private</div>
-<div class="tree-entry gen-4 note">6 Anastasios 
-Georges  b: 
-Private</div>
-<div class="tree-entry gen-4 note">6 Kostandinos 
-Georges  b: 
-Private</div>
-<div class="tree-entry gen-4 note">6 Yiannis 
-Georges  b: 
-Private</div>
-<div class="tree-entry gen-4 note">5 Nikolas K. Psathas
- b: 
-Private</div>
-<div class="tree-entry gen-4 note">+Paraskevi 
-Hatziouannou  b: Private</div>
-<div class="tree-entry gen-4 note">6 Konstandinos 
-N. Psathas  b: Private</div>
-<div class="tree-entry gen-4 note">6 Georgios N. 
-Psathas  b: Private</div>
-<div class="tree-entry gen-4 note">5 Emmanuel K. Psathas
- b: 
-Private</div>
-<div class="tree-entry gen-4 note">+Florentia 
- b: 
-Private</div>
-<div class="tree-entry gen-4 note">6 Kostandinos E. 
-Psathas  b: Private</div>
-<div class="tree-entry gen-4 note">6 Sophia Psathas  
-b: Private</div>
-<div class="tree-entry gen-4 note">4 Sotiria Psathas b: Abt. 1905 
-d: Bef. 1987</div>
-<div class="tree-entry gen-4 note">4 Yianni N. Psathas, Rev. b: 
-Abt. 1908 in Tenedos, Greece d: Unknown</div>
-<div class="tree-entry gen-4 note">+Katerina Derekli  b: 
-Private</div>
-<div class="tree-entry gen-4 note">5 Nikolas Y. Psathas
- b: 
-Private</div>
-<div class="tree-entry gen-4 note">+Kirgiaki Iakovdiou  
-b: Private</div>
-<div class="tree-entry gen-4 note">6 Yiannis N. 
-Psathas  b: 
-Private</div>
-<div class="tree-entry gen-4 note">6 Katherine 
-Psathas  b: 
-Private</div>
-<div class="tree-entry gen-4 note">6 Dimitrios N. 
-Psathas  b: 
-Private</div>
-<div class="tree-entry gen-4 note">5 Athena Psathas 
- b: 
-Private</div>
-<div class="tree-entry gen-4 note">+Ioannis Kourkoulis  
-b: Private</div>
-<div class="tree-entry gen-4 note">6 Odysseas 
-Kourkoulis  b: 
-Private</div>
-<div class="tree-entry gen-4 note">6 Anastasia 
-Kourkoulis  b: 
-Private</div>
-<div class="tree-entry gen-4 note">5 Efrosini Psathas
- b: 
-Private</div>
-<div class="tree-entry gen-4 note">+Demostenis 
-Kokkindis  b: Private</div>
-<div class="tree-entry gen-4 note">6 Stavros D. 
-Kokkindis  b: 
-Private</div>
-<div class="tree-entry gen-4 note">6 Anastasia 
-Kokkindis  b: 
-Private</div>
-<div class="tree-entry gen-4 note">4 Erilfele Psathas b: Abt. 1913 
-in Tenedos, Greece</div>
-<div class="tree-entry gen-4 note">+Emmanuel K. Hloros b:
- Unknown</div>
-<div class="tree-entry gen-4 note">5 Panagiotis E. Hloros
- b: 
-Private</div>
-<div class="tree-entry gen-4 note">+Sophia 
- b: Private</div>
-<div class="tree-entry gen-4 note">6 Manolis P. 
-Hloros  b: Private</div>
-<div class="tree-entry gen-4 note">6 Androniki 
-Hloros  b: Private</div>
-<div class="tree-entry gen-4 note">5 Polixeni Hloros
- b: 
-Private</div>
-<div class="tree-entry gen-4 note">+George Markopoulos
- b: 
-Private</div>
-<div class="tree-entry gen-4 note">6 Anna 
-Markopoulos  b: Private</div>
-<div class="tree-entry gen-4 note">6 Nikolas G. 
-Markopoulos  b: Private</div>
-<div class="tree-entry gen-4 note">4 Victoria Psathas b: Abt. 1910 
-in Tenedos, Greece d: 1974</div>
-<div class="tree-entry gen-4 note">+Kostandinos Kantaras
- b: Unknown</div>
-<div class="tree-entry gen-4 note">5 Fotini 'Toula' 
-Kantaras  b: 
-Private</div>
-<div class="tree-entry gen-4 note">+Achilles 'Ike' 
-Peter Makras  b: 
-Private</div>
-<div class="tree-entry gen-4 note">6 Peter Makras
- b: 
-Private</div>
-<div class="tree-entry gen-4 note">6 Maria Despina 
-Makras  b: 
-Private</div>
-<div class="tree-entry gen-4 note">5 George K. Kantaras
- b: 
-Private</div>
-<div class="tree-entry gen-4 note">+Athanasia 'Soula' 
-Grivanos  b: 
-Private</div>
-<div class="tree-entry gen-4 note">6 Kostandinos 
-'Dean' G. Kantaras  b: 
-Private</div>
-<div class="tree-entry gen-4 note">6 Katherine 
-Kantaras  b: Private</div>
-<div class="tree-entry gen-4 note">6 Victoria 
-Sophia Kantaras  b: Private</div>
-<div class="tree-entry gen-4 note">+Mike 
-Tarantino  b: Private</div>
-<div class="tree-entry gen-4 note">7 George 
-Tarantino  b: Private</div>
-<div class="tree-entry gen-4">Anthony Tarantino  b: Private</div>
-<div class="tree-entry gen-4 note">5 Dimitrios K. Kantaras  
-b: Private</div>
-<div class="tree-entry gen-4 note">5 Vasilios K. Kantaras  
-b: Private</div>
-<div class="tree-entry gen-4 note">5 Sophia Kantaras  
-b: Private</div>
-<div class="tree-entry gen-4 note">3 Kirgiaki Psathas b: 
-Unknown in Tenedos, Greece</div>
-<div class="tree-entry gen-4 note">3 Ioannis P. Psathas b: Unknown in 
-Tenedos, Greece</div>
-<div class="tree-entry gen-4 spouse">+ Unknown Wife  b: Unknown</div>
-<div class="tree-entry gen-3">Eleni Psathas b: 1899</div>
-<div class="tree-entry gen-3 note">4 Despina Psathas b: 1908 d: 
-Aft. 1977</div>
-<div class="tree-entry gen-3 note">+Unknown Aroutsides  
-b: Unknown</div>
-<div class="tree-entry gen-3 note">4 Dimitrios I. Psathas b: 1902 
-in Tenedos, Greece d: Aft. 1977</div>
-<div class="tree-entry gen-3 note">4 Stergiana 'Anna' Psathas b: 
-Nov. 10, 1901 in Tenedos d: Dec. 03, 1977</div>
-<div class="tree-entry gen-3 note">+Spiros 'Sam' Zelelis b: 
-Sept. 16, 1891 in Tenedos d: January 12, 1974</div>
-<div class="tree-entry gen-3 note">5 Panagiotis 'Peter' S. 
-Zelelis b: September 21, 1922  d: Nov. 20, 1994</div>
-<div class="tree-entry gen-3 note">+Barbara F. Reusch  
-b: Private</div>
-<div class="tree-entry gen-3 note">6 Anna Zelles
- b: 
-Private</div>
-<div class="tree-entry gen-3 note">*2nd Wife of Panagiotis 
-'Peter' S. Zelelis:</div>
-<div class="tree-entry gen-3 note">+Unknown Beltz b: 
-Unknown</div>
-<div class="tree-entry gen-3 note">6 Fredrick M. 
-Beltz  b: Private</div>
-<div class="tree-entry gen-3 note">+Leslie A.
-  b: Private</div>
-<div class="tree-entry gen-4">Allison A. Beltz  b: Private</div>
-<div class="tree-entry gen-4 note">5 Marika 'Mary' Zelles 
-b: November 23, 1924  d: April 20, 2008</div>
-<div class="tree-entry gen-4 note">+Steve A. Brass b: 
-April 25, 1925 d: November 27, 2000</div>
-<div class="tree-entry gen-4 note">6 Anita Brass
-b: Private</div>
-<div class="tree-entry gen-4 note">+Stamatios 
-V. Kartalopoulos, Dr. b: Private</div>
-<div class="tree-entry gen-4">William S. Kartalopoulos  b: Private</div>
-<div class="tree-entry gen-4">Stephanie Kartalopoulos b: Private</div>
-<div class="tree-entry gen-4 note">2 Kostandinos Psathas b: Unknown in Tenedos, 
-Greece</div>
-<div class="tree-entry gen-4 spouse">+ Unknown Wife b: Unknown</div>
-<div class="tree-entry gen-4 note">3 Zaferios K. Psathas b: Unknown in 
-Tenedos, Greece</div>
-<div class="tree-entry gen-4 note">+Anna Arygios Atherine b: Unknown 
-in Tenedos, Greece</div>
-<div class="tree-entry gen-4 note">4 Michael Z. Psathas b: 1896 in 
-Tenedos, Greece</div>
-<div class="tree-entry gen-4 note">4 Panagiotis Z. Psathas b: 1900 
-in Tenedos, Greece</div>
-<div class="tree-entry gen-4 note">4 Sotirios Z. Psathas b: 1906 
-in Tenedos, Greece</div>
-
+  <div class="page-content tree-page">
+    <div class="tree-outer">
+      <div class="tree-legend">
+        <div class="legend-item"><div class="ls navy"></div> Ancestor</div>
+        <div class="legend-item"><div class="ls white"></div> Descendant</div>
+        <div class="legend-item"><div class="ls blue"></div> Spouse (married-in)</div>
+        <div class="legend-item"><div class="ls gray"></div> Living (private)</div>
+        <div class="legend-item" style="color:var(--color-gold,#c9a227);font-weight:700;font-size:1rem">&times;</div>&thinsp;Married
+        <div class="legend-item" style="font-size:.75rem;color:#999">Click a descendant card to collapse/expand</div>
+      </div>
+      <div class="tree-forest" id="forest"></div>
     </div>
   </div>
 </main>
@@ -362,11 +140,101 @@ in Tenedos, Greece</div>
       <a href="contact.html">Contact</a>
       <a href="not-recovered.html">Not Archived</a>
     </nav>
-    <p class="footer-copy">
-      Original content &copy; Tenedian Brotherhood. Website restored and modernized from archived materials.
-    </p>
+    <p class="footer-copy">Original content &copy; Tenedian Brotherhood.
+      Website restored and modernized from archived materials.</p>
   </div>
 </footer>
 
+<script>
+var TREES = [{"id":"p1","name":"Unknown Psathas","m":[{"sp":{"id":"p2","name":"Unknown Wife"},"kids":[{"id":"p3","name":"Panagiotis Psathas","m":[{"sp":{"id":"p4","name":"Efstratia","birth":"Unknown"},"kids":[{"id":"p5","name":"Kostandinos P. Psathas","m":[{"sp":{"id":"p6","name":"Fotini Margaritis","birth":"Unknown","death":"Unknown in Tenedos"},"kids":[{"id":"p7","name":"Efstratios K. Psathas","m":[],"birth":"1893"},{"id":"p8","name":"Athanasios K. Psathas","m":[],"birth":"Unknown"},{"id":"p9","name":"Panagiotis K. Psathas","m":[],"birth":"1896"},{"id":"p10","name":"Victoria Psathas","m":[],"birth":"Unknown"},{"id":"p11","name":"Nikolas K. Psathas","m":[{"sp":{"id":"p12","name":"Marika","birth":"Unknown","death":"Unknown"},"kids":[]},{"sp":{"id":"p13","name":"Ioulia G. Kalaitzis","birth":"July 20, 1910","death":"1931"},"kids":[],"label":"2nd marriage"},{"sp":{"id":"p14","name":"Maria A. Pontikakis","birth":"Unknown","death":"Unknown"},"kids":[],"label":"3rd marriage"}],"birth":"Abt. 1910","death":"Unknown"},{"id":"p15","name":"Persifone Psathas","m":[],"birth":"1913"}]}],"birth":"Unknown","death":"Unknown in Tenedos"},{"id":"p16","name":"Nikolas P. Psathas","m":[{"sp":{"id":"p17","name":"Fotini Papameris","birth":"Unknown","death":"Aft. June 1917"},"kids":[{"id":"p18","name":"Katerina 'Kathlyn' Psathas","m":[{"sp":{"id":"p19","name":"George P. Kongos","birth":"April 17, 1890","death":"1955"},"kids":[{"id":"p20","name":"Tina Kongos","m":[],"birth":"August 14, 1916","death":"June 11, 1926"},{"id":"p21","name":"Eleni 'Helen' Kongos","m":[{"sp":{"id":"p22","name":"George P. Matzaris","birth":"July 26, 1923","death":"July 15, 1995"},"kids":[]}],"priv":true}]}],"birth":"Nov. 25, 1897","death":"Oct. 11, 1987"},{"id":"p23","name":"Athanassios 'Thomas' N. Psathas","m":[{"sp":{"id":"p24","name":"Hazel","birth":"July 23, 1904","death":"September 1984"},"kids":[]}],"birth":"Nov. 29, 1898","death":"Jan. 21, 1969"},{"id":"p25","name":"Panagiotis 'Peter' N. Psathas","m":[],"birth":"Abt. 1899","death":"March 17, 1981"},{"id":"p26","name":"Kostandinos 'Kosta' N. Psathas","m":[{"sp":{"id":"p27","name":"Georgia Arvanitis","birth":"Abt. 1911","death":"1974"},"kids":[{"id":"p28","name":"Michalis K. Psathas","m":[{"sp":{"id":"p29","name":"Xrisanthi","birth":"1920","priv":true},"kids":[{"id":"p30","name":"Georgia Psathas","m":[],"priv":true},{"id":"p31","name":"Katerina Psathas","m":[],"priv":true}]}],"priv":true},{"id":"p32","name":"Despina Psathas","m":[{"sp":{"id":"p33","name":"Xristos","priv":true},"kids":[{"id":"p34","name":"Konstandinos","m":[],"priv":true},{"id":"p35","name":"Andreas","m":[],"priv":true},{"id":"p36","name":"Eleni","m":[],"priv":true}]}],"priv":true},{"id":"p37","name":"John K. Psathas","m":[{"sp":{"id":"p38","name":"Alexandra Nikolettos","priv":true},"kids":[{"id":"p39","name":"Georgia Gina Psathas","m":[{"sp":{"id":"p40","name":"John Douvratzidis","priv":true},"kids":[{"id":"p41","name":"Chrsitina Douvratzidis","m":[],"priv":true}]}],"priv":true},{"id":"p42","name":"Despina 'Tina' Psathas","m":[{"sp":{"id":"p43","name":"Lazaros Hatzianastasiadis","priv":true},"kids":[{"id":"p44","name":"Stephanie Hatzianastasiadis","m":[],"priv":true}]}],"priv":true},{"id":"p45","name":"Constandina Psathas","m":[{"sp":{"id":"p46","name":"Athur Karidis","priv":true},"kids":[{"id":"p47","name":"Anastasia Karidis","m":[],"priv":true},{"id":"p48","name":"Jason Karidis","m":[],"priv":true}]}],"priv":true}]}],"priv":true},{"id":"p49","name":"Fontini Psathas","m":[{"sp":{"id":"p50","name":"Georgios Melahris","priv":true},"kids":[{"id":"p51","name":"Dimitrios G. Melahris","m":[],"priv":true}]}],"priv":true},{"id":"p52","name":"Athanasia Soula Psathas","m":[{"sp":{"id":"p53","name":"Panagiotis Georges","priv":true},"kids":[{"id":"p54","name":"Anastasios Georges","m":[],"priv":true},{"id":"p55","name":"Kostandinos Georges","m":[],"priv":true},{"id":"p56","name":"Yiannis Georges","m":[],"priv":true}]}],"priv":true},{"id":"p57","name":"Nikolas K. Psathas","m":[{"sp":{"id":"p58","name":"Paraskevi Hatziouannou","priv":true},"kids":[{"id":"p59","name":"Konstandinos N. Psathas","m":[],"priv":true},{"id":"p60","name":"Georgios N. Psathas","m":[],"priv":true}]}],"priv":true},{"id":"p61","name":"Emmanuel K. Psathas","m":[{"sp":{"id":"p62","name":"Florentia","priv":true},"kids":[{"id":"p63","name":"Kostandinos E. Psathas","m":[],"priv":true},{"id":"p64","name":"Sophia Psathas","m":[],"priv":true}]}],"priv":true}]}],"birth":"Abt. 1901","death":"1975"},{"id":"p65","name":"Sotiria Psathas","m":[],"birth":"Abt. 1905","death":"Bef. 1987"},{"id":"p66","name":"Yianni N. Psathas, Rev.","m":[{"sp":{"id":"p67","name":"Katerina Derekli","priv":true},"kids":[{"id":"p68","name":"Nikolas Y. Psathas","m":[{"sp":{"id":"p69","name":"Kirgiaki Iakovdiou","priv":true},"kids":[{"id":"p70","name":"Yiannis N. Psathas","m":[],"priv":true},{"id":"p71","name":"Katherine Psathas","m":[],"priv":true},{"id":"p72","name":"Dimitrios N. Psathas","m":[],"priv":true}]}],"priv":true},{"id":"p73","name":"Athena Psathas","m":[{"sp":{"id":"p74","name":"Ioannis Kourkoulis","priv":true},"kids":[{"id":"p75","name":"Odysseas Kourkoulis","m":[],"priv":true},{"id":"p76","name":"Anastasia Kourkoulis","m":[],"priv":true}]}],"priv":true},{"id":"p77","name":"Efrosini Psathas","m":[{"sp":{"id":"p78","name":"Demostenis Kokkindis","priv":true},"kids":[{"id":"p79","name":"Stavros D. Kokkindis","m":[],"death":"Kokkindis b: Private","priv":true},{"id":"p80","name":"Anastasia Kokkindis","m":[],"priv":true}]}],"priv":true}]}],"birth":"Abt. 1908","death":"Unknown"},{"id":"p81","name":"Erilfele Psathas","m":[{"sp":{"id":"p82","name":"Emmanuel K. Hloros","birth":"Unknown"},"kids":[{"id":"p83","name":"Panagiotis E. Hloros","m":[{"sp":{"id":"p84","name":"Sophia","priv":true},"kids":[{"id":"p85","name":"Manolis P. Hloros","m":[],"priv":true},{"id":"p86","name":"Androniki Hloros","m":[],"priv":true}]}],"priv":true},{"id":"p87","name":"Polixeni Hloros","m":[{"sp":{"id":"p88","name":"George Markopoulos","priv":true},"kids":[{"id":"p89","name":"Anna Markopoulos","m":[],"priv":true},{"id":"p90","name":"Nikolas G. Markopoulos","m":[],"priv":true}]}],"priv":true}]}],"birth":"Abt. 1913"},{"id":"p91","name":"Victoria Psathas","m":[{"sp":{"id":"p92","name":"Kostandinos Kantaras","birth":"Unknown"},"kids":[{"id":"p93","name":"Fotini 'Toula' Kantaras","m":[{"sp":{"id":"p94","name":"Achilles 'Ike' Peter Makras","priv":true},"kids":[{"id":"p95","name":"Peter Makras","m":[],"priv":true},{"id":"p96","name":"Maria Despina Makras","m":[],"priv":true}]}],"priv":true},{"id":"p97","name":"George K. Kantaras","m":[{"sp":{"id":"p98","name":"Athanasia 'Soula' Grivanos","priv":true},"kids":[{"id":"p99","name":"Kostandinos 'Dean' G. Kantaras","m":[],"priv":true},{"id":"p100","name":"Katherine Kantaras","m":[],"priv":true},{"id":"p101","name":"Victoria Sophia Kantaras","m":[{"sp":{"id":"p102","name":"Mike Tarantino","priv":true},"kids":[{"id":"p103","name":"George Tarantino","m":[],"priv":true},{"id":"p104","name":"Anthony Tarantino","m":[],"priv":true}]}],"priv":true}]}],"priv":true},{"id":"p105","name":"Dimitrios K. Kantaras","m":[],"priv":true},{"id":"p106","name":"Vasilios K. Kantaras","m":[],"priv":true},{"id":"p107","name":"Sophia Kantaras","m":[],"priv":true}]}],"birth":"Abt. 1910","death":"1974"}]}],"birth":"Unknown","death":"Aft. June 1917"},{"id":"p108","name":"Kirgiaki Psathas","m":[],"birth":"Unknown"},{"id":"p109","name":"Ioannis P. Psathas","m":[{"sp":{"id":"p110","name":"Unknown Wife","birth":"Unknown"},"kids":[{"id":"p111","name":"Eleni Psathas","m":[],"birth":"1899"},{"id":"p112","name":"Despina Psathas","m":[{"sp":{"id":"p113","name":"Unknown Aroutsides","birth":"Unknown"},"kids":[]}],"birth":"1908","death":"Aft. 1977"},{"id":"p114","name":"Dimitrios I. Psathas","m":[],"birth":"1902","death":"Aft. 1977"},{"id":"p115","name":"Stergiana 'Anna' Psathas","m":[{"sp":{"id":"p116","name":"Spiros 'Sam' Zelelis","birth":"Sept. 16, 1891","death":"January 12, 1974"},"kids":[{"id":"p117","name":"Panagiotis 'Peter' S. Zelelis","m":[{"sp":{"id":"p118","name":"Barbara F. Reusch","priv":true},"kids":[{"id":"p119","name":"Anna Zelles","m":[],"priv":true}]},{"sp":{"id":"p120","name":"Unknown Beltz","birth":"Unknown"},"kids":[{"id":"p121","name":"Fredrick M. Beltz","m":[{"sp":{"id":"p122","name":"Leslie A.","priv":true},"kids":[{"id":"p123","name":"Allison A. Beltz","m":[],"priv":true}]}],"priv":true}],"label":"2nd marriage"}],"birth":"September 21, 1922","death":"Nov. 20, 1994"},{"id":"p124","name":"Marika 'Mary' Zelles","m":[{"sp":{"id":"p125","name":"Steve A. Brass","birth":"April 25, 1925","death":"November 27, 2000"},"kids":[{"id":"p126","name":"Anita Brass","m":[{"sp":{"id":"p127","name":"Stamatios V. Kartalopoulos, Dr.","priv":true},"kids":[{"id":"p128","name":"William S. Kartalopoulos","m":[],"priv":true},{"id":"p129","name":"Stephanie Kartalopoulos","m":[],"priv":true}]}],"priv":true}]}],"birth":"November 23, 1924","death":"April 20, 2008"}]}],"birth":"Nov. 10, 1901","death":"Dec. 03, 1977"}]}],"birth":"Unknown"}]}],"birth":"Abt. 1848"},{"id":"p130","name":"Kostandinos Psathas","m":[{"sp":{"id":"p131","name":"Unknown Wife","birth":"Unknown"},"kids":[{"id":"p132","name":"Zaferios K. Psathas","m":[{"sp":{"id":"p133","name":"Anna Arygios Atherine","birth":"Unknown"},"kids":[{"id":"p134","name":"Michael Z. Psathas","m":[],"birth":"1896"},{"id":"p135","name":"Panagiotis Z. Psathas","m":[],"birth":"1900"},{"id":"p136","name":"Sotirios Z. Psathas","m":[],"birth":"1906"}]}],"birth":"Unknown"}]}],"birth":"Unknown"}]}]}];
+var TREE_TITLES = ["PSATHAS Family"];
+function makeCard(p, cls) {
+  var div = document.createElement('div');
+  div.className = 'card ' + (cls || '');
+  var n = document.createElement('span'); n.className = 'n';
+  n.textContent = p.name; div.appendChild(n);
+  var parts = [];
+  if (p.birth) parts.push('b. ' + p.birth);
+  if (p.death) parts.push('d. ' + p.death);
+  if (p.priv && !p.birth && !p.death) parts.push('Living');
+  if (parts.length) {
+    var d = document.createElement('span'); d.className = 'd';
+    d.textContent = parts.join('  ·  '); div.appendChild(d);
+  }
+  return div;
+}
+
+function renderNode(p, gen) {
+  var wrapper = document.createElement('div'); wrapper.className = 'tree-node';
+  var body = document.createElement('div'); body.className = 'node-body';
+  var marriages = p.m || [];
+  var allKids = [];
+  for (var i = 0; i < marriages.length; i++) {
+    var ks = marriages[i].kids || [];
+    for (var j = 0; j < ks.length; j++) allKids.push(ks[j]);
+  }
+  var cls = gen === 0 ? 'root' : (p.priv ? 'priv' : '');
+  if (allKids.length) cls += (cls ? ' ' : '') + 'collapsible';
+  var mc = makeCard(p, cls);
+  if (marriages.length > 0) {
+    var row = document.createElement('div'); row.className = 'couple-row';
+    row.appendChild(mc);
+    if (marriages[0].sp) {
+      var dot = document.createElement('span'); dot.className = 'cx';
+      dot.textContent = '×'; row.appendChild(dot);
+      var spCls = 'spouse' + (marriages[0].sp.priv ? ' priv' : '');
+      row.appendChild(makeCard(marriages[0].sp, spCls));
+    }
+    body.appendChild(row);
+    for (var mi = 1; mi < marriages.length; mi++) {
+      var mg = marriages[mi];
+      if (mg.label) {
+        var lbl = document.createElement('div'); lbl.className = 'remarriage-lbl';
+        lbl.textContent = mg.label + ':'; body.appendChild(lbl);
+      }
+      if (mg.sp) {
+        var r2 = document.createElement('div'); r2.className = 'couple-row';
+        var ph = document.createElement('div'); ph.style.cssText = 'width:148px;flex-shrink:0;';
+        r2.appendChild(ph);
+        var d2 = document.createElement('span'); d2.className = 'cx';
+        d2.textContent = '×'; r2.appendChild(d2);
+        var sp2Cls = 'spouse' + (mg.sp.priv ? ' priv' : '');
+        r2.appendChild(makeCard(mg.sp, sp2Cls)); body.appendChild(r2);
+      }
+    }
+  } else {
+    var soloRow = document.createElement('div'); soloRow.className = 'couple-row';
+    soloRow.appendChild(mc); body.appendChild(soloRow);
+  }
+  wrapper.appendChild(body);
+  if (allKids.length) {
+    wrapper.classList.add('has-ch');
+    var cr = document.createElement('div'); cr.className = 'tree-children';
+    for (var ki = 0; ki < allKids.length; ki++) cr.appendChild(renderNode(allKids[ki], gen + 1));
+    wrapper.appendChild(cr);
+    mc.addEventListener('click', (function(nd) {
+      return function(e) { e.stopPropagation(); nd.classList.toggle('closed'); };
+    }(wrapper)));
+  }
+  return wrapper;
+}
+
+function buildSection(title, data, showTitle) {
+  var sec = document.createElement('div'); sec.className = 'tree-section';
+  if (showTitle) {
+    var h = document.createElement('h2'); h.className = 'tree-section-heading';
+    h.textContent = title; sec.appendChild(h);
+  }
+  var root = document.createElement('div'); root.className = 'tree-root';
+  root.appendChild(renderNode(data, 0)); sec.appendChild(root);
+  return sec;
+}
+
+var forest = document.getElementById('forest');
+var multiTree = TREES.length > 1;
+for (var ti = 0; ti < TREES.length; ti++) {
+  forest.appendChild(buildSection(TREE_TITLES[ti], TREES[ti], multiTree));
+}
+</script>
 </body>
 </html>

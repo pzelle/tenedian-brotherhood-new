@@ -3,8 +3,88 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Kakmis — Tenedian Brotherhood</title>
+  <title>Kakmis Family — Tenedian Brotherhood</title>
   <link rel="stylesheet" href="css/style.css">
+  <style>
+    .tree-page { padding: 0; }
+    .tree-outer { overflow-x: auto; padding: 2.5rem 1.5rem 3rem;
+                  background: var(--color-off-white, #f8f5f0); }
+    .tree-forest { display: flex; flex-direction: column; gap: 3.5rem; }
+    .tree-section-heading {
+      font-family: var(--font-heading, 'Playfair Display', serif);
+      color: var(--color-navy, #0a1628); font-size: 1.2rem;
+      margin: 0 0 1.25rem; padding-bottom: 0.4rem;
+      border-bottom: 2px solid var(--color-gold, #c9a227); }
+    .tree-legend { display: flex; gap: 1.2rem; flex-wrap: wrap;
+                   margin-bottom: 2rem; font-size: 0.8rem; color: #555;
+                   align-items: center; }
+    .legend-item { display: flex; align-items: center; gap: 5px; }
+    .ls { width: 20px; height: 13px; border-radius: 3px;
+          border: 2px solid var(--color-gold, #c9a227);
+          display: inline-block; flex-shrink: 0; }
+    .ls.navy  { background: var(--color-navy, #0a1628); }
+    .ls.white { background: #fff; }
+    .ls.blue  { background: #dce8ff; border-color: #6888cc; }
+    .ls.gray  { background: #eee; border-color: #bbb; }
+    /* Tree layout */
+    .tree-section { overflow-x: auto; padding-bottom: 0.5rem; }
+    .tree-root { display: inline-flex; flex-direction: column;
+                 align-items: center; padding: 0.5rem 1rem; }
+    .tree-node { display: flex; flex-direction: column; align-items: center;
+                 position: relative; }
+    .node-body { display: flex; flex-direction: column; align-items: center;
+                 gap: 3px; position: relative; }
+    .couple-row { display: flex; align-items: center; gap: 5px; }
+    .cx { color: var(--color-gold, #c9a227); font-weight: 700; font-size: 1rem;
+          padding: 0 2px; flex-shrink: 0; }
+    .remarriage-lbl { font-size: 0.65rem; color: #999; font-style: italic;
+                      text-align: center; margin-top: 5px; }
+    /* Cards */
+    .card { background: #fff; border: 2px solid var(--color-gold, #c9a227);
+            border-radius: 6px; padding: 7px 10px; width: 148px;
+            text-align: center; font-size: 0.74rem; line-height: 1.35;
+            position: relative; }
+    .card .n { font-weight: 700; color: var(--color-navy, #0a1628);
+               display: block; font-size: 0.78rem; }
+    .card .d { color: #888; font-size: 0.67rem; display: block; margin-top: 2px; }
+    .card.root { background: var(--color-navy, #0a1628);
+                 border-color: var(--color-gold, #c9a227); }
+    .card.root .n { color: var(--color-gold, #c9a227); }
+    .card.root .d { color: #99aabb; }
+    .card.spouse { background: #dce8ff; border-color: #6888cc; }
+    .card.spouse .n { color: #1a3a80; }
+    .card.priv  { background: #eee; border-color: #bbb; }
+    .card.priv .n { color: #666; }
+    .card.priv .d { color: #aaa; }
+    .card.collapsible { cursor: pointer; }
+    .card.collapsible::after { content: '\25BE'; position: absolute;
+      bottom: 3px; right: 5px; font-size: 0.6rem;
+      color: var(--color-gold, #c9a227); }
+    .tree-node.closed > .node-body .card.collapsible::after { content: '\25B8'; }
+    /* Connector lines (CSS pseudo-elements) */
+    :root { --gap: 44px; }
+    .tree-node.has-ch > .node-body::after {
+      content: ''; position: absolute; left: 50%; transform: translateX(-50%);
+      top: 100%; width: 2px; height: var(--gap);
+      background: var(--color-gold, #c9a227); }
+    .tree-children { display: flex; flex-direction: row; gap: 14px;
+                     align-items: flex-start; justify-content: center;
+                     margin-top: var(--gap); }
+    .tree-node.closed > .node-body::after  { display: none !important; }
+    .tree-node.closed > .tree-children     { display: none !important; }
+    .tree-children > .tree-node { position: relative; }
+    .tree-children > .tree-node::before {
+      content: ''; position: absolute; left: 50%; transform: translateX(-50%);
+      top: calc(-1 * var(--gap)); width: 2px; height: var(--gap);
+      background: var(--color-gold, #c9a227); }
+    .tree-children > .tree-node::after {
+      content: ''; position: absolute; top: calc(-1 * var(--gap));
+      left: 0; right: 0; height: 2px;
+      background: var(--color-gold, #c9a227); }
+    .tree-children > .tree-node:first-child::after  { left: 50%; }
+    .tree-children > .tree-node:last-child::after   { right: 50%; }
+    .tree-children > .tree-node:first-child:last-child::after { display: none; }
+  </style>
 </head>
 <body>
 
@@ -29,180 +109,22 @@
 <main>
   <header class="page-header">
     <div class="page-header-inner">
-      <h1 class="page-title">Kakmis</h1>
-      <p class="page-subtitle"><a href="family-trees.html" style="color:rgba(255,255,255,.6); font-size:.85rem;">&larr; Back to Family Trees</a></p>
+      <h1 class="page-title">Kakmis Family</h1>
+      <p class="page-subtitle"><a href="family-trees.html" style="color:rgba(255,255,255,.65);font-size:.85rem;">&larr; Back to Family Trees</a></p>
     </div>
   </header>
 
-  <div class="page-content">
-    <div class="privacy-notice">
-      <strong>Privacy notice:</strong> Per the original website policy, birth dates are not
-      disclosed for individuals born after 1920 unless they are deceased.
-    </div>
-
-    <div class="family-tree-content">
-<div class="tree-entry gen-0 note">Kakmis / Kakmas / Cakmes</div>
-<div class="tree-entry gen-0 note">There are 6 different families on this page. I do not know how or if they are 
-connected.</div>
-<div class="tree-entry gen-0">Mihalis Kakmis b: Unknown in Tenedos, Greece</div>
-<div class="tree-entry gen-0 spouse">+ Unknown Wife  b: Unknown in Tenedos, Greece</div>
-<div class="tree-entry gen-0 note">2 Foteny Kakmis b: April 15, 1884 in Tenedos, Greece d: March 28, 
-1946</div>
-<div class="tree-entry gen-0 note">+Panagiotis 'Peter' Mavrikos b: August 18, 1880 in Tenedos, 
-Greece d: Oct. 31, 1956</div>
-<div class="tree-entry gen-2">Athena Mavrikos b: Abt. 1914 d: 1914</div>
-<div class="tree-entry gen-2 note">3 Marika 'Mary' Mavrikos b: January 23, 1916  d: July 
-16, 2011</div>
-<div class="tree-entry gen-2 note">+Leland MacDonald b: December 28, 1917  d: July 19, 
-2009</div>
-<div class="tree-entry gen-3">Leland Ewen 'Nick' MacDonald, Dr. b: Private</div>
-<div class="tree-entry gen-3 spouse">+ Susan Lynne 'Sue' Rupli  b: Private</div>
-<div class="tree-entry gen-4">Debbi MacDonald  b: Private</div>
-<div class="tree-entry gen-4 spouse">+ Bob Tucker  b: Private</div>
-<div class="tree-entry gen-4">Tamra MacDonald  b: Private</div>
-<div class="tree-entry gen-4 spouse">+ Rick Kreuger  b: Private</div>
-<div class="tree-entry gen-4">Sophie Kreuger  b: Private</div>
-<div class="tree-entry gen-4">Aiden Kreuger  b: Private</div>
-<div class="tree-entry gen-4">Lillian Kreuger  b: Private</div>
-<div class="tree-entry gen-4">Sarah MacDonald  b: Private</div>
-<div class="tree-entry gen-3">Katherine MacDonald  b: Private</div>
-<div class="tree-entry gen-3 spouse">+ John Horvath  b: Private</div>
-<div class="tree-entry gen-4">Doreen Horvath  b: Private</div>
-<div class="tree-entry gen-4 spouse">+ Chris Aldrich  b: Private</div>
-<div class="tree-entry gen-4">Nicholas Aldrich  b: Private</div>
-<div class="tree-entry gen-4">Matthew Aldrich  b: Private</div>
-<div class="tree-entry gen-4">John Andrew Horvath II  b: Private</div>
-<div class="tree-entry gen-4 spouse">+ Tracy Pollauf  b: Private</div>
-<div class="tree-entry gen-4">Vanessa Horvath  b: Private</div>
-<div class="tree-entry gen-4">Scott Horvath  b: Private</div>
-<div class="tree-entry gen-4 spouse">+ Polly Kanavel  b: Private</div>
-<div class="tree-entry gen-3">Peter L. MacDonald  b: Private</div>
-<div class="tree-entry gen-3 spouse">+ Deborah  b: Private</div>
-<div class="tree-entry gen-4">Lynn MacDonald  b: Private</div>
-<div class="tree-entry gen-4">Jill MacDonald  b: Private</div>
-<div class="tree-entry gen-4 note">3 Vasiliki 'Virginia' Mavrikos b: March 21, 1918 d: November 
-26, 1968</div>
-<div class="tree-entry gen-4 spouse">+ Joseph Elwood Parker b: March 21, 1920 d: April 05, 1998</div>
-<div class="tree-entry gen-3">Michael Parker  b: Private</div>
-<div class="tree-entry gen-3 spouse">+ Connie H. Henderson  b: Private</div>
-<div class="tree-entry gen-3">Elaine Parker  b: Private</div>
-<div class="tree-entry gen-3 note">4 Patricia Parker b: September 02, 1952 d: October 
-23, 1997</div>
-<div class="tree-entry gen-3 spouse">+ David Russell Erdman  b: Private</div>
-<div class="tree-entry gen-3 note">*2nd Husband of Patricia Parker:</div>
-<div class="tree-entry gen-3 spouse">+ David W. Henry  b: Private</div>
-<div class="tree-entry gen-2">Despina 'Bessie' Mavrikos b: January 10, 1920</div>
-<div class="tree-entry gen-2 spouse">+ Nicholas 'Nick' C. Sfakianos b: May 08, 1919 in Tenedos d: Nov 28, 1974</div>
-<div class="tree-entry gen-3">Constantine N. 'Takie' Sfakianos  b: Private</div>
-<div class="tree-entry gen-3 spouse">+ Cynthia  b: Private</div>
-<div class="tree-entry gen-3 note">*2nd Wife of Constantine N. 'Takie' Sfakianos:</div>
-<div class="tree-entry gen-3 spouse">+ Johnnie McKee  b: Private</div>
-<div class="tree-entry gen-3">Peter N. Sfakianos  b: Private</div>
-<div class="tree-entry gen-3">James N. Sfakianos  b: Private</div>
-<div class="tree-entry gen-3">Tina Marie Sfakianos  b: Private</div>
-<div class="tree-entry gen-2">Helen Mavrikos b: January 17, 1923 d: May 10, 1983</div>
-<div class="tree-entry gen-2 spouse">+ Angelo Kambas  b: Private</div>
-<div class="tree-entry gen-3">Fotini 'Tina' Marie Kambas  b: Private</div>
-<div class="tree-entry gen-3 spouse">+ Unknown Roberts b: Private</div>
-<div class="tree-entry gen-3 note">*2nd Husband of Fotini 'Tina' Marie Kambas:</div>
-<div class="tree-entry gen-3 spouse">+ Michael Slivinski  b: Private</div>
-<div class="tree-entry gen-3">Gregory Nicholas Kambas  b: Private</div>
-<div class="tree-entry gen-3 spouse">+ Toni Lynn Ferrari  b: Private</div>
-<div class="tree-entry gen-4">Ryan G. Kambas  b: Private</div>
-<div class="tree-entry gen-4">Laurie Kambas  b: Private</div>
-<div class="tree-entry gen-4 note">*2nd Wife of Gregory Nicholas Kambas:</div>
-<div class="tree-entry gen-4 spouse">+ Kaywon Rae  b: Private</div>
-<div class="tree-entry gen-4 note">2 James M. Kakmis b: June 23, 1890 in Tenedos, Greece d: January 24, 
-1956</div>
-<div class="tree-entry gen-1">Sultana Kakmis b: Unknown in Tenedos, Greece</div>
-<div class="tree-entry gen-1 spouse">+ Unknown Marangos b: Unknown in Tenedos, Greece</div>
-<div class="tree-entry gen-2">Maria Marangos b: Unknown in Tenedos, Greece</div>
-<div class="tree-entry gen-2 note">2 Katina 'Katherine' Kakmis b: 1898 in Tenedos, Greece d: October 
-04, 1926</div>
-<div class="tree-entry gen-2 note">+Zafiris 'Bill Smith' Kapesizis b: 1889 in Tenedos, Greece d: 
-August 02, 1959</div>
-<div class="tree-entry gen-2">Barbara Kapesizis b: June 08, 1924 d: August 27, 2006</div>
-<div class="tree-entry gen-2 spouse">+ Dimitri Kadigurani  b: Private</div>
-<div class="tree-entry gen-2 note">*2nd Husband of Barbara Kapesizis:</div>
-<div class="tree-entry gen-2 spouse">+ William Norman Freer  b: Private</div>
-<div class="tree-entry gen-0">Unknown Kakmis b: Unknown in Tenedos, Greece</div>
-<div class="tree-entry gen-0 spouse">+ Unknown Wife b: Unknown in Tenedos, Greece</div>
-<div class="tree-entry gen-1">Nicholas Kakmis b: Unknown in Tenedos, Greece</div>
-<div class="tree-entry gen-1 spouse">+ Despina Nikoletis b: Unknown in Tenedos, Greece</div>
-<div class="tree-entry gen-1 note">3 Panagiotis Kakmis b: 1900 in 
-Tenedos, Greece d: 1957</div>
-<div class="tree-entry gen-1 spouse">+ Sultana Krystales b: 1910 in Tenedos, Greece d: 1936</div>
-<div class="tree-entry gen-3">Dimitri Kakmis b: Private</div>
-<div class="tree-entry gen-3 note">+Despina Tsoulfa  
-b: Private</div>
-<div class="tree-entry gen-3 note">5 Sultana 'Suzi' Kakmis  
-b: Private</div>
-<div class="tree-entry gen-3 note">+George Carpoussis  
-b: Private</div>
-<div class="tree-entry gen-3 note">6 Bianca Carpoussis  
-b: Private</div>
-<div class="tree-entry gen-3 note">6 Cassandra Carpoussis  
-b: Private</div>
-<div class="tree-entry gen-3 note">5 Panagiotis 'Peter' Kakmis  
-b: Private</div>
-<div class="tree-entry gen-1">Vasilios Kakmis b: Unknown in Tenedos, Greece</div>
-<div class="tree-entry gen-1 spouse">+ Freda b: Unknown in Tenedos, Greece</div>
-<div class="tree-entry gen-2">Stylianos V. 'Steve' Kakmis b: April 15, 1890 in Tenedos d: June 26, 1964</div>
-<div class="tree-entry gen-2 spouse">+ Eufrosine 'Frosso' D. Kalage b: 1895 d: June 06, 1971</div>
-<div class="tree-entry gen-2 note">4 William 'Bill' Kakmis  
-b: Private</div>
-<div class="tree-entry gen-2 note">+Demetria 'Jean' Limberopoulou  
-b: Private</div>
-<div class="tree-entry gen-2 note">5 Stanley Kakmis  
-b: Private</div>
-<div class="tree-entry gen-2 note">5 Constantinos 'Dean' Kakmis  
-b: Private</div>
-<div class="tree-entry gen-2 note">3 Gabriel V. Kakmis b: October 12, 1892 in Tenedos, Greece 
-d: Nov. 4, 1970</div>
-<div class="tree-entry gen-0">Kaliopi 'Cleo' Kakmas b: Unknown d: Aft. 1953</div>
-<div class="tree-entry gen-0 note">+Antonios Atherine b: September 06, 1881 in Tenedos, Greece d: May 03, 
-1953</div>
-<div class="tree-entry gen-0 note">2 Constantine 'Gust' A. Atherine b: July 15, 1915 in Tenedos 
-d: October 24, 1999</div>
-<div class="tree-entry gen-0 spouse">+ Mildred Kirby b: March 23, 1930 d: July 29, 1970</div>
-<div class="tree-entry gen-0 note">2 Christ A. Atherine b: January 10, 1917 in Tenedos, Greece d: 
-October 1984</div>
-<div class="tree-entry gen-0">Polychronis Kakmis b: Unknown in Tenedos, Greece d: after 1912</div>
-<div class="tree-entry gen-0 spouse">+ Unknown Wife b: Unknown</div>
-<div class="tree-entry gen-1">John Kakmis b: 1912 Tenedos, Greece</div>
-<div class="tree-entry gen-1">Dimitrios Kakmis b: Unknown in Tenedos, Greece</div>
-<div class="tree-entry gen-0">Mihalis 'Mike' Kakmis b: 1898 in Tenedos, Greece d: Unknown</div>
-<div class="tree-entry gen-0 note">+Marika 'Mary' Vlahos b: May 16, 1901 in Tenedos, Greece d: January 29, 
-1998</div>
-<div class="tree-entry gen-1">Steve M. Cakmes b: Private</div>
-<div class="tree-entry gen-1 spouse">+ Unknown Wife</div>
-<div class="tree-entry gen-1 note">3 Michael Steven Cakmes b: October 06, 1957  d: March 11, 
-2005</div>
-<div class="tree-entry gen-1 spouse">+ Katherine Bradley b: Private</div>
-<div class="tree-entry gen-3">Joseph Michael Cakmes b: Private</div>
-<div class="tree-entry gen-0">Varvada Kakmis b: Unknown in Tenedos</div>
-<div class="tree-entry gen-0 note">+Efstratios Haskas  b: 
-Unknown in Tenedos</div>
-<div class="tree-entry gen-0 note">2 Savas S. 'Sam' Haskas b: September 07, 1891 in Tenedos  d: 
-January 1971</div>
-<div class="tree-entry gen-0 note">2 George S. Haskas b: October 16, 1893 in Tenedos  d: December 
-11, 1972</div>
-<div class="tree-entry gen-0 note">+Ida Elizabeth Felps b: September 26, 1920  d: December 11, 
-1990</div>
-<div class="tree-entry gen-0 note">2 Nicola S. Haskas b: February 12, 1895 in Tenedos, Greece d: March 
-03, 1967</div>
-<div class="tree-entry gen-0 note">2 Panagiota 'Pauline' Haskas  
-b: Unknown in Tenedos</div>
-<div class="tree-entry gen-1">Efstatia Haskas b: September 05, 1900 d: November 09, 1990</div>
-<div class="tree-entry gen-2">Anne Haskas b: December 01, 1924 d: October 20, 1985</div>
-<div class="tree-entry gen-2 spouse">+ Englert Michael Sparks b: 1924   d: Abt. 1978</div>
-<div class="tree-entry gen-3">Virginia Sparks b: Private</div>
-<div class="tree-entry gen-3 note">4 Annette Sparks 
-b: Private</div>
-<div class="tree-entry gen-3 note">2 Andonios S. 'Edward' Haskas b: November 15, 1902 in Tenedos  
-d: June 28, 1952</div>
-<div class="tree-entry gen-3 spouse">+ Sarah 'Sally' Karapaniotis  b: Unknown in Tenedos</div>
-
+  <div class="page-content tree-page">
+    <div class="tree-outer">
+      <div class="tree-legend">
+        <div class="legend-item"><div class="ls navy"></div> Ancestor</div>
+        <div class="legend-item"><div class="ls white"></div> Descendant</div>
+        <div class="legend-item"><div class="ls blue"></div> Spouse (married-in)</div>
+        <div class="legend-item"><div class="ls gray"></div> Living (private)</div>
+        <div class="legend-item" style="color:var(--color-gold,#c9a227);font-weight:700;font-size:1rem">&times;</div>&thinsp;Married
+        <div class="legend-item" style="font-size:.75rem;color:#999">Click a descendant card to collapse/expand</div>
+      </div>
+      <div class="tree-forest" id="forest"></div>
     </div>
   </div>
 </main>
@@ -218,11 +140,101 @@ d: June 28, 1952</div>
       <a href="contact.html">Contact</a>
       <a href="not-recovered.html">Not Archived</a>
     </nav>
-    <p class="footer-copy">
-      Original content &copy; Tenedian Brotherhood. Website restored and modernized from archived materials.
-    </p>
+    <p class="footer-copy">Original content &copy; Tenedian Brotherhood.
+      Website restored and modernized from archived materials.</p>
   </div>
 </footer>
 
+<script>
+var TREES = [{"id":"p1","name":"Mihalis Kakmis","m":[{"sp":{"id":"p2","name":"Unknown Wife","birth":"Unknown"},"kids":[{"id":"p3","name":"Foteny Kakmis","m":[{"sp":{"id":"p4","name":"Panagiotis 'Peter' Mavrikos","birth":"August 18, 1880","death":"Oct. 31, 1956"},"kids":[{"id":"p5","name":"Athena Mavrikos","m":[],"birth":"Abt. 1914","death":"1914"},{"id":"p6","name":"Marika 'Mary' Mavrikos","m":[{"sp":{"id":"p7","name":"Leland MacDonald","birth":"December 28, 1917","death":"July 19, 2009"},"kids":[{"id":"p8","name":"Leland Ewen 'Nick' MacDonald, Dr.","m":[{"sp":{"id":"p9","name":"Susan Lynne 'Sue' Rupli","priv":true},"kids":[{"id":"p10","name":"Debbi MacDonald","m":[{"sp":{"id":"p11","name":"Bob Tucker","priv":true},"kids":[]}],"priv":true},{"id":"p12","name":"Tamra MacDonald","m":[{"sp":{"id":"p13","name":"Rick Kreuger","priv":true},"kids":[{"id":"p14","name":"Sophie Kreuger","m":[],"priv":true},{"id":"p15","name":"Aiden Kreuger","m":[],"priv":true},{"id":"p16","name":"Lillian Kreuger","m":[],"priv":true}]}],"priv":true},{"id":"p17","name":"Sarah MacDonald","m":[],"priv":true}]}],"priv":true},{"id":"p18","name":"Katherine MacDonald","m":[{"sp":{"id":"p19","name":"John Horvath","priv":true},"kids":[{"id":"p20","name":"Doreen Horvath","m":[{"sp":{"id":"p21","name":"Chris Aldrich","priv":true},"kids":[{"id":"p22","name":"Nicholas Aldrich","m":[],"priv":true},{"id":"p23","name":"Matthew Aldrich","m":[],"priv":true}]}],"priv":true},{"id":"p24","name":"John Andrew Horvath II","m":[{"sp":{"id":"p25","name":"Tracy Pollauf","priv":true},"kids":[{"id":"p26","name":"Vanessa Horvath","m":[],"priv":true}]}],"priv":true},{"id":"p27","name":"Scott Horvath","m":[{"sp":{"id":"p28","name":"Polly Kanavel","priv":true},"kids":[]}],"priv":true}]}],"priv":true},{"id":"p29","name":"Peter L. MacDonald","m":[{"sp":{"id":"p30","name":"Deborah","priv":true},"kids":[{"id":"p31","name":"Lynn MacDonald","m":[],"priv":true},{"id":"p32","name":"Jill MacDonald","m":[],"priv":true}]}],"priv":true}]}],"birth":"January 23, 1916","death":"July 16, 2011"},{"id":"p33","name":"Vasiliki 'Virginia' Mavrikos","m":[{"sp":{"id":"p34","name":"Joseph Elwood Parker","birth":"March 21, 1920","death":"April 05, 1998"},"kids":[{"id":"p35","name":"Michael Parker","m":[{"sp":{"id":"p36","name":"Connie H. Henderson","priv":true},"kids":[]}],"priv":true},{"id":"p37","name":"Elaine Parker","m":[],"priv":true},{"id":"p38","name":"Patricia Parker","m":[{"sp":{"id":"p39","name":"David Russell Erdman","priv":true},"kids":[]},{"sp":{"id":"p40","name":"David W. Henry","priv":true},"kids":[],"label":"2nd marriage"}],"birth":"September 02, 1952","death":"October 23, 1997"}]}],"birth":"March 21, 1918","death":"November 26, 1968"},{"id":"p41","name":"Despina 'Bessie' Mavrikos","m":[{"sp":{"id":"p42","name":"Nicholas 'Nick' C. Sfakianos","birth":"May 08, 1919","death":"Nov 28, 1974"},"kids":[{"id":"p43","name":"Constantine N. 'Takie' Sfakianos","m":[{"sp":{"id":"p44","name":"Cynthia","priv":true},"kids":[]},{"sp":{"id":"p45","name":"Johnnie McKee","priv":true},"kids":[],"label":"2nd marriage"}],"priv":true},{"id":"p46","name":"Peter N. Sfakianos","m":[],"priv":true},{"id":"p47","name":"James N. Sfakianos","m":[],"priv":true},{"id":"p48","name":"Tina Marie Sfakianos","m":[],"priv":true}]}],"birth":"January 10, 1920","priv":true},{"id":"p49","name":"Helen Mavrikos","m":[{"sp":{"id":"p50","name":"Angelo Kambas","priv":true},"kids":[{"id":"p51","name":"Fotini 'Tina' Marie Kambas","m":[{"sp":{"id":"p52","name":"Unknown Roberts","priv":true},"kids":[]},{"sp":{"id":"p53","name":"Michael Slivinski","priv":true},"kids":[],"label":"2nd marriage"}],"priv":true},{"id":"p54","name":"Gregory Nicholas Kambas","m":[{"sp":{"id":"p55","name":"Toni Lynn Ferrari","priv":true},"kids":[{"id":"p56","name":"Ryan G. Kambas","m":[],"priv":true},{"id":"p57","name":"Laurie Kambas","m":[],"priv":true}]},{"sp":{"id":"p58","name":"Kaywon Rae","priv":true},"kids":[],"label":"2nd marriage"}],"priv":true}]}],"birth":"January 17, 1923","death":"May 10, 1983"}]}],"birth":"April 15, 1884","death":"March 28, 1946"},{"id":"p59","name":"James M. Kakmis","m":[],"birth":"June 23, 1890","death":"January 24, 1956"},{"id":"p60","name":"Sultana Kakmis","m":[{"sp":{"id":"p61","name":"Unknown Marangos","birth":"Unknown"},"kids":[{"id":"p62","name":"Maria Marangos","m":[],"birth":"Unknown"}]}],"birth":"Unknown"},{"id":"p63","name":"Katina 'Katherine' Kakmis","m":[{"sp":{"id":"p64","name":"Zafiris 'Bill Smith' Kapesizis","birth":"1889","death":"August 02, 1959"},"kids":[{"id":"p65","name":"Barbara Kapesizis","m":[{"sp":{"id":"p66","name":"Dimitri Kadigurani","priv":true},"kids":[]},{"sp":{"id":"p67","name":"William Norman Freer","priv":true},"kids":[],"label":"2nd marriage"}],"birth":"June 08, 1924","death":"August 27, 2006"}]}],"birth":"1898","death":"October 04, 1926"}]}],"birth":"Unknown"},{"id":"p68","name":"Unknown Kakmis","m":[{"sp":{"id":"p69","name":"Unknown Wife","birth":"Unknown"},"kids":[{"id":"p70","name":"Nicholas Kakmis","m":[{"sp":{"id":"p71","name":"Despina Nikoletis","birth":"Unknown"},"kids":[{"id":"p72","name":"Panagiotis Kakmis","m":[{"sp":{"id":"p73","name":"Sultana Krystales","birth":"1910","death":"1936"},"kids":[{"id":"p74","name":"Dimitri Kakmis","m":[{"sp":{"id":"p75","name":"Despina Tsoulfa","priv":true},"kids":[{"id":"p76","name":"Sultana 'Suzi' Kakmis","m":[{"sp":{"id":"p77","name":"George Carpoussis","priv":true},"kids":[{"id":"p78","name":"Bianca Carpoussis","m":[],"priv":true},{"id":"p79","name":"Cassandra Carpoussis","m":[],"priv":true}]}],"priv":true},{"id":"p80","name":"Panagiotis 'Peter' Kakmis","m":[],"priv":true}]}],"priv":true}]}],"birth":"1900","death":"1957"}]}],"birth":"Unknown"},{"id":"p81","name":"Vasilios Kakmis","m":[{"sp":{"id":"p82","name":"Freda","birth":"Unknown"},"kids":[{"id":"p83","name":"Stylianos V. 'Steve' Kakmis","m":[{"sp":{"id":"p84","name":"Eufrosine 'Frosso' D. Kalage","birth":"1895","death":"Kalage b: 1895 d: June 06, 1971"},"kids":[{"id":"p85","name":"William 'Bill' Kakmis","m":[{"sp":{"id":"p86","name":"Demetria 'Jean' Limberopoulou","priv":true},"kids":[{"id":"p87","name":"Stanley Kakmis","m":[],"priv":true},{"id":"p88","name":"Constantinos 'Dean' Kakmis","m":[],"priv":true}]}],"priv":true}]}],"birth":"April 15, 1890","death":"June 26, 1964"},{"id":"p89","name":"Gabriel V. Kakmis","m":[],"birth":"October 12, 1892","death":"Nov. 4, 1970"}]}],"birth":"Unknown"}]}],"birth":"Unknown"},{"id":"p90","name":"Kaliopi 'Cleo' Kakmas","m":[{"sp":{"id":"p91","name":"Antonios Atherine","birth":"September 06, 1881","death":"May 03, 1953"},"kids":[{"id":"p92","name":"Constantine 'Gust' A. Atherine","m":[{"sp":{"id":"p93","name":"Mildred Kirby","birth":"March 23, 1930","death":"July 29, 1970"},"kids":[]}],"birth":"July 15, 1915","death":"October 24, 1999"},{"id":"p94","name":"Christ A. Atherine","m":[],"birth":"January 10, 1917","death":"October 1984"}]}],"birth":"Unknown","death":"Aft. 1953"},{"id":"p95","name":"Polychronis Kakmis","m":[{"sp":{"id":"p96","name":"Unknown Wife","birth":"Unknown"},"kids":[{"id":"p97","name":"John Kakmis","m":[],"birth":"1912 Tenedos, Greece"},{"id":"p98","name":"Dimitrios Kakmis","m":[],"birth":"Unknown"}]}],"birth":"Unknown","death":"after 1912"},{"id":"p99","name":"Mihalis 'Mike' Kakmis","m":[{"sp":{"id":"p100","name":"Marika 'Mary' Vlahos","birth":"May 16, 1901","death":"January 29, 1998"},"kids":[{"id":"p101","name":"Steve M. Cakmes","m":[{"sp":{"id":"p102","name":"Unknown Wife"},"kids":[{"id":"p103","name":"Michael Steven Cakmes","m":[{"sp":{"id":"p104","name":"Katherine Bradley","priv":true},"kids":[{"id":"p105","name":"Joseph Michael Cakmes","m":[],"priv":true}]}],"birth":"October 06, 1957","death":"March 11, 2005"}]}],"priv":true}]}],"birth":"1898","death":"Unknown"},{"id":"p106","name":"Varvada Kakmis","m":[{"sp":{"id":"p107","name":"Efstratios Haskas","birth":"Unknown"},"kids":[{"id":"p108","name":"Savas S. 'Sam' Haskas","m":[],"birth":"September 07, 1891","death":"January 1971"},{"id":"p109","name":"George S. Haskas","m":[{"sp":{"id":"p110","name":"Ida Elizabeth Felps","birth":"September 26, 1920","death":"December 11, 1990"},"kids":[]}],"birth":"October 16, 1893","death":"December 11, 1972"},{"id":"p111","name":"Nicola S. Haskas","m":[],"birth":"February 12, 1895","death":"March 03, 1967"},{"id":"p112","name":"Panagiota 'Pauline' Haskas","m":[],"birth":"Unknown"},{"id":"p113","name":"Efstatia Haskas","m":[{"kids":[{"id":"p114","name":"Anne Haskas","m":[{"sp":{"id":"p115","name":"Englert Michael Sparks","birth":"1924","death":"Abt. 1978"},"kids":[{"id":"p116","name":"Virginia Sparks","m":[],"priv":true},{"id":"p117","name":"Annette Sparks","m":[],"priv":true}]}],"birth":"December 01, 1924","death":"October 20, 1985"}]}],"birth":"September 05, 1900","death":"November 09, 1990"},{"id":"p118","name":"Andonios S. 'Edward' Haskas","m":[{"sp":{"id":"p119","name":"Sarah 'Sally' Karapaniotis","birth":"Unknown"},"kids":[]}],"birth":"November 15, 1902","death":"June 28, 1952"}]}],"birth":"Unknown"}];
+var TREE_TITLES = ["Descendants of Mihalis Kakmis","Descendants of Unknown Kakmis","Descendants of Kaliopi 'Cleo' Kakmas","Descendants of Polychronis Kakmis","Descendants of Mihalis 'Mike' Kakmis","Descendants of Varvada Kakmis"];
+function makeCard(p, cls) {
+  var div = document.createElement('div');
+  div.className = 'card ' + (cls || '');
+  var n = document.createElement('span'); n.className = 'n';
+  n.textContent = p.name; div.appendChild(n);
+  var parts = [];
+  if (p.birth) parts.push('b. ' + p.birth);
+  if (p.death) parts.push('d. ' + p.death);
+  if (p.priv && !p.birth && !p.death) parts.push('Living');
+  if (parts.length) {
+    var d = document.createElement('span'); d.className = 'd';
+    d.textContent = parts.join('  ·  '); div.appendChild(d);
+  }
+  return div;
+}
+
+function renderNode(p, gen) {
+  var wrapper = document.createElement('div'); wrapper.className = 'tree-node';
+  var body = document.createElement('div'); body.className = 'node-body';
+  var marriages = p.m || [];
+  var allKids = [];
+  for (var i = 0; i < marriages.length; i++) {
+    var ks = marriages[i].kids || [];
+    for (var j = 0; j < ks.length; j++) allKids.push(ks[j]);
+  }
+  var cls = gen === 0 ? 'root' : (p.priv ? 'priv' : '');
+  if (allKids.length) cls += (cls ? ' ' : '') + 'collapsible';
+  var mc = makeCard(p, cls);
+  if (marriages.length > 0) {
+    var row = document.createElement('div'); row.className = 'couple-row';
+    row.appendChild(mc);
+    if (marriages[0].sp) {
+      var dot = document.createElement('span'); dot.className = 'cx';
+      dot.textContent = '×'; row.appendChild(dot);
+      var spCls = 'spouse' + (marriages[0].sp.priv ? ' priv' : '');
+      row.appendChild(makeCard(marriages[0].sp, spCls));
+    }
+    body.appendChild(row);
+    for (var mi = 1; mi < marriages.length; mi++) {
+      var mg = marriages[mi];
+      if (mg.label) {
+        var lbl = document.createElement('div'); lbl.className = 'remarriage-lbl';
+        lbl.textContent = mg.label + ':'; body.appendChild(lbl);
+      }
+      if (mg.sp) {
+        var r2 = document.createElement('div'); r2.className = 'couple-row';
+        var ph = document.createElement('div'); ph.style.cssText = 'width:148px;flex-shrink:0;';
+        r2.appendChild(ph);
+        var d2 = document.createElement('span'); d2.className = 'cx';
+        d2.textContent = '×'; r2.appendChild(d2);
+        var sp2Cls = 'spouse' + (mg.sp.priv ? ' priv' : '');
+        r2.appendChild(makeCard(mg.sp, sp2Cls)); body.appendChild(r2);
+      }
+    }
+  } else {
+    var soloRow = document.createElement('div'); soloRow.className = 'couple-row';
+    soloRow.appendChild(mc); body.appendChild(soloRow);
+  }
+  wrapper.appendChild(body);
+  if (allKids.length) {
+    wrapper.classList.add('has-ch');
+    var cr = document.createElement('div'); cr.className = 'tree-children';
+    for (var ki = 0; ki < allKids.length; ki++) cr.appendChild(renderNode(allKids[ki], gen + 1));
+    wrapper.appendChild(cr);
+    mc.addEventListener('click', (function(nd) {
+      return function(e) { e.stopPropagation(); nd.classList.toggle('closed'); };
+    }(wrapper)));
+  }
+  return wrapper;
+}
+
+function buildSection(title, data, showTitle) {
+  var sec = document.createElement('div'); sec.className = 'tree-section';
+  if (showTitle) {
+    var h = document.createElement('h2'); h.className = 'tree-section-heading';
+    h.textContent = title; sec.appendChild(h);
+  }
+  var root = document.createElement('div'); root.className = 'tree-root';
+  root.appendChild(renderNode(data, 0)); sec.appendChild(root);
+  return sec;
+}
+
+var forest = document.getElementById('forest');
+var multiTree = TREES.length > 1;
+for (var ti = 0; ti < TREES.length; ti++) {
+  forest.appendChild(buildSection(TREE_TITLES[ti], TREES[ti], multiTree));
+}
+</script>
 </body>
 </html>

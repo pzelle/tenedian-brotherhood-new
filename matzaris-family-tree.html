@@ -5,6 +5,86 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Matzaris Family — Tenedian Brotherhood</title>
   <link rel="stylesheet" href="css/style.css">
+  <style>
+    .tree-page { padding: 0; }
+    .tree-outer { overflow-x: auto; padding: 2.5rem 1.5rem 3rem;
+                  background: var(--color-off-white, #f8f5f0); }
+    .tree-forest { display: flex; flex-direction: column; gap: 3.5rem; }
+    .tree-section-heading {
+      font-family: var(--font-heading, 'Playfair Display', serif);
+      color: var(--color-navy, #0a1628); font-size: 1.2rem;
+      margin: 0 0 1.25rem; padding-bottom: 0.4rem;
+      border-bottom: 2px solid var(--color-gold, #c9a227); }
+    .tree-legend { display: flex; gap: 1.2rem; flex-wrap: wrap;
+                   margin-bottom: 2rem; font-size: 0.8rem; color: #555;
+                   align-items: center; }
+    .legend-item { display: flex; align-items: center; gap: 5px; }
+    .ls { width: 20px; height: 13px; border-radius: 3px;
+          border: 2px solid var(--color-gold, #c9a227);
+          display: inline-block; flex-shrink: 0; }
+    .ls.navy  { background: var(--color-navy, #0a1628); }
+    .ls.white { background: #fff; }
+    .ls.blue  { background: #dce8ff; border-color: #6888cc; }
+    .ls.gray  { background: #eee; border-color: #bbb; }
+    /* Tree layout */
+    .tree-section { overflow-x: auto; padding-bottom: 0.5rem; }
+    .tree-root { display: inline-flex; flex-direction: column;
+                 align-items: center; padding: 0.5rem 1rem; }
+    .tree-node { display: flex; flex-direction: column; align-items: center;
+                 position: relative; }
+    .node-body { display: flex; flex-direction: column; align-items: center;
+                 gap: 3px; position: relative; }
+    .couple-row { display: flex; align-items: center; gap: 5px; }
+    .cx { color: var(--color-gold, #c9a227); font-weight: 700; font-size: 1rem;
+          padding: 0 2px; flex-shrink: 0; }
+    .remarriage-lbl { font-size: 0.65rem; color: #999; font-style: italic;
+                      text-align: center; margin-top: 5px; }
+    /* Cards */
+    .card { background: #fff; border: 2px solid var(--color-gold, #c9a227);
+            border-radius: 6px; padding: 7px 10px; width: 148px;
+            text-align: center; font-size: 0.74rem; line-height: 1.35;
+            position: relative; }
+    .card .n { font-weight: 700; color: var(--color-navy, #0a1628);
+               display: block; font-size: 0.78rem; }
+    .card .d { color: #888; font-size: 0.67rem; display: block; margin-top: 2px; }
+    .card.root { background: var(--color-navy, #0a1628);
+                 border-color: var(--color-gold, #c9a227); }
+    .card.root .n { color: var(--color-gold, #c9a227); }
+    .card.root .d { color: #99aabb; }
+    .card.spouse { background: #dce8ff; border-color: #6888cc; }
+    .card.spouse .n { color: #1a3a80; }
+    .card.priv  { background: #eee; border-color: #bbb; }
+    .card.priv .n { color: #666; }
+    .card.priv .d { color: #aaa; }
+    .card.collapsible { cursor: pointer; }
+    .card.collapsible::after { content: '\25BE'; position: absolute;
+      bottom: 3px; right: 5px; font-size: 0.6rem;
+      color: var(--color-gold, #c9a227); }
+    .tree-node.closed > .node-body .card.collapsible::after { content: '\25B8'; }
+    /* Connector lines (CSS pseudo-elements) */
+    :root { --gap: 44px; }
+    .tree-node.has-ch > .node-body::after {
+      content: ''; position: absolute; left: 50%; transform: translateX(-50%);
+      top: 100%; width: 2px; height: var(--gap);
+      background: var(--color-gold, #c9a227); }
+    .tree-children { display: flex; flex-direction: row; gap: 14px;
+                     align-items: flex-start; justify-content: center;
+                     margin-top: var(--gap); }
+    .tree-node.closed > .node-body::after  { display: none !important; }
+    .tree-node.closed > .tree-children     { display: none !important; }
+    .tree-children > .tree-node { position: relative; }
+    .tree-children > .tree-node::before {
+      content: ''; position: absolute; left: 50%; transform: translateX(-50%);
+      top: calc(-1 * var(--gap)); width: 2px; height: var(--gap);
+      background: var(--color-gold, #c9a227); }
+    .tree-children > .tree-node::after {
+      content: ''; position: absolute; top: calc(-1 * var(--gap));
+      left: 0; right: 0; height: 2px;
+      background: var(--color-gold, #c9a227); }
+    .tree-children > .tree-node:first-child::after  { left: 50%; }
+    .tree-children > .tree-node:last-child::after   { right: 50%; }
+    .tree-children > .tree-node:first-child:last-child::after { display: none; }
+  </style>
 </head>
 <body>
 
@@ -30,219 +110,21 @@
   <header class="page-header">
     <div class="page-header-inner">
       <h1 class="page-title">Matzaris Family</h1>
-      <p class="page-subtitle"><a href="family-trees.html" style="color:rgba(255,255,255,.6); font-size:.85rem;">&larr; Back to Family Trees</a></p>
+      <p class="page-subtitle"><a href="family-trees.html" style="color:rgba(255,255,255,.65);font-size:.85rem;">&larr; Back to Family Trees</a></p>
     </div>
   </header>
 
-  <div class="page-content">
-    <div class="privacy-notice">
-      <strong>Privacy notice:</strong> Per the original website policy, birth dates are not
-      disclosed for individuals born after 1920 unless they are deceased.
-    </div>
-
-    <div class="family-tree-content">
-<div class="tree-entry gen-0 note">Matzaris Family</div>
-<div class="tree-entry gen-0 note">1 George Matzaris b: Unknown in Tenedos, 
-Greece</div>
-<div class="tree-entry gen-0 spouse">+ Anastasia Triantafilou b: Unknown in Tenedos, Greece</div>
-<div class="tree-entry gen-1">John G. Matzaris b: November 23, 1878 in Tenedos, Greece d: June 29, 1961</div>
-<div class="tree-entry gen-1 spouse">+ Hriso Kandis b: 1896 in Tenedos, Greece d: October 08, 1967</div>
-<div class="tree-entry gen-2">Michael J. Matzaris b: July 17, 1914 d: August 27, 1996</div>
-<div class="tree-entry gen-2 spouse">+ Efthemia b: Unknown d: Unknown</div>
-<div class="tree-entry gen-3">Eleni Matzaris b: Private</div>
-<div class="tree-entry gen-3">George M. Matzaris b: Private</div>
-<div class="tree-entry gen-3">Konstandinos M. Matzaris b: Private</div>
-<div class="tree-entry gen-1">Despina Matzaris b: Unknown in Tenedos, Greece</div>
-<div class="tree-entry gen-1 spouse">+ Ignatis Diavasakis b: Unknown</div>
-<div class="tree-entry gen-2">Andonis I. Diavasakis b: Unknown d: 1987</div>
-<div class="tree-entry gen-2">Panagiota Diavasakis b: Unknown</div>
-<div class="tree-entry gen-2 spouse">+ Dimitri Demos b: Unknown</div>
-<div class="tree-entry gen-2">Marika Diavasakis b: Unknown</div>
-<div class="tree-entry gen-2">Katerina Diavasakis b: Private</div>
-<div class="tree-entry gen-2 spouse">+ Odysseus Y. Hatziouannou b: Private</div>
-<div class="tree-entry gen-3">Yanni O. Hatziouannou b: Private</div>
-<div class="tree-entry gen-3 spouse">+ Amalia Milona b: Private</div>
-<div class="tree-entry gen-3 note">5 Katerina 
-Hatziouannou b: Private</div>
-<div class="tree-entry gen-3 note">5 Maria 
-Hatziouannou b: Private</div>
-<div class="tree-entry gen-3 note">5 Paraskevi 
-Hatziouannou b: Private</div>
-<div class="tree-entry gen-3 note">5 Georgia 
-Hatziouannou b: Private</div>
-<div class="tree-entry gen-1">Polixeni Matzaris b: Unknown in Tenedos, Greece</div>
-<div class="tree-entry gen-1 spouse">+ Konstandinos Hloros b: Unknown in Tenedos, Greece d: Unknown</div>
-<div class="tree-entry gen-2">Emmanuel Hloros b: Unknown in Tenedos, Greece</div>
-<div class="tree-entry gen-2 spouse">+ Erefili Psathas b: 1910 in Tenedos, Greece</div>
-<div class="tree-entry gen-3">Panagiotis E. Hloros b: Private</div>
-<div class="tree-entry gen-3 spouse">+ Sophia Ioanidou b: Private</div>
-<div class="tree-entry gen-4">Manolis P. Hloros b: Private</div>
-<div class="tree-entry gen-4">Androniki Hloros b: Private</div>
-<div class="tree-entry gen-3">Polixeni Hloros b: Private</div>
-<div class="tree-entry gen-3 spouse">+ George Markopoulos b: Private</div>
-<div class="tree-entry gen-4">Anna Markopoulos b: Private</div>
-<div class="tree-entry gen-4">Nikolas G. Markopoulos b: Private</div>
-<div class="tree-entry gen-2">Adonis K. Hloros b: Unknown</div>
-<div class="tree-entry gen-2 spouse">+ Konstandina b: Unknown d: 2003</div>
-<div class="tree-entry gen-3">Konstantinos A. Hloros b: Unknown</div>
-<div class="tree-entry gen-3">Polixeni Hloros b: Unknown</div>
-<div class="tree-entry gen-2">Eleni Hloros b: Unknown</div>
-<div class="tree-entry gen-2 spouse">+ Nikos Komninakis b: Unknown</div>
-<div class="tree-entry gen-2">Vasilisa Hloros b: Unknown</div>
-<div class="tree-entry gen-2 spouse">+ Yiannis Karoulis b: Unknown</div>
-<div class="tree-entry gen-1">Zoe Matzaris b: June 26, 1888 in Tenedos, Greece d: July 20, 1976</div>
-<div class="tree-entry gen-1 note">+Evangelos M. Dimitriou b: September 29, 1873 in Tenedos, Greece 
-d: March 15, 1936</div>
-<div class="tree-entry gen-1 note">3 Mihalis E. Dimitriou b: April 20, 1914 in Tenedos, Greece 
-d: January 28, 1979</div>
-<div class="tree-entry gen-1 note">+Anna Krystales b: July 09, 1916 in Tenedos, Greece d: 
-October 31, 1983</div>
-<div class="tree-entry gen-3">Zoe Dimitriou b: Private</div>
-<div class="tree-entry gen-3 note">+Nikolas Karagianis  
-b: Private</div>
-<div class="tree-entry gen-3 note">5 Andreas Karagianis  
-b: Private</div>
-<div class="tree-entry gen-3 note">+Sophia Stefanis  
-b: Private</div>
-<div class="tree-entry gen-3 note">6 Zoi Karagianis  
-b: Private</div>
-<div class="tree-entry gen-3 note">6 Stella Karagianis  
-b: Private</div>
-<div class="tree-entry gen-3 note">5 Evanthia Karagianis  
-b: Private</div>
-<div class="tree-entry gen-3 note">+Niko Vatistas  
-b: Private</div>
-<div class="tree-entry gen-3 note">6 Panagiotis Vatistas  
-b: Private</div>
-<div class="tree-entry gen-3 note">6 Nikoleta Vatistas  
-b: Private</div>
-<div class="tree-entry gen-3 note">4 Evangelos 'Vangeli' Dimitriou  
-b: Private</div>
-<div class="tree-entry gen-3 note">+Sultana 'Cookie' Pothitos  
-b: Private</div>
-<div class="tree-entry gen-3 note">5 Anna Dimitriou  
-b: Private</div>
-<div class="tree-entry gen-3 note">+Niko Goylis  
-b: Private</div>
-<div class="tree-entry gen-3 note">6 Vaso Goylis  
-b: Private</div>
-<div class="tree-entry gen-3 note">6 Sultana Goylis  
-b: Private</div>
-<div class="tree-entry gen-3 note">5 Eugenia Dimitriou  
-b: Private</div>
-<div class="tree-entry gen-3 note">+Dimitri Saryles  
-b: Private</div>
-<div class="tree-entry gen-3 note">6 Maria Saryles  
-b: Private</div>
-<div class="tree-entry gen-3 note">6 Keryiatzis Saryles 
-b: Private</div>
-<div class="tree-entry gen-3 note">6 Vagelia Saryles  
-b: Private</div>
-<div class="tree-entry gen-3 note">4 Moskos M. Dimitriou 
-b: Private</div>
-<div class="tree-entry gen-3 note">+Maria Bitlis  
-b: Private</div>
-<div class="tree-entry gen-3 note">5 Ageliki Dimitriou  
-b: Private</div>
-<div class="tree-entry gen-3 note">5 Mihalis Dimitriou  
-b: Private</div>
-<div class="tree-entry gen-3 note">3 Fotis E. Dimitriou b: August 28, 1915 in Tenedos, Greece d: 
-Sept. 22, 2001</div>
-<div class="tree-entry gen-3 spouse">+ Athena b: 1919 d: April 22, 1991</div>
-<div class="tree-entry gen-3 note">4 Zoe Dimitriou  
-b: Private</div>
-<div class="tree-entry gen-3 note">+George Vafopoylos  
-b: Private</div>
-<div class="tree-entry gen-3 note">5 Petros G. Vafopoylos  
-b: Private</div>
-<div class="tree-entry gen-3 note">5 Soula Vafopoylos  
-b: Private</div>
-<div class="tree-entry gen-3 note">4 Kostas F. Dimitriou  
-b: Private</div>
-<div class="tree-entry gen-3 note">+Despina 
-b: Private</div>
-<div class="tree-entry gen-3 note">5 Fotis K. Dimitriou 
-b: Private</div>
-<div class="tree-entry gen-3 note">5 Angelos K. Dimitriou  
-b: Private</div>
-<div class="tree-entry gen-3 note">5 Athena Dimitriou  
-b: Private</div>
-<div class="tree-entry gen-3 note">3 Minas E. Dimitriou b: 1917 in Tenedos, Greece d: August 
-14, 1973</div>
-<div class="tree-entry gen-3 note">+Sultana Kamitsoglou  
-b: 1927 d: October 27, 2004</div>
-<div class="tree-entry gen-3">Evangelos M. Dimitriou b: 1945 d: 1991</div>
-<div class="tree-entry gen-3 spouse">+ Katerina b: Unknown d: 1991</div>
-<div class="tree-entry gen-3 note">5 Minas V. Dimitriou 
-b: Private</div>
-<div class="tree-entry gen-3 note">5 Angeliki Dimitriou 
-b: Private</div>
-<div class="tree-entry gen-3 note">4 Zoe Dimitriou  
-b: Private</div>
-<div class="tree-entry gen-3 note">+Lazaros  
-b: Private</div>
-<div class="tree-entry gen-3 note">5 Stratos  
-b: Private</div>
-<div class="tree-entry gen-3 note">5 Minas  
-b: Private</div>
-<div class="tree-entry gen-4">Panagiotis b: 1975 d: April 12, 2006</div>
-<div class="tree-entry gen-4 note">4 Gregoris M. Dimitriou  
-b: Private</div>
-<div class="tree-entry gen-4 note">+Parthena Tsouflidis  
-b: Private</div>
-<div class="tree-entry gen-4 note">5 Minas G. Dimitriou  
-b: Private</div>
-<div class="tree-entry gen-4 note">5 Despina Dimitriou 
-b: Private</div>
-<div class="tree-entry gen-1">Eleni Matzaris b: Unknown in Tenedos, Greece</div>
-<div class="tree-entry gen-1 spouse">+ Unknown Saperas b: Unknown</div>
-<div class="tree-entry gen-2">Eleutherios Saperas b: Unknown in Tenedos, Greece</div>
-<div class="tree-entry gen-2 spouse">+ Koula B. Geugeli b: Unknown</div>
-<div class="tree-entry gen-2">Despina Saperas b: Unknown in Tenedos, Greece d: 1988</div>
-<div class="tree-entry gen-2 spouse">+ John Panagakis b: Unknown</div>
-<div class="tree-entry gen-3">Anastasios J. Panagakis b: Unknown d: June 7, 1981</div>
-<div class="tree-entry gen-3 spouse">+ Anastasia Vitlis b: Private</div>
-<div class="tree-entry gen-4">Gianis A. Panagakis b: Private</div>
-<div class="tree-entry gen-4 note">5 Paradisis 
-Panagakis b: Private</div>
-<div class="tree-entry gen-4 note">5 Haralabos 
-Panagakis b: Private</div>
-<div class="tree-entry gen-4 note">5 Mihalis 
-Panagakis b: Private</div>
-<div class="tree-entry gen-3">Marika Panagakis b: Private</div>
-<div class="tree-entry gen-3 spouse">+ Katakalos Lalos b: Private</div>
-<div class="tree-entry gen-4">Fotini Lalos b: Private</div>
-<div class="tree-entry gen-4 spouse">+ Thanasis Alexiou b: Private</div>
-<div class="tree-entry gen-4 note">6 Kostantinos Alexiou b: Unknown d: 
-March 13, 2005</div>
-<div class="tree-entry gen-4">Maria Alexiou b: Private</div>
-<div class="tree-entry gen-4 note">6 Anastasios 
-Alexiou b: Private</div>
-<div class="tree-entry gen-3">Eleni Panagakis b: Private</div>
-<div class="tree-entry gen-3 spouse">+ Apostolis Korakas b: Private</div>
-<div class="tree-entry gen-4">Thanasis Korakas b: Private</div>
-<div class="tree-entry gen-4">Ourania Korakas b: Private</div>
-<div class="tree-entry gen-4 spouse">+ Zaferis (Nihterdis) Alemenos b: Private</div>
-<div class="tree-entry gen-4">Apostolos Alemenos b: Private</div>
-<div class="tree-entry gen-4">Irene Alemenos b: Private</div>
-<div class="tree-entry gen-2">Sotiria Saperas b: Unknown in Tenedos, Greece</div>
-<div class="tree-entry gen-2 note">2 Panagiotis 'Peter' G. Matzaris b: Sept 14, 1886 in Tenedos d: Dec. 
-22, 1955</div>
-<div class="tree-entry gen-2 note">+Panagiota 'Paulina' Stamboulis b: April 15, 1900 d: 
-December 26, 1991</div>
-<div class="tree-entry gen-2 note">3 Freeda P. Matzaris b: July 07, 1922  d: December 15, 
-2003</div>
-<div class="tree-entry gen-2 spouse">+ Louis Peter Calage b: April 08, 1921 d: July 30, 2001</div>
-<div class="tree-entry gen-2">George P. Matzaris b: July 26, 1923 d: July 15, 1995</div>
-<div class="tree-entry gen-2 spouse">+ Eleni 'Helen' Kongos  b: Private</div>
-<div class="tree-entry gen-2 note">3 Esther P. Matzaris 
-b: Private</div>
-<div class="tree-entry gen-2 note">+Mike Columbus 
-b: Private</div>
-<div class="tree-entry gen-2 note">4 George P. Columbus  
-b: Private</div>
-<div class="tree-entry gen-1">Sotiris G. Matzaris b: Unknown in Tenedos, Greece</div>
-
+  <div class="page-content tree-page">
+    <div class="tree-outer">
+      <div class="tree-legend">
+        <div class="legend-item"><div class="ls navy"></div> Ancestor</div>
+        <div class="legend-item"><div class="ls white"></div> Descendant</div>
+        <div class="legend-item"><div class="ls blue"></div> Spouse (married-in)</div>
+        <div class="legend-item"><div class="ls gray"></div> Living (private)</div>
+        <div class="legend-item" style="color:var(--color-gold,#c9a227);font-weight:700;font-size:1rem">&times;</div>&thinsp;Married
+        <div class="legend-item" style="font-size:.75rem;color:#999">Click a descendant card to collapse/expand</div>
+      </div>
+      <div class="tree-forest" id="forest"></div>
     </div>
   </div>
 </main>
@@ -258,11 +140,101 @@ b: Private</div>
       <a href="contact.html">Contact</a>
       <a href="not-recovered.html">Not Archived</a>
     </nav>
-    <p class="footer-copy">
-      Original content &copy; Tenedian Brotherhood. Website restored and modernized from archived materials.
-    </p>
+    <p class="footer-copy">Original content &copy; Tenedian Brotherhood.
+      Website restored and modernized from archived materials.</p>
   </div>
 </footer>
 
+<script>
+var TREES = [{"id":"p1","name":"George Matzaris","m":[{"sp":{"id":"p2","name":"Anastasia Triantafilou","birth":"Unknown"},"kids":[{"id":"p3","name":"John G. Matzaris","m":[{"sp":{"id":"p4","name":"Hriso Kandis","birth":"1896","death":"October 08, 1967"},"kids":[{"id":"p5","name":"Michael J. Matzaris","m":[{"sp":{"id":"p6","name":"Efthemia","birth":"Unknown","death":"Unknown"},"kids":[{"id":"p7","name":"Eleni Matzaris","m":[],"priv":true},{"id":"p8","name":"George M. Matzaris","m":[],"priv":true},{"id":"p9","name":"Konstandinos M. Matzaris","m":[],"priv":true}]}],"birth":"July 17, 1914","death":"August 27, 1996"}]}],"birth":"November 23, 1878","death":"June 29, 1961"},{"id":"p10","name":"Despina Matzaris","m":[{"sp":{"id":"p11","name":"Ignatis Diavasakis","birth":"Unknown"},"kids":[{"id":"p12","name":"Andonis I. Diavasakis","m":[],"birth":"Unknown","death":"1987"},{"id":"p13","name":"Panagiota Diavasakis","m":[{"sp":{"id":"p14","name":"Dimitri Demos","birth":"Unknown"},"kids":[]}],"birth":"Unknown"},{"id":"p15","name":"Marika Diavasakis","m":[],"birth":"Unknown"},{"id":"p16","name":"Katerina Diavasakis","m":[{"sp":{"id":"p17","name":"Odysseus Y. Hatziouannou","priv":true},"kids":[{"id":"p18","name":"Yanni O. Hatziouannou","m":[{"sp":{"id":"p19","name":"Amalia Milona","priv":true},"kids":[{"id":"p20","name":"Katerina Hatziouannou","m":[],"priv":true},{"id":"p21","name":"Maria Hatziouannou","m":[],"priv":true},{"id":"p22","name":"Paraskevi Hatziouannou","m":[],"priv":true},{"id":"p23","name":"Georgia Hatziouannou","m":[],"priv":true}]}],"priv":true}]}],"priv":true}]}],"birth":"Unknown"},{"id":"p24","name":"Polixeni Matzaris","m":[{"sp":{"id":"p25","name":"Konstandinos Hloros","birth":"Unknown","death":"Unknown"},"kids":[{"id":"p26","name":"Emmanuel Hloros","m":[{"sp":{"id":"p27","name":"Erefili Psathas","birth":"1910"},"kids":[{"id":"p28","name":"Panagiotis E. Hloros","m":[{"sp":{"id":"p29","name":"Sophia Ioanidou","priv":true},"kids":[{"id":"p30","name":"Manolis P. Hloros","m":[],"priv":true},{"id":"p31","name":"Androniki Hloros","m":[],"priv":true}]}],"priv":true},{"id":"p32","name":"Polixeni Hloros","m":[{"sp":{"id":"p33","name":"George Markopoulos","priv":true},"kids":[{"id":"p34","name":"Anna Markopoulos","m":[],"priv":true},{"id":"p35","name":"Nikolas G. Markopoulos","m":[],"priv":true}]}],"priv":true}]}],"birth":"Unknown"},{"id":"p36","name":"Adonis K. Hloros","m":[{"sp":{"id":"p37","name":"Konstandina","birth":"Unknown","death":"2003"},"kids":[{"id":"p38","name":"Konstantinos A. Hloros","m":[],"birth":"Unknown"},{"id":"p39","name":"Polixeni Hloros","m":[],"birth":"Unknown"}]}],"birth":"Unknown"},{"id":"p40","name":"Eleni Hloros","m":[{"sp":{"id":"p41","name":"Nikos Komninakis","birth":"Unknown"},"kids":[]}],"birth":"Unknown"},{"id":"p42","name":"Vasilisa Hloros","m":[{"sp":{"id":"p43","name":"Yiannis Karoulis","birth":"Unknown"},"kids":[]}],"birth":"Unknown"}]}],"birth":"Unknown"},{"id":"p44","name":"Zoe Matzaris","m":[{"sp":{"id":"p45","name":"Evangelos M. Dimitriou","birth":"September 29, 1873","death":"March 15, 1936"},"kids":[{"id":"p46","name":"Mihalis E. Dimitriou","m":[{"sp":{"id":"p47","name":"Anna Krystales","birth":"July 09, 1916","death":"October 31, 1983"},"kids":[{"id":"p48","name":"Zoe Dimitriou","m":[{"sp":{"id":"p49","name":"Nikolas Karagianis","priv":true},"kids":[{"id":"p50","name":"Andreas Karagianis","m":[{"sp":{"id":"p51","name":"Sophia Stefanis","priv":true},"kids":[{"id":"p52","name":"Zoi Karagianis","m":[],"priv":true},{"id":"p53","name":"Stella Karagianis","m":[],"priv":true}]}],"priv":true},{"id":"p54","name":"Evanthia Karagianis","m":[{"sp":{"id":"p55","name":"Niko Vatistas","priv":true},"kids":[{"id":"p56","name":"Panagiotis Vatistas","m":[],"priv":true},{"id":"p57","name":"Nikoleta Vatistas","m":[],"priv":true}]}],"priv":true}]}],"priv":true},{"id":"p58","name":"Evangelos 'Vangeli' Dimitriou","m":[{"sp":{"id":"p59","name":"Sultana 'Cookie' Pothitos","priv":true},"kids":[{"id":"p60","name":"Anna Dimitriou","m":[{"sp":{"id":"p61","name":"Niko Goylis","priv":true},"kids":[{"id":"p62","name":"Vaso Goylis","m":[],"priv":true},{"id":"p63","name":"Sultana Goylis","m":[],"priv":true}]}],"priv":true},{"id":"p64","name":"Eugenia Dimitriou","m":[{"sp":{"id":"p65","name":"Dimitri Saryles","priv":true},"kids":[{"id":"p66","name":"Maria Saryles","m":[],"priv":true},{"id":"p67","name":"Keryiatzis Saryles","m":[],"priv":true},{"id":"p68","name":"Vagelia Saryles","m":[],"priv":true}]}],"priv":true}]}],"priv":true},{"id":"p69","name":"Moskos M. Dimitriou","m":[{"sp":{"id":"p70","name":"Maria Bitlis","priv":true},"kids":[{"id":"p71","name":"Ageliki Dimitriou","m":[],"priv":true},{"id":"p72","name":"Mihalis Dimitriou","m":[],"priv":true}]}],"priv":true}]}],"birth":"April 20, 1914","death":"January 28, 1979"},{"id":"p73","name":"Fotis E. Dimitriou","m":[{"sp":{"id":"p74","name":"Athena","birth":"1919","death":"April 22, 1991"},"kids":[{"id":"p75","name":"Zoe Dimitriou","m":[{"sp":{"id":"p76","name":"George Vafopoylos","priv":true},"kids":[{"id":"p77","name":"Petros G. Vafopoylos","m":[],"priv":true},{"id":"p78","name":"Soula Vafopoylos","m":[],"priv":true}]}],"priv":true},{"id":"p79","name":"Kostas F. Dimitriou","m":[{"sp":{"id":"p80","name":"Despina","priv":true},"kids":[{"id":"p81","name":"Fotis K. Dimitriou","m":[],"priv":true},{"id":"p82","name":"Angelos K. Dimitriou","m":[],"priv":true},{"id":"p83","name":"Athena Dimitriou","m":[],"priv":true}]}],"priv":true}]}],"birth":"August 28, 1915","death":"Sept. 22, 2001"},{"id":"p84","name":"Minas E. Dimitriou","m":[{"sp":{"id":"p85","name":"Sultana Kamitsoglou","birth":"1927","death":"October 27, 2004"},"kids":[{"id":"p86","name":"Evangelos M. Dimitriou","m":[{"sp":{"id":"p87","name":"Katerina","birth":"Unknown","death":"1991"},"kids":[{"id":"p88","name":"Minas V. Dimitriou","m":[],"priv":true},{"id":"p89","name":"Angeliki Dimitriou","m":[],"priv":true}]}],"birth":"1945","death":"1991"},{"id":"p90","name":"Zoe Dimitriou","m":[{"sp":{"id":"p91","name":"Lazaros","priv":true},"kids":[{"id":"p92","name":"Stratos","m":[],"priv":true},{"id":"p93","name":"Minas","m":[],"priv":true},{"id":"p94","name":"Panagiotis","m":[],"birth":"1975","death":"April 12, 2006"}]}],"priv":true},{"id":"p95","name":"Gregoris M. Dimitriou","m":[{"sp":{"id":"p96","name":"Parthena Tsouflidis","priv":true},"kids":[{"id":"p97","name":"Minas G. Dimitriou","m":[],"priv":true},{"id":"p98","name":"Despina Dimitriou","m":[],"priv":true}]}],"priv":true}]}],"birth":"1917","death":"August 14, 1973"}]}],"birth":"June 26, 1888","death":"July 20, 1976"},{"id":"p99","name":"Eleni Matzaris","m":[{"sp":{"id":"p100","name":"Unknown Saperas","birth":"Unknown"},"kids":[{"id":"p101","name":"Eleutherios Saperas","m":[{"sp":{"id":"p102","name":"Koula","birth":"Geugeli b: Unknown"},"kids":[]}],"birth":"Unknown"},{"id":"p103","name":"Despina Saperas","m":[{"sp":{"id":"p104","name":"John Panagakis","birth":"Unknown"},"kids":[{"id":"p105","name":"Anastasios J. Panagakis","m":[{"sp":{"id":"p106","name":"Anastasia Vitlis","priv":true},"kids":[{"id":"p107","name":"Gianis A. Panagakis","m":[],"priv":true},{"id":"p108","name":"Paradisis Panagakis","m":[],"priv":true},{"id":"p109","name":"Haralabos Panagakis","m":[],"priv":true},{"id":"p110","name":"Mihalis Panagakis","m":[],"priv":true}]}],"birth":"Unknown","death":"June 7, 1981"},{"id":"p111","name":"Marika Panagakis","m":[{"sp":{"id":"p112","name":"Katakalos Lalos","priv":true},"kids":[{"id":"p113","name":"Fotini Lalos","m":[{"sp":{"id":"p114","name":"Thanasis Alexiou","priv":true},"kids":[{"id":"p115","name":"Kostantinos Alexiou","m":[],"birth":"Unknown","death":"March 13, 2005"},{"id":"p116","name":"Maria Alexiou","m":[],"priv":true},{"id":"p117","name":"Anastasios Alexiou","m":[],"priv":true}]}],"priv":true}]}],"priv":true},{"id":"p118","name":"Eleni Panagakis","m":[{"sp":{"id":"p119","name":"Apostolis Korakas","priv":true},"kids":[{"id":"p120","name":"Thanasis Korakas","m":[],"priv":true},{"id":"p121","name":"Ourania Korakas","m":[{"sp":{"id":"p122","name":"Zaferis (Nihterdis) Alemenos","priv":true},"kids":[{"id":"p123","name":"Apostolos Alemenos","m":[],"priv":true},{"id":"p124","name":"Irene Alemenos","m":[],"priv":true}]}],"priv":true}]}],"priv":true}]}],"birth":"Unknown","death":"1988"},{"id":"p125","name":"Sotiria Saperas","m":[],"birth":"Unknown"}]}],"birth":"Unknown"},{"id":"p126","name":"Panagiotis 'Peter' G. Matzaris","m":[{"sp":{"id":"p127","name":"Panagiota 'Paulina' Stamboulis","birth":"April 15, 1900","death":"December 26, 1991"},"kids":[{"id":"p128","name":"Freeda P. Matzaris","m":[{"sp":{"id":"p129","name":"Louis Peter Calage","birth":"April 08, 1921","death":"July 30, 2001"},"kids":[]}],"birth":"July 07, 1922","death":"December 15, 2003"},{"id":"p130","name":"George P. Matzaris","m":[{"sp":{"id":"p131","name":"Eleni 'Helen' Kongos","priv":true},"kids":[]}],"birth":"July 26, 1923","death":"July 15, 1995"},{"id":"p132","name":"Esther P. Matzaris","m":[{"sp":{"id":"p133","name":"Mike Columbus","priv":true},"kids":[{"id":"p134","name":"George P. Columbus","m":[],"priv":true}]}],"priv":true}]}],"birth":"Sept 14, 1886","death":"Dec. 22, 1955"},{"id":"p135","name":"Sotiris G. Matzaris","m":[],"birth":"Unknown"}]}],"birth":"Unknown"}];
+var TREE_TITLES = ["Matzaris Family"];
+function makeCard(p, cls) {
+  var div = document.createElement('div');
+  div.className = 'card ' + (cls || '');
+  var n = document.createElement('span'); n.className = 'n';
+  n.textContent = p.name; div.appendChild(n);
+  var parts = [];
+  if (p.birth) parts.push('b. ' + p.birth);
+  if (p.death) parts.push('d. ' + p.death);
+  if (p.priv && !p.birth && !p.death) parts.push('Living');
+  if (parts.length) {
+    var d = document.createElement('span'); d.className = 'd';
+    d.textContent = parts.join('  ·  '); div.appendChild(d);
+  }
+  return div;
+}
+
+function renderNode(p, gen) {
+  var wrapper = document.createElement('div'); wrapper.className = 'tree-node';
+  var body = document.createElement('div'); body.className = 'node-body';
+  var marriages = p.m || [];
+  var allKids = [];
+  for (var i = 0; i < marriages.length; i++) {
+    var ks = marriages[i].kids || [];
+    for (var j = 0; j < ks.length; j++) allKids.push(ks[j]);
+  }
+  var cls = gen === 0 ? 'root' : (p.priv ? 'priv' : '');
+  if (allKids.length) cls += (cls ? ' ' : '') + 'collapsible';
+  var mc = makeCard(p, cls);
+  if (marriages.length > 0) {
+    var row = document.createElement('div'); row.className = 'couple-row';
+    row.appendChild(mc);
+    if (marriages[0].sp) {
+      var dot = document.createElement('span'); dot.className = 'cx';
+      dot.textContent = '×'; row.appendChild(dot);
+      var spCls = 'spouse' + (marriages[0].sp.priv ? ' priv' : '');
+      row.appendChild(makeCard(marriages[0].sp, spCls));
+    }
+    body.appendChild(row);
+    for (var mi = 1; mi < marriages.length; mi++) {
+      var mg = marriages[mi];
+      if (mg.label) {
+        var lbl = document.createElement('div'); lbl.className = 'remarriage-lbl';
+        lbl.textContent = mg.label + ':'; body.appendChild(lbl);
+      }
+      if (mg.sp) {
+        var r2 = document.createElement('div'); r2.className = 'couple-row';
+        var ph = document.createElement('div'); ph.style.cssText = 'width:148px;flex-shrink:0;';
+        r2.appendChild(ph);
+        var d2 = document.createElement('span'); d2.className = 'cx';
+        d2.textContent = '×'; r2.appendChild(d2);
+        var sp2Cls = 'spouse' + (mg.sp.priv ? ' priv' : '');
+        r2.appendChild(makeCard(mg.sp, sp2Cls)); body.appendChild(r2);
+      }
+    }
+  } else {
+    var soloRow = document.createElement('div'); soloRow.className = 'couple-row';
+    soloRow.appendChild(mc); body.appendChild(soloRow);
+  }
+  wrapper.appendChild(body);
+  if (allKids.length) {
+    wrapper.classList.add('has-ch');
+    var cr = document.createElement('div'); cr.className = 'tree-children';
+    for (var ki = 0; ki < allKids.length; ki++) cr.appendChild(renderNode(allKids[ki], gen + 1));
+    wrapper.appendChild(cr);
+    mc.addEventListener('click', (function(nd) {
+      return function(e) { e.stopPropagation(); nd.classList.toggle('closed'); };
+    }(wrapper)));
+  }
+  return wrapper;
+}
+
+function buildSection(title, data, showTitle) {
+  var sec = document.createElement('div'); sec.className = 'tree-section';
+  if (showTitle) {
+    var h = document.createElement('h2'); h.className = 'tree-section-heading';
+    h.textContent = title; sec.appendChild(h);
+  }
+  var root = document.createElement('div'); root.className = 'tree-root';
+  root.appendChild(renderNode(data, 0)); sec.appendChild(root);
+  return sec;
+}
+
+var forest = document.getElementById('forest');
+var multiTree = TREES.length > 1;
+for (var ti = 0; ti < TREES.length; ti++) {
+  forest.appendChild(buildSection(TREE_TITLES[ti], TREES[ti], multiTree));
+}
+</script>
 </body>
 </html>

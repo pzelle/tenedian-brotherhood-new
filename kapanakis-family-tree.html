@@ -5,6 +5,86 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Kapanakis Family — Tenedian Brotherhood</title>
   <link rel="stylesheet" href="css/style.css">
+  <style>
+    .tree-page { padding: 0; }
+    .tree-outer { overflow-x: auto; padding: 2.5rem 1.5rem 3rem;
+                  background: var(--color-off-white, #f8f5f0); }
+    .tree-forest { display: flex; flex-direction: column; gap: 3.5rem; }
+    .tree-section-heading {
+      font-family: var(--font-heading, 'Playfair Display', serif);
+      color: var(--color-navy, #0a1628); font-size: 1.2rem;
+      margin: 0 0 1.25rem; padding-bottom: 0.4rem;
+      border-bottom: 2px solid var(--color-gold, #c9a227); }
+    .tree-legend { display: flex; gap: 1.2rem; flex-wrap: wrap;
+                   margin-bottom: 2rem; font-size: 0.8rem; color: #555;
+                   align-items: center; }
+    .legend-item { display: flex; align-items: center; gap: 5px; }
+    .ls { width: 20px; height: 13px; border-radius: 3px;
+          border: 2px solid var(--color-gold, #c9a227);
+          display: inline-block; flex-shrink: 0; }
+    .ls.navy  { background: var(--color-navy, #0a1628); }
+    .ls.white { background: #fff; }
+    .ls.blue  { background: #dce8ff; border-color: #6888cc; }
+    .ls.gray  { background: #eee; border-color: #bbb; }
+    /* Tree layout */
+    .tree-section { overflow-x: auto; padding-bottom: 0.5rem; }
+    .tree-root { display: inline-flex; flex-direction: column;
+                 align-items: center; padding: 0.5rem 1rem; }
+    .tree-node { display: flex; flex-direction: column; align-items: center;
+                 position: relative; }
+    .node-body { display: flex; flex-direction: column; align-items: center;
+                 gap: 3px; position: relative; }
+    .couple-row { display: flex; align-items: center; gap: 5px; }
+    .cx { color: var(--color-gold, #c9a227); font-weight: 700; font-size: 1rem;
+          padding: 0 2px; flex-shrink: 0; }
+    .remarriage-lbl { font-size: 0.65rem; color: #999; font-style: italic;
+                      text-align: center; margin-top: 5px; }
+    /* Cards */
+    .card { background: #fff; border: 2px solid var(--color-gold, #c9a227);
+            border-radius: 6px; padding: 7px 10px; width: 148px;
+            text-align: center; font-size: 0.74rem; line-height: 1.35;
+            position: relative; }
+    .card .n { font-weight: 700; color: var(--color-navy, #0a1628);
+               display: block; font-size: 0.78rem; }
+    .card .d { color: #888; font-size: 0.67rem; display: block; margin-top: 2px; }
+    .card.root { background: var(--color-navy, #0a1628);
+                 border-color: var(--color-gold, #c9a227); }
+    .card.root .n { color: var(--color-gold, #c9a227); }
+    .card.root .d { color: #99aabb; }
+    .card.spouse { background: #dce8ff; border-color: #6888cc; }
+    .card.spouse .n { color: #1a3a80; }
+    .card.priv  { background: #eee; border-color: #bbb; }
+    .card.priv .n { color: #666; }
+    .card.priv .d { color: #aaa; }
+    .card.collapsible { cursor: pointer; }
+    .card.collapsible::after { content: '\25BE'; position: absolute;
+      bottom: 3px; right: 5px; font-size: 0.6rem;
+      color: var(--color-gold, #c9a227); }
+    .tree-node.closed > .node-body .card.collapsible::after { content: '\25B8'; }
+    /* Connector lines (CSS pseudo-elements) */
+    :root { --gap: 44px; }
+    .tree-node.has-ch > .node-body::after {
+      content: ''; position: absolute; left: 50%; transform: translateX(-50%);
+      top: 100%; width: 2px; height: var(--gap);
+      background: var(--color-gold, #c9a227); }
+    .tree-children { display: flex; flex-direction: row; gap: 14px;
+                     align-items: flex-start; justify-content: center;
+                     margin-top: var(--gap); }
+    .tree-node.closed > .node-body::after  { display: none !important; }
+    .tree-node.closed > .tree-children     { display: none !important; }
+    .tree-children > .tree-node { position: relative; }
+    .tree-children > .tree-node::before {
+      content: ''; position: absolute; left: 50%; transform: translateX(-50%);
+      top: calc(-1 * var(--gap)); width: 2px; height: var(--gap);
+      background: var(--color-gold, #c9a227); }
+    .tree-children > .tree-node::after {
+      content: ''; position: absolute; top: calc(-1 * var(--gap));
+      left: 0; right: 0; height: 2px;
+      background: var(--color-gold, #c9a227); }
+    .tree-children > .tree-node:first-child::after  { left: 50%; }
+    .tree-children > .tree-node:last-child::after   { right: 50%; }
+    .tree-children > .tree-node:first-child:last-child::after { display: none; }
+  </style>
 </head>
 <body>
 
@@ -30,140 +110,21 @@
   <header class="page-header">
     <div class="page-header-inner">
       <h1 class="page-title">Kapanakis Family</h1>
-      <p class="page-subtitle"><a href="family-trees.html" style="color:rgba(255,255,255,.6); font-size:.85rem;">&larr; Back to Family Trees</a></p>
+      <p class="page-subtitle"><a href="family-trees.html" style="color:rgba(255,255,255,.65);font-size:.85rem;">&larr; Back to Family Trees</a></p>
     </div>
   </header>
 
-  <div class="page-content">
-    <div class="privacy-notice">
-      <strong>Privacy notice:</strong> Per the original website policy, birth dates are not
-      disclosed for individuals born after 1920 unless they are deceased.
-    </div>
-
-    <div class="family-tree-content">
-<div class="tree-entry gen-0 note">Kapanicas / Kapanakas Family</div>
-<div class="tree-entry gen-0 note">Descendants
-of Mihalis Kapanikas</div>
-<div class="tree-entry gen-0">Mihalis Kapanikas b: Unknown in Tenedos, Greece</div>
-<div class="tree-entry gen-0 spouse">+ Maria b: Unknown</div>
-<div class="tree-entry gen-0 note">2 John M. Kapanikas b: February 01, 1882 in 
-Tenedos, Greece d: October 06, 1959</div>
-<div class="tree-entry gen-0 note">+Kereake Niklis b: 1894 in Tenedos, Greece 
-d: October 19, 1974</div>
-<div class="tree-entry gen-0 note">3 Katherine Kapanikas b: February 15, 
-1926  d: About 1963</div>
-<div class="tree-entry gen-0 note">+George Theodore Pero b: April 16, 
-1916   d: March 23, 1988</div>
-<div class="tree-entry gen-0 note">*2nd Husband of Katherine Kapanikas:</div>
-<div class="tree-entry gen-0 note">+James Emanuel Pappas b: 1922  
-d: About 1963</div>
-<div class="tree-entry gen-0 note">4  Michael J. Pappas  
-b: Private</div>
-<div class="tree-entry gen-3">Efthalia Pappas b: Private</div>
-<div class="tree-entry gen-3 note">4 Kiriaki 'Kelly' Pappas 
- b: 
-Private</div>
-<div class="tree-entry gen-3 note">2 Achilles 'Charles' M. Kapanicas b: March 01, 
-1887 in Tenedos, Greece</div>
-<div class="tree-entry gen-3 spouse">+ Venetia Mitchell b: April 11, 1890  d: August 15, 1971</div>
-<div class="tree-entry gen-3 note">3 Marie Kapanicas  b: January 26, 
-1917  d: May 21, 2006</div>
-<div class="tree-entry gen-3 note">+Albert James  b: May 21, 1923   
-d: March 6, 2008</div>
-<div class="tree-entry gen-3">Chris James b: Private</div>
-<div class="tree-entry gen-3 note">4 Constance James  b: 
-Private</div>
-<div class="tree-entry gen-3">Albert James  b: Private</div>
-<div class="tree-entry gen-3 note">3 Martha Kapanicas b: January 04, 1918 
-d: September 15, 2010</div>
-<div class="tree-entry gen-3 note">+George Martin Jensen, Sr. b: 
-September 09, 1912  d: January 27, 2002</div>
-<div class="tree-entry gen-3 note">4 George Martin Jensen, Jr. b: 
-May 23, 1941  d: March 16, 2011</div>
-<div class="tree-entry gen-3 spouse">+ Karen b: Unknown</div>
-<div class="tree-entry gen-3 note">5 Sheryln Jensen  b: 
-Private</div>
-<div class="tree-entry gen-3 note">5 Trina Jensen  b: 
-Private</div>
-<div class="tree-entry gen-3 note">+Matt Hooper  b: 
-Private</div>
-<div class="tree-entry gen-3 note">5 Michelle Jensen  b: 
-Private</div>
-<div class="tree-entry gen-3 note">5 Unknown Daughter b: 
-Unknown</div>
-<div class="tree-entry gen-3 note">4 Georgeann Jensen  b: 
-Unknown  b: May 23, 1941 d: January 1, 
-1998</div>
-<div class="tree-entry gen-3 note">, + Unknown Kohalski b: Unknown</div>
-<div class="tree-entry gen-3 note">5 Ronald Jensen b: 
-Private</div>
-<div class="tree-entry gen-3 note">4 Joanne Jensen  b: Unknown  
-d: abt 2005</div>
-<div class="tree-entry gen-3 note">3 James Kapanicas b: June 15, 1919 d: 
-January 03, 2007</div>
-<div class="tree-entry gen-3 note">+Catherine Vlahopoulos  b: 
-Private</div>
-<div class="tree-entry gen-3 note">4 Arlene Kapanicas  b: 
-Private</div>
-<div class="tree-entry gen-3 note">4 Angelina Kapanicas  b: 
-Private</div>
-<div class="tree-entry gen-3 note">4 Alan C. Kapanicas 
- b: Private</div>
-<div class="tree-entry gen-3 note">+Diane M. Burgiel 
- b: Private</div>
-<div class="tree-entry gen-3 note">3 Mitchell Charles Kapanicas b: August 
-24, 1921  d: September 12, 2008</div>
-<div class="tree-entry gen-3 note">+Mary Grill b: October 26, 1924 d: 
-November 06, 1992</div>
-<div class="tree-entry gen-3 note">4 Mitchell James Kapanicas  
-b: Private</div>
-<div class="tree-entry gen-3 note">+Beth A. 
- b: Private</div>
-<div class="tree-entry gen-3 note">5 Holly Kapanicas 
- b: 
-Private</div>
-<div class="tree-entry gen-3 note">+Unknown Meneou  
-b: Unknown</div>
-<div class="tree-entry gen-3 note">6 Ronnie Meneou  
-b: Private</div>
-<div class="tree-entry gen-3 note">5 Jimmy M. Kapanicas
- b: 
-Private</div>
-<div class="tree-entry gen-3 note">4 Michael Louis Kapanicas 
- b: 
-Private</div>
-<div class="tree-entry gen-3 note">+Vivian L. 
- b: Private</div>
-<div class="tree-entry gen-3 note">5 Michael Louis Kapanicas 
-II  b: 
-Private</div>
-<div class="tree-entry gen-3 note">4 Marleen R. Kapanicas 
- b: 
-Private</div>
-<div class="tree-entry gen-3 note">+Anson D. White 
- b: Private</div>
-<div class="tree-entry gen-3 note">*2nd Wife of Mitchell Charles Kapanicas:</div>
-<div class="tree-entry gen-3 spouse">+ Louise b: Unknown</div>
-<div class="tree-entry gen-3 note">3 Katherine 'Kay' Kapanicas 
- b: Private</div>
-<div class="tree-entry gen-3 spouse">+ Charles Robinson  b: Private</div>
-<div class="tree-entry gen-3 note">4 Jeffrey Robinson  b: 
-Private</div>
-<div class="tree-entry gen-3 note">+ Marsha Mize  b: 
-Private</div>
-<div class="tree-entry gen-3 note">5 Katina Mia Robinson b: 
-Private</div>
-<div class="tree-entry gen-3 note">5 Jordan Robinson b: 
-Private</div>
-<div class="tree-entry gen-3 note">5 Chandra Robinson b: 
-Private</div>
-<div class="tree-entry gen-3 note">*2nd Wife of Jeffrey Robinson:</div>
-<div class="tree-entry gen-3 spouse">+ Trisha b: Private</div>
-<div class="tree-entry gen-3 note">*2nd Husband of Katherine 'Kay' 
-Kapanicas:</div>
-<div class="tree-entry gen-3 note">+Dr. Gerald L. Hansbro  b: 
-Private</div>
-
+  <div class="page-content tree-page">
+    <div class="tree-outer">
+      <div class="tree-legend">
+        <div class="legend-item"><div class="ls navy"></div> Ancestor</div>
+        <div class="legend-item"><div class="ls white"></div> Descendant</div>
+        <div class="legend-item"><div class="ls blue"></div> Spouse (married-in)</div>
+        <div class="legend-item"><div class="ls gray"></div> Living (private)</div>
+        <div class="legend-item" style="color:var(--color-gold,#c9a227);font-weight:700;font-size:1rem">&times;</div>&thinsp;Married
+        <div class="legend-item" style="font-size:.75rem;color:#999">Click a descendant card to collapse/expand</div>
+      </div>
+      <div class="tree-forest" id="forest"></div>
     </div>
   </div>
 </main>
@@ -179,11 +140,101 @@ Private</div>
       <a href="contact.html">Contact</a>
       <a href="not-recovered.html">Not Archived</a>
     </nav>
-    <p class="footer-copy">
-      Original content &copy; Tenedian Brotherhood. Website restored and modernized from archived materials.
-    </p>
+    <p class="footer-copy">Original content &copy; Tenedian Brotherhood.
+      Website restored and modernized from archived materials.</p>
   </div>
 </footer>
 
+<script>
+var TREES = [{"id":"p1","name":"Mihalis Kapanikas","m":[{"sp":{"id":"p2","name":"Maria","birth":"Unknown"},"kids":[{"id":"p3","name":"John M. Kapanikas","m":[{"sp":{"id":"p4","name":"Kereake Niklis","birth":"1894","death":"October 19, 1974"},"kids":[{"id":"p5","name":"Katherine Kapanikas","m":[{"sp":{"id":"p6","name":"George Theodore Pero","birth":"April 16, 1916","death":"March 23, 1988"},"kids":[]},{"sp":{"id":"p7","name":"James Emanuel Pappas","birth":"1922","death":"About 1963"},"kids":[{"id":"p8","name":"Michael J. Pappas","m":[],"priv":true},{"id":"p9","name":"Efthalia Pappas","m":[],"priv":true},{"id":"p10","name":"Kiriaki 'Kelly' Pappas","m":[],"priv":true}],"label":"2nd marriage"}],"birth":"February 15, 1926","death":"About 1963"}]}],"birth":"February 01, 1882","death":"October 06, 1959"},{"id":"p11","name":"Achilles 'Charles' M. Kapanicas","m":[{"sp":{"id":"p12","name":"Venetia Mitchell","birth":"April 11, 1890","death":"August 15, 1971"},"kids":[{"id":"p13","name":"Marie Kapanicas","m":[{"sp":{"id":"p14","name":"Albert James","birth":"May 21, 1923","death":"March 6, 2008"},"kids":[{"id":"p15","name":"Chris James","m":[],"priv":true},{"id":"p16","name":"Constance James","m":[],"priv":true},{"id":"p17","name":"Albert James","m":[],"priv":true}]}],"birth":"January 26, 1917","death":"May 21, 2006"},{"id":"p18","name":"Martha Kapanicas","m":[{"sp":{"id":"p19","name":"George Martin Jensen, Sr.","birth":"September 09, 1912","death":"January 27, 2002"},"kids":[{"id":"p20","name":"George Martin Jensen, Jr.","m":[{"sp":{"id":"p21","name":"Karen","birth":"Unknown"},"kids":[{"id":"p22","name":"Sheryln Jensen","m":[],"priv":true},{"id":"p23","name":"Trina Jensen","m":[{"sp":{"id":"p24","name":"Matt Hooper","priv":true},"kids":[]}],"priv":true},{"id":"p25","name":"Michelle Jensen","m":[],"priv":true},{"id":"p26","name":"Unknown Daughter","m":[],"birth":"Unknown"}]}],"birth":"May 23, 1941","death":"March 16, 2011"},{"id":"p27","name":"Georgeann Jensen","m":[{"kids":[{"id":"p28","name":"Ronald Jensen","m":[],"priv":true}]}],"birth":"Unknown b: May 23, 1941","death":"January 1, 1998"},{"id":"p29","name":"Joanne Jensen","m":[],"birth":"Unknown","death":"abt 2005"}]}],"birth":"January 04, 1918","death":"September 15, 2010"},{"id":"p30","name":"James Kapanicas","m":[{"sp":{"id":"p31","name":"Catherine Vlahopoulos","priv":true},"kids":[{"id":"p32","name":"Arlene Kapanicas","m":[],"priv":true},{"id":"p33","name":"Angelina Kapanicas","m":[],"priv":true},{"id":"p34","name":"Alan C. Kapanicas","m":[{"sp":{"id":"p35","name":"Diane M. Burgiel","priv":true},"kids":[]}],"priv":true}]}],"birth":"June 15, 1919","death":"January 03, 2007"},{"id":"p36","name":"Mitchell Charles Kapanicas","m":[{"sp":{"id":"p37","name":"Mary Grill","birth":"October 26, 1924","death":"November 06, 1992"},"kids":[{"id":"p38","name":"Mitchell James Kapanicas","m":[{"sp":{"id":"p39","name":"Beth A.","priv":true},"kids":[{"id":"p40","name":"Holly Kapanicas","m":[{"sp":{"id":"p41","name":"Unknown Meneou","birth":"Unknown"},"kids":[{"id":"p42","name":"Ronnie Meneou","m":[],"priv":true}]}],"priv":true},{"id":"p43","name":"Jimmy M. Kapanicas","m":[],"priv":true}]}],"priv":true},{"id":"p44","name":"Michael Louis Kapanicas","m":[{"sp":{"id":"p45","name":"Vivian L.","priv":true},"kids":[{"id":"p46","name":"Michael Louis Kapanicas II","m":[],"priv":true}]}],"priv":true},{"id":"p47","name":"Marleen R. Kapanicas","m":[{"sp":{"id":"p48","name":"Anson D. White","death":"White b: Private","priv":true},"kids":[]}],"priv":true}]},{"sp":{"id":"p49","name":"Louise","birth":"Unknown"},"kids":[],"label":"2nd marriage"}],"birth":"August 24, 1921","death":"September 12, 2008"},{"id":"p50","name":"Katherine 'Kay' Kapanicas","m":[{"sp":{"id":"p51","name":"Charles Robinson","priv":true},"kids":[{"id":"p52","name":"Jeffrey Robinson","m":[{"sp":{"id":"p53","name":"Marsha Mize","priv":true},"kids":[{"id":"p54","name":"Katina Mia Robinson","m":[],"priv":true},{"id":"p55","name":"Jordan Robinson","m":[],"priv":true},{"id":"p56","name":"Chandra Robinson","m":[{"sp":{"id":"p57","name":"Trisha","priv":true},"kids":[]}],"priv":true}]}],"priv":true}]},{"sp":{"id":"p58","name":"Dr. Gerald L. Hansbro","priv":true},"kids":[],"label":"2nd marriage"}],"priv":true}]}],"birth":"March 01, 1887"}]}],"birth":"Unknown"}];
+var TREE_TITLES = ["Kapanakis Family"];
+function makeCard(p, cls) {
+  var div = document.createElement('div');
+  div.className = 'card ' + (cls || '');
+  var n = document.createElement('span'); n.className = 'n';
+  n.textContent = p.name; div.appendChild(n);
+  var parts = [];
+  if (p.birth) parts.push('b. ' + p.birth);
+  if (p.death) parts.push('d. ' + p.death);
+  if (p.priv && !p.birth && !p.death) parts.push('Living');
+  if (parts.length) {
+    var d = document.createElement('span'); d.className = 'd';
+    d.textContent = parts.join('  ·  '); div.appendChild(d);
+  }
+  return div;
+}
+
+function renderNode(p, gen) {
+  var wrapper = document.createElement('div'); wrapper.className = 'tree-node';
+  var body = document.createElement('div'); body.className = 'node-body';
+  var marriages = p.m || [];
+  var allKids = [];
+  for (var i = 0; i < marriages.length; i++) {
+    var ks = marriages[i].kids || [];
+    for (var j = 0; j < ks.length; j++) allKids.push(ks[j]);
+  }
+  var cls = gen === 0 ? 'root' : (p.priv ? 'priv' : '');
+  if (allKids.length) cls += (cls ? ' ' : '') + 'collapsible';
+  var mc = makeCard(p, cls);
+  if (marriages.length > 0) {
+    var row = document.createElement('div'); row.className = 'couple-row';
+    row.appendChild(mc);
+    if (marriages[0].sp) {
+      var dot = document.createElement('span'); dot.className = 'cx';
+      dot.textContent = '×'; row.appendChild(dot);
+      var spCls = 'spouse' + (marriages[0].sp.priv ? ' priv' : '');
+      row.appendChild(makeCard(marriages[0].sp, spCls));
+    }
+    body.appendChild(row);
+    for (var mi = 1; mi < marriages.length; mi++) {
+      var mg = marriages[mi];
+      if (mg.label) {
+        var lbl = document.createElement('div'); lbl.className = 'remarriage-lbl';
+        lbl.textContent = mg.label + ':'; body.appendChild(lbl);
+      }
+      if (mg.sp) {
+        var r2 = document.createElement('div'); r2.className = 'couple-row';
+        var ph = document.createElement('div'); ph.style.cssText = 'width:148px;flex-shrink:0;';
+        r2.appendChild(ph);
+        var d2 = document.createElement('span'); d2.className = 'cx';
+        d2.textContent = '×'; r2.appendChild(d2);
+        var sp2Cls = 'spouse' + (mg.sp.priv ? ' priv' : '');
+        r2.appendChild(makeCard(mg.sp, sp2Cls)); body.appendChild(r2);
+      }
+    }
+  } else {
+    var soloRow = document.createElement('div'); soloRow.className = 'couple-row';
+    soloRow.appendChild(mc); body.appendChild(soloRow);
+  }
+  wrapper.appendChild(body);
+  if (allKids.length) {
+    wrapper.classList.add('has-ch');
+    var cr = document.createElement('div'); cr.className = 'tree-children';
+    for (var ki = 0; ki < allKids.length; ki++) cr.appendChild(renderNode(allKids[ki], gen + 1));
+    wrapper.appendChild(cr);
+    mc.addEventListener('click', (function(nd) {
+      return function(e) { e.stopPropagation(); nd.classList.toggle('closed'); };
+    }(wrapper)));
+  }
+  return wrapper;
+}
+
+function buildSection(title, data, showTitle) {
+  var sec = document.createElement('div'); sec.className = 'tree-section';
+  if (showTitle) {
+    var h = document.createElement('h2'); h.className = 'tree-section-heading';
+    h.textContent = title; sec.appendChild(h);
+  }
+  var root = document.createElement('div'); root.className = 'tree-root';
+  root.appendChild(renderNode(data, 0)); sec.appendChild(root);
+  return sec;
+}
+
+var forest = document.getElementById('forest');
+var multiTree = TREES.length > 1;
+for (var ti = 0; ti < TREES.length; ti++) {
+  forest.appendChild(buildSection(TREE_TITLES[ti], TREES[ti], multiTree));
+}
+</script>
 </body>
 </html>

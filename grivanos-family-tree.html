@@ -5,6 +5,86 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Grivanos Family — Tenedian Brotherhood</title>
   <link rel="stylesheet" href="css/style.css">
+  <style>
+    .tree-page { padding: 0; }
+    .tree-outer { overflow-x: auto; padding: 2.5rem 1.5rem 3rem;
+                  background: var(--color-off-white, #f8f5f0); }
+    .tree-forest { display: flex; flex-direction: column; gap: 3.5rem; }
+    .tree-section-heading {
+      font-family: var(--font-heading, 'Playfair Display', serif);
+      color: var(--color-navy, #0a1628); font-size: 1.2rem;
+      margin: 0 0 1.25rem; padding-bottom: 0.4rem;
+      border-bottom: 2px solid var(--color-gold, #c9a227); }
+    .tree-legend { display: flex; gap: 1.2rem; flex-wrap: wrap;
+                   margin-bottom: 2rem; font-size: 0.8rem; color: #555;
+                   align-items: center; }
+    .legend-item { display: flex; align-items: center; gap: 5px; }
+    .ls { width: 20px; height: 13px; border-radius: 3px;
+          border: 2px solid var(--color-gold, #c9a227);
+          display: inline-block; flex-shrink: 0; }
+    .ls.navy  { background: var(--color-navy, #0a1628); }
+    .ls.white { background: #fff; }
+    .ls.blue  { background: #dce8ff; border-color: #6888cc; }
+    .ls.gray  { background: #eee; border-color: #bbb; }
+    /* Tree layout */
+    .tree-section { overflow-x: auto; padding-bottom: 0.5rem; }
+    .tree-root { display: inline-flex; flex-direction: column;
+                 align-items: center; padding: 0.5rem 1rem; }
+    .tree-node { display: flex; flex-direction: column; align-items: center;
+                 position: relative; }
+    .node-body { display: flex; flex-direction: column; align-items: center;
+                 gap: 3px; position: relative; }
+    .couple-row { display: flex; align-items: center; gap: 5px; }
+    .cx { color: var(--color-gold, #c9a227); font-weight: 700; font-size: 1rem;
+          padding: 0 2px; flex-shrink: 0; }
+    .remarriage-lbl { font-size: 0.65rem; color: #999; font-style: italic;
+                      text-align: center; margin-top: 5px; }
+    /* Cards */
+    .card { background: #fff; border: 2px solid var(--color-gold, #c9a227);
+            border-radius: 6px; padding: 7px 10px; width: 148px;
+            text-align: center; font-size: 0.74rem; line-height: 1.35;
+            position: relative; }
+    .card .n { font-weight: 700; color: var(--color-navy, #0a1628);
+               display: block; font-size: 0.78rem; }
+    .card .d { color: #888; font-size: 0.67rem; display: block; margin-top: 2px; }
+    .card.root { background: var(--color-navy, #0a1628);
+                 border-color: var(--color-gold, #c9a227); }
+    .card.root .n { color: var(--color-gold, #c9a227); }
+    .card.root .d { color: #99aabb; }
+    .card.spouse { background: #dce8ff; border-color: #6888cc; }
+    .card.spouse .n { color: #1a3a80; }
+    .card.priv  { background: #eee; border-color: #bbb; }
+    .card.priv .n { color: #666; }
+    .card.priv .d { color: #aaa; }
+    .card.collapsible { cursor: pointer; }
+    .card.collapsible::after { content: '\25BE'; position: absolute;
+      bottom: 3px; right: 5px; font-size: 0.6rem;
+      color: var(--color-gold, #c9a227); }
+    .tree-node.closed > .node-body .card.collapsible::after { content: '\25B8'; }
+    /* Connector lines (CSS pseudo-elements) */
+    :root { --gap: 44px; }
+    .tree-node.has-ch > .node-body::after {
+      content: ''; position: absolute; left: 50%; transform: translateX(-50%);
+      top: 100%; width: 2px; height: var(--gap);
+      background: var(--color-gold, #c9a227); }
+    .tree-children { display: flex; flex-direction: row; gap: 14px;
+                     align-items: flex-start; justify-content: center;
+                     margin-top: var(--gap); }
+    .tree-node.closed > .node-body::after  { display: none !important; }
+    .tree-node.closed > .tree-children     { display: none !important; }
+    .tree-children > .tree-node { position: relative; }
+    .tree-children > .tree-node::before {
+      content: ''; position: absolute; left: 50%; transform: translateX(-50%);
+      top: calc(-1 * var(--gap)); width: 2px; height: var(--gap);
+      background: var(--color-gold, #c9a227); }
+    .tree-children > .tree-node::after {
+      content: ''; position: absolute; top: calc(-1 * var(--gap));
+      left: 0; right: 0; height: 2px;
+      background: var(--color-gold, #c9a227); }
+    .tree-children > .tree-node:first-child::after  { left: 50%; }
+    .tree-children > .tree-node:last-child::after   { right: 50%; }
+    .tree-children > .tree-node:first-child:last-child::after { display: none; }
+  </style>
 </head>
 <body>
 
@@ -30,140 +110,21 @@
   <header class="page-header">
     <div class="page-header-inner">
       <h1 class="page-title">Grivanos Family</h1>
-      <p class="page-subtitle"><a href="family-trees.html" style="color:rgba(255,255,255,.6); font-size:.85rem;">&larr; Back to Family Trees</a></p>
+      <p class="page-subtitle"><a href="family-trees.html" style="color:rgba(255,255,255,.65);font-size:.85rem;">&larr; Back to Family Trees</a></p>
     </div>
   </header>
 
-  <div class="page-content">
-    <div class="privacy-notice">
-      <strong>Privacy notice:</strong> Per the original website policy, birth dates are not
-      disclosed for individuals born after 1920 unless they are deceased.
-    </div>
-
-    <div class="family-tree-content">
-<div class="tree-entry gen-0 note">Grivanos Family</div>
-<div class="tree-entry gen-0 note">**NOTE: There are 2 different families listed. I do not know if or how they are 
-related.</div>
-<div class="tree-entry gen-0">Savas Grivanos b: 1904 in Tenedos, Greece d: 1945</div>
-<div class="tree-entry gen-0 note">+Ekaterini Kyriakoudis b: December 09, 1911 in Tenedos, Greece d: 
-January 04, 1986</div>
-<div class="tree-entry gen-1">Eleftheria 'Liberty' Grivanos b: Private</div>
-<div class="tree-entry gen-1 spouse">+ Kostandinos 'Gust' Elmer b: Private</div>
-<div class="tree-entry gen-2">Athena 'Tina' Elmer b: Private</div>
-<div class="tree-entry gen-2 spouse">+ Kostantinos Konstandas b: Private</div>
-<div class="tree-entry gen-3">Constantine Konstandas b: Private</div>
-<div class="tree-entry gen-3">Chris Konstandas b: Private</div>
-<div class="tree-entry gen-2">Savva 'Steve' Elmer b: Private</div>
-<div class="tree-entry gen-2 spouse">+ Eleni b: Private</div>
-<div class="tree-entry gen-3">Terri Elmer b: Private</div>
-<div class="tree-entry gen-3">Jamie? Elmer b: Private</div>
-<div class="tree-entry gen-2">Eleni Elmer b: Private</div>
-<div class="tree-entry gen-1">Pericles S. 'Perry' Grivanos b: Private in Nea Tenedos, Greece</div>
-<div class="tree-entry gen-1 spouse">+ Rita Mae Baker b: Private</div>
-<div class="tree-entry gen-2">Katherine Grivanos b: Private</div>
-<div class="tree-entry gen-2 spouse">+ Daniel L. Coutcher b: Private</div>
-<div class="tree-entry gen-3">Jason Coutcher b: Private</div>
-<div class="tree-entry gen-3">Kyle Coutcher b: Private</div>
-<div class="tree-entry gen-3 note">* 2nd Husband of Katherine Grivanos:</div>
-<div class="tree-entry gen-3 spouse">+ Gregory L. Vermett b: Private</div>
-<div class="tree-entry gen-2">Pericles 'Perry' S. Grivanos b: Private</div>
-<div class="tree-entry gen-2 spouse">+ Jacqueline 'Jackie' b: Private</div>
-<div class="tree-entry gen-3">Perry Grivanos b: Private</div>
-<div class="tree-entry gen-3">Spencer Grivanos b: Private</div>
-<div class="tree-entry gen-3">Alexis Grivanos b: Private</div>
-<div class="tree-entry gen-3 note">3 Phillip A. Grivanos b: April 28, 1965  d: December 7, 
-2011</div>
-<div class="tree-entry gen-3 spouse">+ Susanne M. Nicky b: Private</div>
-<div class="tree-entry gen-3">Cori Grivanos b: Private</div>
-<div class="tree-entry gen-3">Megan Grivanos b: Private</div>
-<div class="tree-entry gen-2">Timothy S. Grivanos b: Private</div>
-<div class="tree-entry gen-2 spouse">+ Laurette b: Private</div>
-<div class="tree-entry gen-1">Athanasia 'Soula' Grivanos b: Private</div>
-<div class="tree-entry gen-1 spouse">+ George Kantaras b: Private</div>
-<div class="tree-entry gen-2">Kostandinos G. 'Dean' Kantaras b: Private</div>
-<div class="tree-entry gen-2">Katherine Kantaras b: Private</div>
-<div class="tree-entry gen-2">Victoria Kantaras b: Private</div>
-<div class="tree-entry gen-2 spouse">+ Mike Tarantino b: Private</div>
-<div class="tree-entry gen-3">George Tarantino b: Private</div>
-<div class="tree-entry gen-3">Anthony Tarantino b: Private</div>
-<div class="tree-entry gen-0">Apostolos Grivanos b: Unknown in Tenedos, Greece d: Aft. 1912 in Tenedos</div>
-<div class="tree-entry gen-0 note">+Katerina Vasiliou b: April 08, 1866 in Tenedos, Greece d: October 21, 
-1965</div>
-<div class="tree-entry gen-0 note">2 Georgios A. Grivanos b: April 04, 1891 in Tenedos, Greece d: 
-February 1966</div>
-<div class="tree-entry gen-0 spouse">+ Anna R. Gross b: January 05, 1905 d: June 02, 1988</div>
-<div class="tree-entry gen-0 note">3 Louis P. (Grivanos) Grivas b: June 11, 1924 d: February 14, 
-2005</div>
-<div class="tree-entry gen-0 spouse">+ Vieno Aurora Keranen b: Private</div>
-<div class="tree-entry gen-0 note">4 John Louis Grivas  
-b: Private</div>
-<div class="tree-entry gen-0 note">4 Barbara Ann 'Kiki' Grivas b: January 15, 1953  
-d: June 13, 2009</div>
-<div class="tree-entry gen-0 note">+Randall Charles Kyte  
-b: Private</div>
-<div class="tree-entry gen-0 note">5 Terreena Kyte  
-b: Private</div>
-<div class="tree-entry gen-0 note">+Jason Plowman  
-b: Private</div>
-<div class="tree-entry gen-0 note">6 Travis Plowman  
-b: Private</div>
-<div class="tree-entry gen-0 note">5 Jonathan Kyte  
-b: Private</div>
-<div class="tree-entry gen-0 note">4 Mary Elizabeth Grivas  
-b: Private</div>
-<div class="tree-entry gen-0 note">4 Valerie Susan Grivas  
-b: Private</div>
-<div class="tree-entry gen-0 note">3 Paul (Grivanos) Grivas  
-b: Private</div>
-<div class="tree-entry gen-0 note">+MaryJane Theresa Janicki  
-b: Private</div>
-<div class="tree-entry gen-0 note">4 Bernadette Marie Grivas  
-b: Private</div>
-<div class="tree-entry gen-0 note">+John Howard Gandy  
-b: Private</div>
-<div class="tree-entry gen-0 note">5 John Robert Gandy  
-b: Private</div>
-<div class="tree-entry gen-0 note">+Misty Dawn Garnand  
-b: Private</div>
-<div class="tree-entry gen-0 note">6 Cody Marie Gandy  
-b: Private</div>
-<div class="tree-entry gen-0 note">*2nd Wife of John Robert Gandy:</div>
-<div class="tree-entry gen-0 note">+Sarah Beels  
-b: Private</div>
-<div class="tree-entry gen-0 note">6 Dominick John Gandy  
-b: Private</div>
-<div class="tree-entry gen-0 note">5 Jamelle Marie Gandy  
-b: Private</div>
-<div class="tree-entry gen-0 note">+Thomas J. Brancaleone  
-b: Private</div>
-<div class="tree-entry gen-0 note">6 Benjamin Brancaleone  
-b: Private</div>
-<div class="tree-entry gen-0 note">6 Vincent Brancaleone  
-b: Private</div>
-<div class="tree-entry gen-0 note">*2nd Husband of Bernadette Marie Grivas:</div>
-<div class="tree-entry gen-0 note">+Duane Paul Troy  
-b: Private</div>
-<div class="tree-entry gen-0 note">5 Nicholas Lawrence Troy  
-b: Private</div>
-<div class="tree-entry gen-0 note">5 Nathan Paul Troy  
-b: Private</div>
-<div class="tree-entry gen-0 note">4 Susan M. Grivas  
-b: Private</div>
-<div class="tree-entry gen-0 note">+Stephen D. Lechner  
-b: Private</div>
-<div class="tree-entry gen-0 note">4 Kathy Grivas  
-b: Private</div>
-<div class="tree-entry gen-0 note">4 Margaret M. Grivas  
-b: Private</div>
-<div class="tree-entry gen-0 note">2 Efstratios A. 'Steve' (Grivanos) Karvas b: July 15, 1893 in Tenedos 
-d: Dec. 24, 1981</div>
-<div class="tree-entry gen-0 spouse">+ Rose P. b: August 10, 1902 d: September 27, 1974</div>
-<div class="tree-entry gen-0 note">2 Petros A. Grivanos b: March 02, 1902 in Tenedos, Greece d: November 
-03, 1959</div>
-<div class="tree-entry gen-0 spouse">+ Margarita Garcia b: 1913</div>
-<div class="tree-entry gen-0 note">*2nd Wife of Petros A. Grivanos:</div>
-<div class="tree-entry gen-0 spouse">+ Carmen Salinas b: June 14, 1914</div>
-
+  <div class="page-content tree-page">
+    <div class="tree-outer">
+      <div class="tree-legend">
+        <div class="legend-item"><div class="ls navy"></div> Ancestor</div>
+        <div class="legend-item"><div class="ls white"></div> Descendant</div>
+        <div class="legend-item"><div class="ls blue"></div> Spouse (married-in)</div>
+        <div class="legend-item"><div class="ls gray"></div> Living (private)</div>
+        <div class="legend-item" style="color:var(--color-gold,#c9a227);font-weight:700;font-size:1rem">&times;</div>&thinsp;Married
+        <div class="legend-item" style="font-size:.75rem;color:#999">Click a descendant card to collapse/expand</div>
+      </div>
+      <div class="tree-forest" id="forest"></div>
     </div>
   </div>
 </main>
@@ -179,11 +140,101 @@ d: Dec. 24, 1981</div>
       <a href="contact.html">Contact</a>
       <a href="not-recovered.html">Not Archived</a>
     </nav>
-    <p class="footer-copy">
-      Original content &copy; Tenedian Brotherhood. Website restored and modernized from archived materials.
-    </p>
+    <p class="footer-copy">Original content &copy; Tenedian Brotherhood.
+      Website restored and modernized from archived materials.</p>
   </div>
 </footer>
 
+<script>
+var TREES = [{"id":"p1","name":"Savas Grivanos","m":[{"sp":{"id":"p2","name":"Ekaterini Kyriakoudis","birth":"December 09, 1911","death":"January 04, 1986"},"kids":[{"id":"p3","name":"Eleftheria 'Liberty' Grivanos","m":[{"sp":{"id":"p4","name":"Kostandinos 'Gust' Elmer","priv":true},"kids":[{"id":"p5","name":"Athena 'Tina' Elmer","m":[{"sp":{"id":"p6","name":"Kostantinos Konstandas","priv":true},"kids":[{"id":"p7","name":"Constantine Konstandas","m":[],"priv":true},{"id":"p8","name":"Chris Konstandas","m":[],"priv":true}]}],"priv":true},{"id":"p9","name":"Savva 'Steve' Elmer","m":[{"sp":{"id":"p10","name":"Eleni","priv":true},"kids":[{"id":"p11","name":"Terri Elmer","m":[],"priv":true},{"id":"p12","name":"Jamie? Elmer","m":[],"priv":true}]}],"priv":true},{"id":"p13","name":"Eleni Elmer","m":[],"priv":true}]}],"priv":true},{"id":"p14","name":"Pericles S. 'Perry' Grivanos","m":[{"sp":{"id":"p15","name":"Rita Mae Baker","priv":true},"kids":[{"id":"p16","name":"Katherine Grivanos","m":[{"sp":{"id":"p17","name":"Daniel L. Coutcher","priv":true},"kids":[{"id":"p18","name":"Jason Coutcher","m":[],"priv":true},{"id":"p19","name":"Kyle Coutcher","m":[{"sp":{"id":"p20","name":"Gregory L. Vermett","priv":true},"kids":[]}],"priv":true}]}],"priv":true},{"id":"p21","name":"Pericles 'Perry' S. Grivanos","m":[{"sp":{"id":"p22","name":"Jacqueline 'Jackie'","priv":true},"kids":[{"id":"p23","name":"Perry Grivanos","m":[],"priv":true},{"id":"p24","name":"Spencer Grivanos","m":[],"priv":true},{"id":"p25","name":"Alexis Grivanos","m":[],"priv":true}]}],"priv":true},{"id":"p26","name":"Phillip A. Grivanos","m":[{"sp":{"id":"p27","name":"Susanne M. Nicky","priv":true},"kids":[{"id":"p28","name":"Cori Grivanos","m":[],"priv":true},{"id":"p29","name":"Megan Grivanos","m":[],"priv":true}]}],"birth":"April 28, 1965","death":"December 7, 2011"},{"id":"p30","name":"Timothy S. Grivanos","m":[{"sp":{"id":"p31","name":"Laurette","priv":true},"kids":[]}],"priv":true}]}],"priv":true},{"id":"p32","name":"Athanasia 'Soula' Grivanos","m":[{"sp":{"id":"p33","name":"George Kantaras","priv":true},"kids":[{"id":"p34","name":"Kostandinos G. 'Dean' Kantaras","m":[],"priv":true},{"id":"p35","name":"Katherine Kantaras","m":[],"priv":true},{"id":"p36","name":"Victoria Kantaras","m":[{"sp":{"id":"p37","name":"Mike Tarantino","priv":true},"kids":[{"id":"p38","name":"George Tarantino","m":[],"priv":true},{"id":"p39","name":"Anthony Tarantino","m":[],"priv":true}]}],"priv":true}]}],"priv":true}]}],"birth":"1904","death":"1945"},{"id":"p40","name":"Apostolos Grivanos","m":[{"sp":{"id":"p41","name":"Katerina Vasiliou","birth":"April 08, 1866","death":"October 21, 1965"},"kids":[{"id":"p42","name":"Georgios A. Grivanos","m":[{"sp":{"id":"p43","name":"Anna R. Gross","birth":"January 05, 1905","death":"June 02, 1988"},"kids":[{"id":"p44","name":"Louis P. (Grivanos) Grivas","m":[{"sp":{"id":"p45","name":"Vieno Aurora Keranen","priv":true},"kids":[{"id":"p46","name":"John Louis Grivas","m":[],"priv":true},{"id":"p47","name":"Barbara Ann 'Kiki' Grivas","m":[{"sp":{"id":"p48","name":"Randall Charles Kyte","priv":true},"kids":[{"id":"p49","name":"Terreena Kyte","m":[{"sp":{"id":"p50","name":"Jason Plowman","priv":true},"kids":[{"id":"p51","name":"Travis Plowman","m":[],"priv":true}]}],"priv":true},{"id":"p52","name":"Jonathan Kyte","m":[],"priv":true}]}],"birth":"January 15, 1953","death":"June 13, 2009"},{"id":"p53","name":"Mary Elizabeth Grivas","m":[],"priv":true},{"id":"p54","name":"Valerie Susan Grivas","m":[],"priv":true}]}],"birth":"June 11, 1924","death":"February 14, 2005"},{"id":"p55","name":"Paul (Grivanos) Grivas","m":[{"sp":{"id":"p56","name":"MaryJane Theresa Janicki","priv":true},"kids":[{"id":"p57","name":"Bernadette Marie Grivas","m":[{"sp":{"id":"p58","name":"John Howard Gandy","priv":true},"kids":[{"id":"p59","name":"John Robert Gandy","m":[{"sp":{"id":"p60","name":"Misty Dawn Garnand","priv":true},"kids":[{"id":"p61","name":"Cody Marie Gandy","m":[],"priv":true}]},{"sp":{"id":"p62","name":"Sarah Beels","priv":true},"kids":[{"id":"p63","name":"Dominick John Gandy","m":[],"priv":true}],"label":"2nd marriage"}],"priv":true},{"id":"p64","name":"Jamelle Marie Gandy","m":[{"sp":{"id":"p65","name":"Thomas J. Brancaleone","priv":true},"kids":[{"id":"p66","name":"Benjamin Brancaleone","m":[],"priv":true},{"id":"p67","name":"Vincent Brancaleone","m":[],"priv":true}]}],"priv":true}]},{"sp":{"id":"p68","name":"Duane Paul Troy","priv":true},"kids":[{"id":"p69","name":"Nicholas Lawrence Troy","m":[],"priv":true},{"id":"p70","name":"Nathan Paul Troy","m":[],"priv":true}],"label":"2nd marriage"}],"priv":true},{"id":"p71","name":"Susan M. Grivas","m":[{"sp":{"id":"p72","name":"Stephen D. Lechner","death":"Lechner b: Private","priv":true},"kids":[]}],"priv":true},{"id":"p73","name":"Kathy Grivas","m":[],"priv":true},{"id":"p74","name":"Margaret M. Grivas","m":[],"priv":true}]}],"priv":true}]}],"birth":"April 04, 1891","death":"February 1966"},{"id":"p75","name":"Efstratios A. 'Steve' (Grivanos) Karvas","m":[{"sp":{"id":"p76","name":"Rose P.","birth":"August 10, 1902","death":"September 27, 1974"},"kids":[]}],"birth":"July 15, 1893","death":"Dec. 24, 1981"},{"id":"p77","name":"Petros A. Grivanos","m":[{"sp":{"id":"p78","name":"Margarita Garcia","birth":"1913"},"kids":[]},{"sp":{"id":"p79","name":"Carmen Salinas","birth":"June 14, 1914"},"kids":[],"label":"2nd marriage"}],"birth":"March 02, 1902","death":"November 03, 1959"}]}],"birth":"Unknown","death":"Aft. 1912 in Tenedos"}];
+var TREE_TITLES = ["Descendants of Savas Grivanos","Descendants of Apostolos Grivanos"];
+function makeCard(p, cls) {
+  var div = document.createElement('div');
+  div.className = 'card ' + (cls || '');
+  var n = document.createElement('span'); n.className = 'n';
+  n.textContent = p.name; div.appendChild(n);
+  var parts = [];
+  if (p.birth) parts.push('b. ' + p.birth);
+  if (p.death) parts.push('d. ' + p.death);
+  if (p.priv && !p.birth && !p.death) parts.push('Living');
+  if (parts.length) {
+    var d = document.createElement('span'); d.className = 'd';
+    d.textContent = parts.join('  ·  '); div.appendChild(d);
+  }
+  return div;
+}
+
+function renderNode(p, gen) {
+  var wrapper = document.createElement('div'); wrapper.className = 'tree-node';
+  var body = document.createElement('div'); body.className = 'node-body';
+  var marriages = p.m || [];
+  var allKids = [];
+  for (var i = 0; i < marriages.length; i++) {
+    var ks = marriages[i].kids || [];
+    for (var j = 0; j < ks.length; j++) allKids.push(ks[j]);
+  }
+  var cls = gen === 0 ? 'root' : (p.priv ? 'priv' : '');
+  if (allKids.length) cls += (cls ? ' ' : '') + 'collapsible';
+  var mc = makeCard(p, cls);
+  if (marriages.length > 0) {
+    var row = document.createElement('div'); row.className = 'couple-row';
+    row.appendChild(mc);
+    if (marriages[0].sp) {
+      var dot = document.createElement('span'); dot.className = 'cx';
+      dot.textContent = '×'; row.appendChild(dot);
+      var spCls = 'spouse' + (marriages[0].sp.priv ? ' priv' : '');
+      row.appendChild(makeCard(marriages[0].sp, spCls));
+    }
+    body.appendChild(row);
+    for (var mi = 1; mi < marriages.length; mi++) {
+      var mg = marriages[mi];
+      if (mg.label) {
+        var lbl = document.createElement('div'); lbl.className = 'remarriage-lbl';
+        lbl.textContent = mg.label + ':'; body.appendChild(lbl);
+      }
+      if (mg.sp) {
+        var r2 = document.createElement('div'); r2.className = 'couple-row';
+        var ph = document.createElement('div'); ph.style.cssText = 'width:148px;flex-shrink:0;';
+        r2.appendChild(ph);
+        var d2 = document.createElement('span'); d2.className = 'cx';
+        d2.textContent = '×'; r2.appendChild(d2);
+        var sp2Cls = 'spouse' + (mg.sp.priv ? ' priv' : '');
+        r2.appendChild(makeCard(mg.sp, sp2Cls)); body.appendChild(r2);
+      }
+    }
+  } else {
+    var soloRow = document.createElement('div'); soloRow.className = 'couple-row';
+    soloRow.appendChild(mc); body.appendChild(soloRow);
+  }
+  wrapper.appendChild(body);
+  if (allKids.length) {
+    wrapper.classList.add('has-ch');
+    var cr = document.createElement('div'); cr.className = 'tree-children';
+    for (var ki = 0; ki < allKids.length; ki++) cr.appendChild(renderNode(allKids[ki], gen + 1));
+    wrapper.appendChild(cr);
+    mc.addEventListener('click', (function(nd) {
+      return function(e) { e.stopPropagation(); nd.classList.toggle('closed'); };
+    }(wrapper)));
+  }
+  return wrapper;
+}
+
+function buildSection(title, data, showTitle) {
+  var sec = document.createElement('div'); sec.className = 'tree-section';
+  if (showTitle) {
+    var h = document.createElement('h2'); h.className = 'tree-section-heading';
+    h.textContent = title; sec.appendChild(h);
+  }
+  var root = document.createElement('div'); root.className = 'tree-root';
+  root.appendChild(renderNode(data, 0)); sec.appendChild(root);
+  return sec;
+}
+
+var forest = document.getElementById('forest');
+var multiTree = TREES.length > 1;
+for (var ti = 0; ti < TREES.length; ti++) {
+  forest.appendChild(buildSection(TREE_TITLES[ti], TREES[ti], multiTree));
+}
+</script>
 </body>
 </html>
